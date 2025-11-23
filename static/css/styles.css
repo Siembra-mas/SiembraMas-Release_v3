@@ -278,6 +278,199 @@ footer {
     color: rgba(255, 255, 255, 0.6);
 }
 
+/* --- ESTILOS PARA LA SECCIÓN DE RECOMENDACIÓN --- */
+
+/* 1. Layout Superior: Control + Mapa */
+.dashboard-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1.5fr; /* Izquierda normal, Mapa más ancho */
+    gap: 2rem; 
+    margin-bottom: 3rem; 
+}
+
+/* Panel de control */
+.control-panel { 
+    background: white; 
+    padding: 2rem; 
+    border-radius: 16px; 
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
+    height: 100%; /* Para que tenga la misma altura que el mapa */
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Botones alineados y del mismo tamaño */
+.action-buttons-grid {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.btn-full {
+    flex: 1; /* Ocupan 50% cada uno */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    margin-left: 0;
+}
+
+/* Mapa (Debe tener altura definida) */
+.map-placeholder { 
+    background: #e0e0e0; 
+    height: 100%; 
+    min-height: 450px; 
+    border-radius: 16px; 
+    display: flex; 
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    color: #777; 
+    border: 2px dashed var(--medium-green); 
+}
+
+/* 2. Layout Medio: Grid de Clima (2 arriba, 3 abajo) */
+.weather-grid-custom {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 Columnas base */
+    gap: 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.w-card-light {
+    background-color: var(--white);
+    border: 1px solid #c8d6c9;
+    border-radius: 12px;
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--dark-green);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: transform 0.3s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+.w-card-light:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.08); }
+
+.w-card-light i { font-size: 2.5rem; color: var(--dark-green); margin-bottom: 1rem; }
+.w-value { font-size: 2rem; font-weight: 800; font-family: 'Montserrat'; margin-bottom: 0.2rem; }
+.w-label { font-family: 'Crimson Pro', serif; font-size: 1.1rem; color: #555; font-weight: 600; }
+
+/* Clases Helper para el layout 2-3 */
+.w-span-3 { grid-column: span 3; } /* Ocupa 50% */
+.w-span-2 { grid-column: span 2; } /* Ocupa 33.3% */
+
+/* 3. Estilos de Cultivos */
+.crops-header { text-align: center; margin-bottom: 2rem; }
+.crops-header h3 { color: var(--dark-green); font-size: 2rem; margin-bottom: 1.5rem; }
+
+.filter-buttons { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; }
+.btn-sm { padding: 10px 30px; font-size: 1rem; border-radius: 50px; cursor: pointer; font-weight: bold; border: 2px solid var(--accent-green); }
+.btn-sm.active { background-color: var(--accent-green); color: white; }
+.btn-outline-dark { background: transparent; border: 2px solid var(--dark-green); color: var(--dark-green); transition: 0.3s; }
+.btn-outline-dark:hover { background: var(--dark-green); color: white; }
+
+.crop-body { padding: 1.5rem; }
+
+/* Estilo base de la etiqueta */
+.viability { 
+    color: white; 
+    padding: 5px 12px; 
+    border-radius: 20px; 
+    font-size: 0.8rem; 
+    font-weight: 700;
+    display: inline-block; 
+    margin-bottom: 0.5rem; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- COLORES DE VIABILIDAD (NUEVO) --- */
+
+/* Verde: Alta probabilidad (> 70%) */
+.viability.bg-green {
+    background-color: var(--accent-green); 
+    box-shadow: 0 2px 10px rgba(116, 183, 74, 0.4);
+}
+
+/* Amarillo: Precaución (40% - 69%) */
+.viability.bg-yellow {
+    background-color: var(--alert-yellow);
+    box-shadow: 0 2px 10px rgba(240, 173, 78, 0.4);
+}
+
+/* Rojo: No recomendado (< 40%) */
+.viability.bg-red {
+    background-color: var(--alert-red);
+    box-shadow: 0 2px 10px rgba(217, 83, 79, 0.4);
+}
+
+/* --- HERO GENERAL --- */
+
+/* 1. Contenedor Principal */
+.hero-main {
+    min-height: 85vh;
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    color: var(--cream); 
+    padding-top: 100px;
+    overflow: hidden;
+    background-color: var(--dark-green); /* <--- IMPORTANTE: Fondo base */
+}
+
+/* 2. El Video de Fondo */
+.hero-bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    
+    /* --- ESTO CREA LA MAGIA DEL FADE --- */
+    opacity: 1; /* Visible por defecto */
+    transition: opacity 1s ease-in-out; /* Tardará 1 segundo en desvanecerse */
+}
+
+.video-hidden {
+    opacity: 0 !important;
+}
+
+/* 3. La Capa Verde (Overlay) */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Usamos tus variables originales para el gradiente */
+    background: linear-gradient(135deg, var(--dark-green), var(--medium-green));
+    opacity: 0.80;
+    z-index: 2; /* Capa intermedia */
+}
+
+/* 4. Ajuste al Contenido para que quede encima de todo */
+.hero-content {
+    position: relative; /* Necesario para aplicar z-index */
+    z-index: 3; /* Capa superior */
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 4rem; 
+    align-items: center;
+    width: 100%; /* Aseguramos que ocupe el ancho disponible */
+}
+
+/* El resto de tus estilos se mantienen igual... */
+.hero-text h1 { font-size: 3.5rem; line-height: 1.1; margin: 1rem 0; }
+.badge { background: var(--accent-green); padding: 5px 15px; border-radius: 50px; font-size: 0.9rem; font-weight: bold; color: white;}
+
 /* --- RESPONSIVE --- */
 @media (max-width: 900px) {
     .hero-content, .dashboard-grid, .pricing-grid, .vision-options, .footer-content {
@@ -287,6 +480,10 @@ footer {
     .nav-links { display: none; position: absolute; top: 70px; left: 0; width: 100%; background: var(--dark-green); flex-direction: column; padding: 2rem; }
     .nav-links.active { display: flex; }
     .menu-toggle { display: block; }
+    .dashboard-grid { grid-template-columns: 1fr; } /* Coloca el mapa debajo del control en celular */
+    .weather-grid-custom { grid-template-columns: 1fr; gap: 1rem; }
+    .w-span-3, .w-span-2 { grid-column: span 1; }
+    .action-buttons-grid { flex-direction: column; }
 }
 @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(116, 183, 74, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(116, 183, 74, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(116, 183, 74, 0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

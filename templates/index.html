@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <header class="hero-main">
+    <video id="heroVideo" autoplay muted playsinline class="hero-bg-video">
+        Tu navegador no soporta videos HTML5.
+    </video>
+
+    <div class="hero-overlay"></div>
+
     <div class="container hero-content fade-in">
         <div class="hero-text">
             <span class="badge">Expociencias Nacional 2025</span>
@@ -14,99 +21,250 @@
                 <a href="{{ url_for('siembra_link.index') }}" class="btn btn-outline">Ir a Siembra Link</a>
             </div>
         </div>
-        <div style="text-align: center;">
-                     </div>
+        <div style="text-align: center;"></div>
     </div>
 </header>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const videoElement = document.getElementById('heroVideo');
+        
+        // A. Lista de videos
+        const videos = [
+            "{{ url_for('static', filename='img/campo_1.mp4') }}",
+            "{{ url_for('static', filename='img/campo_2.mp4') }}", 
+            "{{ url_for('static', filename='img/campo_3.mp4') }}"
+        ];
+
+        let currentIndex = Math.floor(Math.random() * videos.length);
+
+        // Función inicial (sin fade, solo carga inmediata)
+        function initVideo() {
+            videoElement.src = videos[currentIndex];
+            videoElement.play().catch(e => console.log("Autoplay bloqueado:", e));
+        }
+
+        // B. Detectar cuando termina el video
+        videoElement.addEventListener('ended', function() {
+            // 1. Iniciar Fade Out (Ocultar video actual)
+            videoElement.classList.add('video-hidden');
+
+            // 2. Esperar 1 segundo (1000ms) a que termine la animación de CSS
+            setTimeout(() => {
+                // Calcular siguiente video
+                currentIndex++;
+                if (currentIndex >= videos.length) currentIndex = 0;
+
+                // Cambiar la fuente del video
+                videoElement.src = videos[currentIndex];
+                
+                // Cargar y reproducir
+                videoElement.play().then(() => {
+                    // 3. Una vez que esté reproduciendo, hacer Fade In (Mostrar video)
+                    // Pequeño retraso de 50ms para asegurar que el navegador ya tiene el nuevo frame listo
+                    setTimeout(() => {
+                        videoElement.classList.remove('video-hidden');
+                    }, 50);
+                }).catch(e => {
+                    console.log("Error al reproducir siguiente video:", e);
+                    // Si falla, mostramos el video de todos modos para no dejar pantalla negra
+                    videoElement.classList.remove('video-hidden');
+                });
+
+            }, 1000); // Este tiempo debe coincidir con 'transition: opacity 1s' del CSS
+        });
+
+        // Arrancar el primero
+        initVideo();
+    });
+</script>
 
 <section id="recomendaciones" class="section-padding bg-cream">
     <div class="container">
         <h2 class="section-title center-text">Panel de Recomendación <span class="text-accent">Inteligente</span></h2>
         
         <div class="dashboard-grid">
+            
             <div class="control-panel">
-                <div class="form-group">
-                    <label>Estado</label>
-                    <select class="form-select">
-                        <option>Veracruz</option>
-                        <option>Puebla</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Municipio</label>
-                    <select class="form-select">
-                        <option>Córdoba</option>
-                        <option>Xalapa</option>
-                    </select>
-                </div>
-                
-                <div style="display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap;">
-                    <button class="btn" style="padding: 10px 20px; font-size: 0.9rem;">Ubicarme <i class="fa-solid fa-location-arrow"></i></button>
-                    <button class="btn btn-outline" style="border-color: var(--medium-green); color: var(--medium-green);">Predicción Mensual</button>
-                </div>
+                <form action="{{ url_for('general.generar_analisis') }}" method="POST" id="analysisForm">
+                    <div class="form-row"> 
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select class="form-select" name="estado" id="estadoSelect">
+                                <option value="" disabled {% if not estado_sel %}selected{% endif %}>Seleccionar...</option>
+                                {% for edo in estados %}
+                                    <option value="{{ edo }}" {% if estado_sel == edo %}selected{% endif %}>{{ edo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Municipio</label>
+                            <select class="form-select" name="municipio" id="municipioSelect">
+                                <option value="" disabled {% if not municipio_sel %}selected{% endif %}>Seleccionar...</option>
+                                {% for muni in municipios %}
+                                    <option value="{{ muni }}" {% if municipio_sel == muni %}selected{% endif %}>{{ muni }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
 
-                <hr style="margin: 1.5rem 0; border-color: #eee;">
-                
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <label style="margin:0; font-size: 0.9rem;">Usar datos Siembra Link <span class="badge" style="font-size: 0.7rem;">PREMIUM</span></label>
-                    <input type="checkbox" style="width: 20px; height: 20px;">
-                </div>
+                    <div class="action-buttons-grid">
+                        <button type="button" class="btn btn-full" onclick="ubicarUsuario()">Ubicarme <i class="fa-solid fa-location-arrow"></i></button>
+                        <div class="btn btn-outline btn-full" style="color: var(--dark-green); border-color: var(--medium-green); text-align:center; cursor:default;">
+                            {% if nombre_mes %}Predicción: {{ nombre_mes }}{% else %}Mes Actual{% endif %}
+                        </div>
+                    </div>
+                    
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 1.5rem 0;">
 
-                <button class="btn" style="width: 100%; margin-top: 1.5rem;">GENERAR ANÁLISIS</button>
+                    <div class="premium-check" style="display:flex; justify-content:space-between; align-items:center;">
+                        <label style="margin:0; font-size:0.9rem;">Usar datos Siembra Link <span class="badge" style="font-size: 0.7rem; margin-left:5px;">PREMIUM</span></label>
+                        <input type="checkbox" style="width:20px; height:20px; accent-color: var(--accent-green);">
+                    </div>
+                    
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 1.5rem;">GENERAR ANÁLISIS</button>
+                </form>
             </div>
 
-            <div>
-                <div class="map-placeholder">
-                    <p><i class="fa-solid fa-map"></i> Mapa Interactivo (API Google Maps)</p>
-                </div>
-                <div class="weather-cards">
-                    <div class="w-card">
-                        <i class="fa-solid fa-cloud-rain"></i>
-                        <div class="w-value">120mm</div>
-                        <div class="w-label">Precipitación</div>
-                    </div>
-                    <div class="w-card">
-                        <i class="fa-solid fa-droplet"></i>
-                        <div class="w-value">65%</div>
-                        <div class="w-label">Humedad</div>
-                    </div>
-                    <div class="w-card">
-                        <i class="fa-solid fa-temperature-arrow-up"></i>
-                        <div class="w-value">32°C</div>
-                        <div class="w-label">Max</div>
-                    </div>
+            <div class="map-container">
+                <div class="map-placeholder" id="mapaInteractivo" style="position: relative; overflow: hidden;">
+                    {% if latitud_mapa and longitud_mapa %}
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            style="border:0" 
+                            src="https://maps.google.com/maps?q={{ latitud_mapa }},{{ longitud_mapa }}&z=10&output=embed">
+                        </iframe>
+                    {% else %}
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#666;">
+                            <i class="fa-solid fa-map-location-dot" style="font-size:3rem; margin-bottom:15px; color: var(--medium-green);"></i>
+                            <p>Selecciona una ubicación para ver el mapa</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
-        <div class="results-toggle">
-            <h3>Ver Resultados de Análisis</h3>
-            <i class="fa-solid fa-chevron-down"></i>
-        </div>
-
-        <div id="resultados-content" class="hidden container">
-            <div class="carousel-grid">
-                <div class="crop-card">
-                    <div class="crop-img">
-                                             </div>
-                    <div class="crop-body">
-                        <span class="viability">98% Viable</span>
-                        <h4>Café Arábica</h4>
-                        <p style="font-size: 0.9rem;">Condiciones óptimas de altura y humedad en la zona seleccionada.</p>
-                    </div>
+        <div class="weather-section-container" style="margin-top: 3rem;">
+            <div class="weather-grid-custom">
+                <div class="w-card-light w-span-3">
+                    <i class="fa-solid fa-cloud-rain"></i>
+                    <div class="w-value">{% if precipitacion is not none %}{{ precipitacion }} mm{% else %}--{% endif %}</div>
+                    <div class="w-label">Precipitación</div>
                 </div>
-                <div class="crop-card">
-                    <div class="crop-img">
-                                             </div>
-                    <div class="crop-body">
-                        <span class="viability">85% Viable</span>
-                        <h4>Caña de Azúcar</h4>
-                        <p style="font-size: 0.9rem;">Requiere mayor riego en los próximos 2 meses según predicción.</p>
-                    </div>
+                <div class="w-card-light w-span-3">
+                    <i class="fa-solid fa-droplet"></i>
+                    <div class="w-value">{% if humedad is not none %}{{ humedad }} %{% else %}--{% endif %}</div>
+                    <div class="w-label">Humedad relativa</div>
+                </div>
+
+                <div class="w-card-light w-span-2">
+                    <i class="fa-solid fa-temperature-arrow-up"></i>
+                    <div class="w-value">{% if temp_max is not none %}{{ temp_max }} °C{% else %}--{% endif %}</div>
+                    <div class="w-label">Temperatura máxima</div>
+                </div>
+                <div class="w-card-light w-span-2">
+                    <i class="fa-regular fa-sun"></i>
+                    <div class="w-value">{% if temp_media is not none %}{{ temp_media }} °C{% else %}--{% endif %}</div>
+                    <div class="w-label">Temperatura media</div>
+                </div>
+                <div class="w-card-light w-span-2">
+                    <i class="fa-solid fa-temperature-arrow-down"></i>
+                    <div class="w-value">{% if temp_min is not none %}{{ temp_min }} °C{% else %}--{% endif %}</div>
+                    <div class="w-label">Temperatura mínima</div>
                 </div>
             </div>
+        </div>
+
+        <div class="crops-header" style="margin-top: 4rem;">
+            <h3>CULTIVOS RECOMENDADOS</h3>
+            
+            <div class="filter-buttons">
+                <button type="button" class="btn btn-sm active" id="btnZona" onclick="filtrarCultivos('zona')">Recomendados para la zona</button>
+                <button type="button" class="btn btn-sm btn-outline-dark" id="btnTodos" onclick="filtrarCultivos('todos')">Todos los cultivos</button>
+            </div>
+        </div>
+
+        <div id="resultados-content" class="container">
+            {% if recomendaciones %}
+                <div class="carousel-grid">
+                    {% for rec in recomendaciones %}
+                        <div class="crop-card" data-zona="{{ 'true' if rec.es_zona else 'false' }}">
+                            <div class="crop-img">
+                                <img src="{{ url_for('static', filename='img/cultivos/' + rec.img_slug + '.png') }}" 
+                                     onerror="this.src='https://via.placeholder.com/300x200?text={{ rec.cultivo }}'" 
+                                     alt="{{ rec.cultivo }}" 
+                                     style="width:100%; height:100%; object-fit:cover; display:block; background:#eee;"> 
+                            </div>
+                            <div class="crop-body">
+                                <div class="crop-header-row">
+                                    <h4>{{ rec.cultivo }}</h4>
+                                    <span class="viability {{ rec.clase_viabilidad }}">{{ rec.prob }}% VIABILIDAD</span>
+                                </div>
+                                <p class="crop-desc">{{ rec.texto }}</p>
+                                {% if not rec.es_zona %}
+                                    <small style="color: #999; font-size: 0.75rem;">No histórico en esta zona</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 2rem; color: #666;">
+                    {% if estado_sel %}
+                        <p>No se encontraron cultivos viables o faltan datos para generar la predicción.</p>
+                    {% else %}
+                        <p>Selecciona un Estado y Municipio arriba y haz clic en "Generar Análisis" para ver los resultados.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
 
     </div>
 </section>
+
+<script>
+    function filtrarCultivos(tipo) {
+        const tarjetas = document.querySelectorAll('.crop-card');
+        const btnZona = document.getElementById('btnZona');
+        const btnTodos = document.getElementById('btnTodos');
+
+        if (tipo === 'zona') {
+            btnZona.classList.add('active');
+            btnZona.classList.remove('btn-outline-dark');
+            btnTodos.classList.remove('active');
+            btnTodos.classList.add('btn-outline-dark');
+
+            tarjetas.forEach(card => {
+                if (card.getAttribute('data-zona') === 'true') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        } else {
+            btnTodos.classList.add('active');
+            btnTodos.classList.remove('btn-outline-dark');
+            btnZona.classList.remove('active');
+            btnZona.classList.add('btn-outline-dark');
+
+            tarjetas.forEach(card => {
+                card.style.display = 'block';
+            });
+        }
+    }
+
+    // Inicializar filtro al cargar (mostrar solo zona por defecto si hay resultados)
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.querySelectorAll('.crop-card').length > 0) {
+            filtrarCultivos('zona');
+        }
+    });
+
+    function ubicarUsuario() {
+        alert("Funcionalidad de geolocalización pendiente de configurar con HTTPS.");
+    }
+</script>
+
 {% endblock %}

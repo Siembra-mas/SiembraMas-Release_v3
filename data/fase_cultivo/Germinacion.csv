@@ -1,0 +1,62 @@
+Cultivo,Fase,Temp. Opt. Mín. (°C),Temp. Recomendada (°C),Temp. Opt. Máx. (°C),Lluvia Óptima (mm),Humedad Ambiental (%),Humedad Suelo (%),Fuente URL
+Agave,Germinación,15,25-30,34,600-900,50-60,40-50,https://cienciasagricolas.inifap.gob.mx - Caracterización agroclimática del cultivo de Agave; https://agqlabs.mx - Requerimientos técnicos para el cultivo de Agave
+Aguacate,Germinación,10,17-24,28,800-1000,70-80,60-70,https://mexico.infoagro.com - Requerimientos edafoclimáticos del cultivo; https://intagri.com - Requerimientos de Clima y Suelo en el Cultivo de Aguacate
+Ajo,Germinación,8,12-16,20,300-400,60-70,60-70,https://horticulturaar.com.ar - Fenología y producción del ajo según temperaturas; https://agroclimatologia.weebly.com - Agenda Técnica Sonora INIFAP
+Ajonjolí,Germinación,18,22-25,30,500-600,60-70,60-70,INIFAP - Datos climáticos agrícolas
+Alfalfa,Germinación,5,12-18,25,300-500,50-65,60-75,INIFAP - Requerimientos de cultivos forrajeros
+Amaranto,Germinación,13,18-22,30,400-600,60-70,60-70,https://vun.inifap.gob.mx - Agenda Técnica; https://es.scribd.com - Guia Amaranto
+Arroz palay,Germinación,14,18-24,28,800-1000,80-90,85-100,https://vun.inifap.gob.mx - Agenda Técnica del Cultivo de Arroz
+Avena forrajera en verde,Germinación,4,10-15,22,300-400,55-70,60-75,https://eos.com - Cultivo De Cebada; https://agroecologiatornos.com - La guía definitiva de los cereales de invierno
+Avena grano,Germinación,4,10-15,22,300-400,55-70,60-75,https://agroecologiatornos.com - La guía definitiva de los cereales de invierno
+Berenjena,Germinación,18,22-26,30,400-600,60-70,60-70,INIFAP - Manual técnico para la producción de hortalizas
+Brócoli,Germinación,10,15-20,25,400-600,65-75,65-75,https://vun.inifap.gob.mx - Manual técnico para la producción de hortalizas
+Cacao,Germinación,18,22-25,28,1200-1500,75-80,70-80,https://espacioimasd.unach.mx - Manejo agroecológico de la nutrición en el cultivo del cacao; https://portalfruticola.com - Requerimientos Edafoclimáticos para el Cultivo del Cacao
+Café cereza,Germinación,15,18-22,25,400-600,70-75,60-70,INIFAP - Requerimientos climáticos de café
+Calabacita,Germinación,16,20-25,30,400-600,60-70,60-70,INIFAP - Guía de hortalizas
+Caña de azúcar,Germinación,18,22-28,32,600-800,70-80,70-80,https://fira.gob.mx - Producción Sostenible de Caña de Azúcar
+Cebada grano,Germinación,4,10-15,22,250-400,55-70,60-75,https://eos.com - Cultivo De Cebada
+Cebolla,Germinación,8,12-18,25,250-400,60-70,60-75,INIFAP - Guía de hortalizas
+Chile verde,Germinación,18,22-28,32,500-700,65-75,60-75,INIFAP - Requerimientos de chile
+Copra,Germinación,20,25-28,32,1000-1500,75-85,70-80,INIFAP - Cultivos tropicales
+Crisantemo,Germinación,10,15-20,25,300-400,60-70,60-70,https://es.scribd.com - Cultivo Del Crisantemo; https://dspace.espoch.edu.ec - Requerimientos edafoclimáticos del Crisantemo
+Cártamo,Germinación,8,12-18,25,250-400,50-60,55-65,INIFAP - Cultivos de ciclo invierno
+Durazno,Germinación,5,12-18,25,500-700,60-70,60-75,INIFAP - Cultivos frutales
+Elote,Germinación,12,18-24,30,500-700,60-70,60-75,INIFAP - Maíz forrajero
+Espárrago,Germinación,10,15-20,25,400-600,60-70,60-75,INIFAP - Hortalizas especializadas
+Frambuesa,Germinación,5,12-18,24,500-700,65-75,65-80,INIFAP - Cultivos de berries
+Fresa,Germinación,5,12-18,24,500-700,65-75,65-80,"https://proain.com - PRODUCCIÓN DE FRESA, REQUERIMIENTOS DE CLIMA"
+Frijol,Germinación,14,18-24,30,400-600,60-70,60-70,https://es.scribd.com - Requerimiento Hídrico Del Frijol; https://eos.com - Cultivo De Frijol
+Garbanzo grano,Germinación,8,14-20,26,300-450,55-65,55-70,INIFAP - Leguminosas de grano
+Gladiola,Germinación,10,15-20,25,300-400,60-70,60-70,https://es.scribd.com - Requerimientos Agroecológicos de Cultivos
+Guayaba,Germinación,12,18-24,30,600-900,70-80,65-75,https://dicta.gob.hn - El Cultivo de la Guayaba; https://undp.org - INSTRUCTIVO TÉCNICO - para el cultivo del guayabo
+Lechuga,Germinación,5,12-18,24,300-400,65-75,65-75,INIFAP - Hortalizas de hoja
+Limón,Germinación,12,18-24,30,700-1000,70-80,65-75,INIFAP - Cultivos cítricos
+Maguey pulquero,Germinación,15,22-26,32,500-700,50-60,45-55,INIFAP - Maguey
+Mango,Germinación,15,22-26,32,700-1000,70-80,65-75,https://jardinessinfronteras.com - ALGUNAS FRUTAS TROPICALES
+Manzana,Germinación,5,12-18,25,600-800,60-70,60-75,INIFAP - Cultivos frutales templados
+Maíz forrajero en verde,Germinación,10,16-22,28,400-600,60-70,60-75,INIFAP - Maíz forrajero
+Maíz grano,Germinación,10,18-24,32,500-700,60-70,60-75,https://calidaddelaire.puebla.gob.mx - Vulnerabilidad del sector agrícola; https://cienciasagricolas.inifap.gob.mx - Temperaturas base
+Melón,Germinación,14,20-26,32,300-500,55-65,55-70,INIFAP - Cucurbitáceas
+Naranja,Germinación,12,18-24,30,700-1000,70-80,65-75,INIFAP - Cultivos cítricos
+Nopalitos,Germinación,15,22-28,32,300-500,40-55,40-55,INIFAP - Cultivos xerófitos
+Nuez,Germinación,8,14-20,26,700-1000,60-70,60-75,INIFAP - Cultivos frutales especiales
+Papa,Germinación,8,14-20,25,400-600,60-70,60-75,https://fps.org.mx - Predicción de la fenología de papa
+Papaya,Germinación,18,24-28,32,1000-1500,75-85,70-80,https://frutales.files.wordpress.com - CULTIVOS FRUTICOLA
+Pepino,Germinación,16,22-28,32,400-600,60-70,60-75,INIFAP - Cucurbitáceas
+Pera,Germinación,5,12-18,25,600-800,60-70,60-75,INIFAP - Cultivos frutales templados
+Piña,Germinación,18,24-28,32,1000-1500,75-85,70-80,https://frutales.files.wordpress.com - CULTIVOS FRUTICOLA
+Plátano,Germinación,18,24-28,32,1200-1500,75-85,70-80,https://frutales.files.wordpress.com - CULTIVOS FRUTICOLA
+Rosa,Germinación,10,15-20,25,300-400,60-70,60-70,INIFAP - Flores de corte
+Sandía,Germinación,14,22-28,32,300-500,55-65,55-70,INIFAP - Cucurbitáceas
+Sorgo forrajero en verde,Germinación,12,18-24,30,300-500,55-65,55-70,https://fps.org.mx - Guía del cultivo de sorgo
+Sorgo grano,Germinación,12,18-24,30,300-500,55-65,55-70,https://fps.org.mx - Guía del cultivo de sorgo
+Soya,Germinación,10,16-22,28,400-600,60-70,60-75,INIFAP - Leguminosas
+Tabaco,Germinación,15,20-26,32,400-600,60-70,60-75,INIFAP - Cultivos industriales
+Tomate rojo (jitomate),Germinación,15,20-26,30,400-600,60-70,60-70,https://elfield.com.mx - Requerimientos edafoclimáticos del tomate; https://icamex.edomex.gob.mx - jitomate
+Tomate verde,Germinación,15,20-25,28,400-600,60-70,60-70,https://hydroenv.com.mx - Guía para el Cultivo de Tomate Verde
+Toronja (pomelo),Germinación,12,18-24,30,700-1000,70-80,65-75,INIFAP - Cultivos cítricos
+Trigo grano,Germinación,5,12-18,25,250-400,55-70,60-75,https://agrawdata.com - Guía Completa para el Cultivo Exitoso de Cereales
+Tuna,Germinación,15,22-28,32,300-500,40-55,40-55,INIFAP - Cultivos xerófitos
+Uva,Germinación,8,14-20,26,600-900,60-70,60-75,INIFAP - Cultivos frutales
+Zanahoria,Germinación,8,14-20,26,350-500,60-70,60-75,INIFAP - Hortalizas de raíz
+Zarzamora,Germinación,5,12-18,24,500-700,65-75,65-80,INIFAP - Cultivos de berries

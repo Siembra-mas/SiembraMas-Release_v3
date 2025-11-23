@@ -1,0 +1,660 @@
+Entidad,Cultivo
+Aguascalientes,Maíz forrajero en verde
+Aguascalientes,Maíz grano
+Aguascalientes,Frijol
+Aguascalientes,Avena forrajera en verde
+Aguascalientes,Tuna
+Aguascalientes,Sorgo forrajero en verde
+Aguascalientes,Agave
+Aguascalientes,Manzana
+Baja California,Avena grano
+Baja California,Cebada grano
+Baja California,Avena forrajera en verde
+Baja California,Trigo grano
+Baja California,Uva
+Baja California,Nopalitos
+Campeche,Sorgo grano
+Campeche,Caña de azúcar
+Campeche,Maíz grano
+Campeche,Arroz palay
+Campeche,Frijol
+Campeche,Limón
+Campeche,Naranja
+Campeche,Soya
+Campeche,Mango
+Campeche,Chile verde
+Campeche,Plátano
+Campeche,Maíz forrajero en verde
+Campeche,Aguacate
+Campeche,Sandía
+Campeche,Toronja (pomelo)
+Chiapas,Maíz grano
+Chiapas,Café cereza
+Chiapas,Frijol
+Chiapas,Mango
+Chiapas,Cacao
+Chiapas,Caña de azúcar
+Chiapas,Plátano
+Chiapas,Ajonjolí
+Chiapas,Aguacate
+Chiapas,Sorgo grano
+Chiapas,Limón
+Chiapas,Chile verde
+Chiapas,Durazno
+Chiapas,Naranja
+Chiapas,Papa
+Chiapas,Manzana
+Chiapas,Sandía
+Chiapas,Copra
+Chiapas,Piña
+Chiapas,Papaya
+Chiapas,Pera
+Chiapas,Tomate verde
+Chiapas,Sorgo forrajero en verde
+Chiapas,Soya
+Chiapas,Guayaba
+Chiapas,Trigo grano
+Chiapas,Tabaco
+Chiapas,Tomate rojo
+Chiapas,Arroz palay
+Chiapas,Melón
+Chiapas,Cebolla
+Chihuahua,Maíz grano
+Chihuahua,Avena forrajera en verde
+Chihuahua,Frijol
+Chihuahua,Maíz forrajero en verde
+Chihuahua,Avena grano
+Chihuahua,Sorgo forrajero en verde
+Chihuahua,Manzana
+Chihuahua,Papa
+Chihuahua,Cebada grano
+Chihuahua,Pepino
+Chihuahua,Sandía
+Chihuahua,Calabacita
+Chihuahua,Melón
+Ciudad de México,Maíz grano
+Ciudad de México,Nopalitos
+Ciudad de México,Avena forrajera en verde
+Ciudad de México,Elote
+Ciudad de México,Papa
+Ciudad de México,Manzana
+Ciudad de México,Amaranto
+Ciudad de México,Maíz forrajero en verde
+Ciudad de México,Pera
+Ciudad de México,Calabacita
+Ciudad de México,Zanahoria
+Ciudad de México,Durazno
+Ciudad de México,Frijol
+Ciudad de México,Lechuga
+Ciudad de México,Zarzamora
+Ciudad de México,Rosa
+Ciudad de México,Frambuesa
+Ciudad de México,Nuez
+Coahuila,Maíz grano
+Coahuila,Sorgo forrajero en verde
+Coahuila,Avena forrajera en verde
+Coahuila,Manzana
+Coahuila,Nuez
+Coahuila,Frijol
+Coahuila,Durazno
+Coahuila,Cártamo
+Coahuila,Maíz forrajero en verde
+Coahuila,Melón
+Coahuila,Sandía
+Colima,Caña de azúcar
+Colima,Café cereza
+Colima,Copra
+Colima,Mango
+Colima,Guayaba
+Colima,Nopalitos
+Colima,Durazno
+Colima,Agave
+Durango,Maíz grano
+Durango,Aguacate
+Durango,Manzana
+Durango,Durazno
+Durango,Agave
+Durango,Mango
+Durango,Naranja
+Durango,Limón
+Durango,Guayaba
+Durango,Toronja (pomelo)
+Durango,Avena forrajera en verde
+Durango,Sorgo forrajero en verde
+Durango,Nopalitos
+Durango,Frijol
+Durango,Maíz forrajero en verde
+Durango,Tuna
+Guanajuato,Maíz grano
+Guanajuato,Agave
+Guanajuato,Sorgo grano
+Guanajuato,Frijol
+Guanajuato,Garbanzo grano
+Guanajuato,Tuna
+Guanajuato,Avena forrajera en verde
+Guanajuato,Cebolla
+Guanajuato,Trigo grano
+Guanajuato,Cebada grano
+Guanajuato,Maguey pulquero
+Guanajuato,Espárrago
+Guanajuato,Maíz forrajero en verde
+Guanajuato,Uva
+Guanajuato,Tomate verde
+Guanajuato,Sorgo forrajero en verde
+Guanajuato,Nopalitos
+Guanajuato,Aguacate
+Guanajuato,Guayaba
+Guerrero,Maíz grano
+Guerrero,Copra
+Guerrero,Café cereza
+Guerrero,Mango
+Guerrero,Limón
+Guerrero,Plátano
+Guerrero,Aguacate
+Guerrero,Agave
+Guerrero,Frijol
+Guerrero,Durazno
+Guerrero,Sorgo grano
+Guerrero,Papaya
+Guerrero,Ajonjolí
+Guerrero,Sorgo forrajero en verde
+Guerrero,Garbanzo grano
+Guerrero,Sandía
+Guerrero,Naranja
+Guerrero,Cacao
+Guerrero,Maíz forrajero en verde
+Guerrero,Chile verde
+Guerrero,Gladiola
+Guerrero,Guayaba
+Guerrero,Tomate rojo
+Guerrero,Calabacita
+Guerrero,Tomate verde
+Guerrero,Piña
+Guerrero,Manzana
+Guerrero,Pera
+Guerrero,Melón
+Guerrero,Tabaco
+Guerrero,Nopalitos
+Guerrero,Pepino
+Guerrero,Arroz palay
+Guerrero,Maguey pulquero
+Guerrero,Toronja (pomelo)
+Hidalgo,Maíz grano
+Hidalgo,Cebada grano
+Hidalgo,Café cereza
+Hidalgo,Avena forrajera en verde
+Hidalgo,Frijol
+Hidalgo,Naranja
+Hidalgo,Maguey pulquero
+Hidalgo,Tuna
+Hidalgo,Maíz forrajero en verde
+Hidalgo,Avena grano
+Hidalgo,Manzana
+Hidalgo,Aguacate
+Hidalgo,Chile verde
+Hidalgo,Limón
+Hidalgo,Trigo grano
+Hidalgo,Durazno
+Hidalgo,Mango
+Hidalgo,Pera
+Hidalgo,Nopalitos
+Hidalgo,Garbanzo grano
+Hidalgo,Nuez
+Hidalgo,Papa
+Hidalgo,Piña
+Hidalgo,Plátano
+Hidalgo,Guayaba
+Hidalgo,Tomate verde
+Hidalgo,Zarzamora
+Jalisco,Maíz grano
+Jalisco,Agave
+Jalisco,Maíz forrajero en verde
+Jalisco,Caña de azúcar
+Jalisco,Frijol
+Jalisco,Mango
+Jalisco,Café cereza
+Jalisco,Aguacate
+Jalisco,Tuna
+Jalisco,Sorgo grano
+Jalisco,Sorgo forrajero en verde
+Jalisco,Copra
+Jalisco,Tomate verde
+Jalisco,Avena forrajera en verde
+Jalisco,Nopalitos
+Jalisco,Cebada grano
+Jalisco,Garbanzo grano
+Jalisco,Elote
+Jalisco,Guayaba
+Jalisco,Cártamo
+Jalisco,Limón
+Jalisco,Durazno
+Jalisco,Naranja
+Jalisco,Chile verde
+Jalisco,Piña
+Jalisco,Pepino
+México,Maíz grano
+México,Cebada grano
+México,Avena forrajera en verde
+México,Tuna
+México,Maíz forrajero en verde
+México,Avena grano
+México,Aguacate
+México,Zanahoria
+México,Papa
+México,Elote
+México,Trigo grano
+México,Maguey pulquero
+México,Frijol
+México,Tomate verde
+México,Café cereza
+México,Agave
+México,Durazno
+México,Calabacita
+México,Lechuga
+México,Nopalitos
+México,Mango
+México,Gladiola
+México,Crisantemo
+México,Cebolla
+México,Tomate rojo
+México,Manzana
+México,Amaranto
+México,Sorgo forrajero en verde
+México,Guayaba
+México,Limón
+México,Nuez
+México,Chile verde
+México,Pera
+México,Pepino
+México,Fresa
+México,Naranja
+México,Brócoli
+México,Papaya
+México,Piña
+México,Plátano
+México,Zarzamora
+México,Sorgo grano
+Michoacán,Maíz grano
+Michoacán,Aguacate
+Michoacán,Sorgo grano
+Michoacán,Agave
+Michoacán,Garbanzo grano
+Michoacán,Avena forrajera en verde
+Michoacán,Durazno
+Michoacán,Copra
+Michoacán,Ajonjolí
+Michoacán,Trigo grano
+Michoacán,Papa
+Michoacán,Frijol
+Michoacán,Zarzamora
+Michoacán,Pera
+Michoacán,Guayaba
+Michoacán,Sorgo forrajero en verde
+Michoacán,Cebolla
+Michoacán,Mango
+Michoacán,Nopalitos
+Michoacán,Pepino
+Michoacán,Elote
+Michoacán,Tomate verde
+Michoacán,Tomate rojo
+Michoacán,Gladiola
+Michoacán,Brócoli
+Michoacán,Manzana
+Michoacán,Chile verde
+Michoacán,Sandía
+Michoacán,Calabacita
+Michoacán,Café cereza
+Michoacán,Cártamo
+Michoacán,Limón
+Michoacán,Papaya
+Michoacán,Maguey pulquero
+Michoacán,Tuna
+Morelos,Maíz grano
+Morelos,Sorgo grano
+Morelos,Aguacate
+Morelos,Nopalitos
+Morelos,Tomate rojo
+Morelos,Avena forrajera en verde
+Morelos,Durazno
+Morelos,Agave
+Morelos,Pera
+Morelos,Tomate verde
+Morelos,Frijol
+Morelos,Cebolla
+Morelos,Pepino
+Morelos,Calabacita
+Morelos,Papa
+Morelos,Chile verde
+Morelos,Gladiola
+Morelos,Amaranto
+Morelos,Trigo grano
+Morelos,Limón
+Morelos,Zarzamora
+Morelos,Manzana
+Morelos,Elote
+Morelos,Guayaba
+Morelos,Sandía
+Morelos,Mango
+Morelos,Berenjena
+Morelos,Naranja
+Nayarit,Mango
+Nayarit,Frijol
+Nayarit,Sorgo grano
+Nayarit,Agave
+Nayarit,Caña de azúcar
+Nayarit,Café cereza
+Nayarit,Aguacate
+Nayarit,Plátano
+Nayarit,Maíz grano
+Nayarit,Limón
+Nayarit,Maíz forrajero en verde
+Nayarit,Piña
+Nayarit,Tomate verde
+Nayarit,Elote
+Nayarit,Sorgo forrajero en verde
+Nayarit,Sandía
+Nayarit,Papaya
+Nayarit,Nopalitos
+Nayarit,Durazno
+Nayarit,Naranja
+Nayarit,Guayaba
+Nayarit,Melón
+Nayarit,Calabacita
+Nayarit,Ajonjolí
+Nuevo León,Maíz grano
+Nuevo León,Trigo grano
+Nuevo León,Naranja
+Nuevo León,Manzana
+Nuevo León,Durazno
+Nuevo León,Sorgo grano
+Nuevo León,Avena forrajera en verde
+Nuevo León,Avena grano
+Nuevo León,Sorgo forrajero en verde
+Nuevo León,Toronja (pomelo)
+Nuevo León,Nuez
+Nuevo León,Cebada grano
+Nuevo León,Frijol
+Nuevo León,Maíz forrajero en verde
+Nuevo León,Aguacate
+Nuevo León,Sandía
+Nuevo León,Crisantemo
+Oaxaca,Maíz grano
+Oaxaca,Café cereza
+Oaxaca,Caña de azúcar
+Oaxaca,Frijol
+Oaxaca,Mango
+Oaxaca,Limón
+Oaxaca,Agave
+Oaxaca,Copra
+Oaxaca,Trigo grano
+Oaxaca,Naranja
+Oaxaca,Sorgo grano
+Oaxaca,Plátano
+Oaxaca,Aguacate
+Oaxaca,Piña
+Oaxaca,Sandía
+Oaxaca,Durazno
+Oaxaca,Melón
+Oaxaca,Manzana
+Oaxaca,Chile verde
+Oaxaca,Garbanzo grano
+Oaxaca,Ajonjolí
+Oaxaca,Papaya
+Oaxaca,Nuez
+Oaxaca,Tuna
+Oaxaca,Pera
+Oaxaca,Papa
+Oaxaca,Cebada grano
+Oaxaca,Toronja (pomelo)
+Oaxaca,Avena forrajera en verde
+Oaxaca,Tomate verde
+Oaxaca,Tomate rojo
+Oaxaca,Nopalitos
+Oaxaca,Amaranto
+Puebla,Maíz grano
+Puebla,Café cereza
+Puebla,Naranja
+Puebla,Cebada grano
+Puebla,Frijol
+Puebla,Sorgo grano
+Puebla,Manzana
+Puebla,Tuna
+Puebla,Avena forrajera en verde
+Puebla,Agave
+Puebla,Limón
+Puebla,Durazno
+Puebla,Aguacate
+Puebla,Papa
+Puebla,Plátano
+Puebla,Amaranto
+Puebla,Chile verde
+Puebla,Maíz forrajero en verde
+Puebla,Pera
+Puebla,Maguey pulquero
+Puebla,Tomate verde
+Puebla,Trigo grano
+Puebla,Toronja (pomelo)
+Puebla,Nopalitos
+Puebla,Nuez
+Puebla,Avena grano
+Puebla,Calabacita
+Puebla,Caña de azúcar
+Puebla,Ajo
+Puebla,Ajonjolí
+Puebla,Cebolla
+Puebla,Lechuga
+Puebla,Alfalfa
+Puebla,Uva
+Puebla,Mango
+Puebla,Rosa
+Puebla,Elote
+Puebla,Gladiola
+Puebla,Papaya
+Puebla,Frambuesa
+Puebla,Zanahoria
+Puebla,Zarzamora
+Querétaro,Maíz grano
+Querétaro,Frijol
+Querétaro,Manzana
+Querétaro,Maguey pulquero
+Querétaro,Café cereza
+Querétaro,Tuna
+Querétaro,Nuez
+Querétaro,Avena forrajera en verde
+Querétaro,Garbanzo grano
+Querétaro,Sorgo grano
+Querétaro,Trigo grano
+Querétaro,Durazno
+Querétaro,Guayaba
+Querétaro,Naranja
+Querétaro,Sorgo forrajero en verde
+Quintana Roo,Caña de azúcar
+Quintana Roo,Maíz grano
+Quintana Roo,Frijol
+Quintana Roo,Sorgo grano
+Quintana Roo,Limón
+Quintana Roo,Elote
+Quintana Roo,Naranja
+Quintana Roo,Plátano
+Quintana Roo,Piña
+Quintana Roo,Soya
+Quintana Roo,Calabacita
+Quintana Roo,Chile verde
+San Luis Potosí,Maíz grano
+San Luis Potosí,Caña de azúcar
+San Luis Potosí,Frijol
+San Luis Potosí,Naranja
+San Luis Potosí,Sorgo grano
+San Luis Potosí,Café cereza
+San Luis Potosí,Soya
+San Luis Potosí,Avena forrajera en verde
+San Luis Potosí,Tuna
+San Luis Potosí,Cártamo
+San Luis Potosí,Maíz forrajero en verde
+San Luis Potosí,Sorgo forrajero en verde
+San Luis Potosí,Cebada grano
+San Luis Potosí,Nopalitos
+San Luis Potosí,Elote
+San Luis Potosí,Mango
+San Luis Potosí,Maguey pulquero
+San Luis Potosí,Aguacate
+San Luis Potosí,Durazno
+San Luis Potosí,Trigo grano
+San Luis Potosí,Limón
+San Luis Potosí,Nuez
+San Luis Potosí,Toronja (pomelo)
+Sinaloa,Mango
+Sinaloa,Maíz grano
+Sinaloa,Agave
+Sinaloa,Sorgo grano
+Sinaloa,Sorgo forrajero en verde
+Sinaloa,Ajonjolí
+Sinaloa,Durazno
+Sinaloa,Frijol
+Sinaloa,Papaya
+Sinaloa,Naranja
+Sinaloa,Aguacate
+Sinaloa,Limón
+Sinaloa,Nopalitos
+Sonora,Sorgo forrajero en verde
+Sonora,Manzana
+Sonora,Durazno
+Sonora,Maíz forrajero en verde
+Sonora,Maíz grano
+Sonora,Frijol
+Sonora,Sorgo grano
+Tabasco,Maíz grano
+Tabasco,Caña de azúcar
+Tabasco,Cacao
+Tabasco,Copra
+Tabasco,Plátano
+Tabasco,Naranja
+Tabasco,Limón
+Tabasco,Frijol
+Tabasco,Piña
+Tabasco,Sandía
+Tabasco,Chile verde
+Tabasco,Café cereza
+Tabasco,Melón
+Tabasco,Mango
+Tabasco,Toronja (pomelo)
+Tabasco,Papaya
+Tabasco,Aguacate
+Tabasco,Tomate rojo
+Tabasco,Sorgo grano
+Tabasco,Pepino
+Tabasco,Guayaba
+Tamaulipas,Sorgo grano
+Tamaulipas,Maíz grano
+Tamaulipas,Caña de azúcar
+Tamaulipas,Trigo grano
+Tamaulipas,Naranja
+Tamaulipas,Cártamo
+Tamaulipas,Agave
+Tamaulipas,Nopalitos
+Tamaulipas,Mango
+Tamaulipas,Tuna
+Tamaulipas,Frijol
+Tamaulipas,Soya
+Tamaulipas,Limón
+Tamaulipas,Avena forrajera en verde
+Tamaulipas,Toronja (pomelo)
+Tamaulipas,Cebada grano
+Tamaulipas,Sandía
+Tamaulipas,Maíz forrajero en verde
+Tamaulipas,Sorgo forrajero en verde
+Tamaulipas,Nuez
+Tamaulipas,Piña
+Tamaulipas,Elote
+Tamaulipas,Papaya
+Tlaxcala,Maíz grano
+Tlaxcala,Cebada grano
+Tlaxcala,Trigo grano
+Tlaxcala,Maíz forrajero en verde
+Tlaxcala,Avena forrajera en verde
+Tlaxcala,Frijol
+Tlaxcala,Durazno
+Tlaxcala,Amaranto
+Tlaxcala,Maguey pulquero
+Tlaxcala,Avena grano
+Tlaxcala,Papa
+Tlaxcala,Tomate verde
+Tlaxcala,Cebolla
+Tlaxcala,Lechuga
+Tlaxcala,Manzana
+Tlaxcala,Calabacita
+Tlaxcala,Tuna
+Tlaxcala,Ajo
+Tlaxcala,Zanahoria
+Tlaxcala,Brócoli
+Tlaxcala,Nopalitos
+Tlaxcala,Chile verde
+Tlaxcala,Pera
+Veracruz,Maíz grano
+Veracruz,Caña de azúcar
+Veracruz,Naranja
+Veracruz,Café cereza
+Veracruz,Limón
+Veracruz,Piña
+Veracruz,Frijol
+Veracruz,Plátano
+Veracruz,Mango
+Veracruz,Sorgo grano
+Veracruz,Toronja (pomelo)
+Veracruz,Sandía
+Veracruz,Chile verde
+Veracruz,Papa
+Veracruz,Papaya
+Veracruz,Copra
+Veracruz,Cártamo
+Veracruz,Avena forrajera en verde
+Veracruz,Aguacate
+Veracruz,Tomate rojo
+Veracruz,Manzana
+Veracruz,Maíz forrajero en verde
+Veracruz,Tabaco
+Veracruz,Sorgo forrajero en verde
+Veracruz,Trigo grano
+Veracruz,Arroz palay
+Veracruz,Tomate verde
+Veracruz,Cebada grano
+Veracruz,Agave
+Veracruz,Durazno
+Veracruz,Pera
+Veracruz,Calabacita
+Veracruz,Maguey pulquero
+Veracruz,Pepino
+Veracruz,Nopalitos
+Veracruz,Ajonjolí
+Veracruz,Ajo
+Veracruz,Tuna
+Veracruz,Guayaba
+Veracruz,Alfalfa
+Veracruz,Zarzamora
+Yucatán,Maíz grano
+Yucatán,Soya
+Yucatán,Frijol
+Yucatán,Naranja
+Yucatán,Sorgo grano
+Yucatán,Limón
+Yucatán,Plátano
+Yucatán,Sandía
+Yucatán,Mango
+Yucatán,Toronja (pomelo)
+Yucatán,Chile verde
+Yucatán,Aguacate
+Yucatán,Calabacita
+Yucatán,Piña
+Yucatán,Tomate rojo
+Zacatecas,Frijol
+Zacatecas,Maíz grano
+Zacatecas,Maíz forrajero en verde
+Zacatecas,Tuna
+Zacatecas,Avena forrajera en verde
+Zacatecas,Durazno
+Zacatecas,Cebada grano
+Zacatecas,Trigo grano
+Zacatecas,Agave
+Zacatecas,Sorgo forrajero en verde
+Zacatecas,Manzana
+Zacatecas,Sorgo grano

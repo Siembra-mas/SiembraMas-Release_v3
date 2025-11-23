@@ -1,0 +1,62 @@
+Cultivo,Fase,Temp. Opt. Mín. (°C),Temp. Recomendada (°C),Temp. Opt. Máx. (°C),Lluvia Óptima (mm),Humedad Ambiental (%),Humedad Suelo (%),Fuente URL
+Agave,Maduración,18,25-28,32,500-700,45-60,40-50,https://cienciasagricolas.inifap.gob.mx - Caracterización agroclimática del cultivo de Agave
+Aguacate,Maduración,12,18-22,28,800-1000,65-75,60-70,https://intagri.com - Requerimientos de Clima y Suelo en el Cultivo de Aguacate
+Ajo,Maduración,15,20-25,28,100-200,40-50,40-50,https://horticulturaar.com.ar - Fenología y producción del ajo
+Ajonjolí,Maduración,18,22-26,30,200-300,40-50,40-50,INIFAP - Datos climáticos agrícolas
+Alfalfa,Maduración,8,13-20,26,300-400,45-60,50-65,INIFAP - Requerimientos de cultivos forrajeros
+Amaranto,Maduración,15,20-26,30,200-400,40-55,40-55,https://vun.inifap.gob.mx - Agenda Técnica
+Arroz palay,Maduración,16,20-25,30,600-800,70-80,70-85,https://vun.inifap.gob.mx - Agenda Técnica del Cultivo de Arroz
+Avena forrajera en verde,Maduración,6,11-16,23,200-300,45-60,50-65,https://agroecologiatornos.com - La guía definitiva de los cereales de invierno
+Avena grano,Maduración,6,11-16,23,150-250,40-55,45-60,https://agroecologiatornos.com - La guía definitiva de los cereales de invierno
+Berenjena,Maduración,18,22-26,30,400-600,60-70,60-70,INIFAP - Manual técnico para la producción de hortalizas
+Brócoli,Maduración,10,15-20,24,400-600,65-75,65-75,https://vun.inifap.gob.mx - Manual técnico para la producción de hortalizas
+Cacao,Maduración,18,22-24,30,1000-1200,70-80,65-75,https://portalfruticola.com - Requerimientos Edafoclimáticos para el Cultivo del Cacao
+Café cereza,Maduración,16,19-23,26,500-700,70-80,65-75,INIFAP - Requerimientos climáticos de café
+Calabacita,Maduración,16,20-26,30,400-600,60-70,60-70,INIFAP - Guía de hortalizas
+Caña de azúcar,Maduración,15,20-25,30,500-700,60-70,65-75,https://fira.gob.mx - Producción Sostenible de Caña de Azúcar
+Cebada grano,Maduración,6,11-18,24,150-250,40-55,45-60,https://eos.com - Cultivo De Cebada
+Cebolla,Maduración,10,16-22,28,200-350,40-55,50-65,INIFAP - Guía de hortalizas
+Chile verde,Maduración,18,22-28,32,400-600,60-70,60-70,INIFAP - Requerimientos de chile
+Copra,Maduración,20,24-28,32,900-1200,70-80,70-80,INIFAP - Cultivos tropicales
+Crisantemo,Maduración,12,16-22,26,300-400,55-65,55-65,https://es.scribd.com - Cultivo Del Crisantemo
+Cártamo,Maduración,10,15-22,28,200-350,40-55,45-60,INIFAP - Cultivos de ciclo invierno
+Durazno,Maduración,12,18-25,30,400-600,55-65,55-70,INIFAP - Cultivos frutales
+Elote,Maduración,14,20-26,32,500-700,55-65,55-70,INIFAP - Maíz forrajero
+Espárrago,Maduración,10,16-22,26,400-600,55-65,55-70,INIFAP - Hortalizas especializadas
+Frambuesa,Maduración,12,18-24,28,400-600,60-70,60-75,INIFAP - Cultivos de berries
+Fresa,Maduración,10,15-22,26,400-600,60-70,60-75,https://proain.com - PRODUCCIÓN DE FRESA
+Frijol,Maduración,14,18-24,30,300-500,40-55,40-55,https://eos.com - Cultivo De Frijol
+Garbanzo grano,Maduración,10,16-22,28,200-400,40-55,45-60,INIFAP - Leguminosas de grano
+Gladiola,Maduración,12,18-23,26,300-400,55-65,55-65,https://es.scribd.com - Requerimientos Agroecológicos de Cultivos
+Guayaba,Maduración,13,20-26,32,800-1000,70-80,65-75,https://dicta.gob.hn - El Cultivo de la Guayaba
+Lechuga,Maduración,6,12-18,22,300-400,60-70,60-70,INIFAP - Hortalizas de hoja
+Limón,Maduración,12,18-24,30,700-1000,70-80,65-75,INIFAP - Cultivos cítricos
+Maguey pulquero,Maduración,16,22-26,32,500-700,45-60,45-55,INIFAP - Maguey
+Mango,Maduración,16,22-26,30,600-900,65-75,60-70,https://jardinessinfronteras.com - ALGUNAS FRUTAS TROPICALES
+Manzana,Maduración,10,16-22,28,500-700,55-65,55-70,INIFAP - Cultivos frutales templados
+Maíz forrajero en verde,Maduración,12,18-24,30,400-600,55-65,55-70,INIFAP - Maíz forrajero
+Maíz grano,Maduración,12,18-24,30,400-600,50-65,50-65,https://calidaddelaire.puebla.gob.mx - Vulnerabilidad del sector agrícola
+Melón,Maduración,16,22-28,32,300-500,50-65,50-65,INIFAP - Cucurbitáceas
+Naranja,Maduración,12,18-24,30,700-1000,70-80,65-75,INIFAP - Cultivos cítricos
+Nopalitos,Maduración,16,22-28,32,300-500,40-55,40-55,INIFAP - Cultivos xerófitos
+Nuez,Maduración,10,16-22,28,600-900,55-65,55-70,INIFAP - Cultivos frutales especiales
+Papa,Maduración,10,15-20,25,500-700,60-70,60-75,https://fps.org.mx - Predicción de la fenología de papa
+Papaya,Maduración,18,24-28,32,900-1200,70-80,70-80,https://frutales.files.wordpress.com - CULTIVOS FRUTICOLA
+Pepino,Maduración,16,22-28,32,400-600,60-70,60-75,INIFAP - Cucurbitáceas
+Pera,Maduración,10,16-22,28,500-700,55-65,55-70,INIFAP - Cultivos frutales templados
+Piña,Maduración,18,24-28,32,900-1200,70-80,70-80,https://frutales.files.wordpress.com - CULTIVOS FRUTICOLA
+Plátano,Maduración,18,24-28,32,1000-1300,70-80,70-80,https://frutales.files.wordpress.com - CULTIVOS FRUTICOLA
+Rosa,Maduración,12,16-22,26,300-400,55-65,55-65,INIFAP - Flores de corte
+Sandía,Maduración,16,24-30,34,300-500,50-65,50-65,INIFAP - Cucurbitáceas
+Sorgo forrajero en verde,Maduración,14,20-28,34,300-500,50-65,50-65,https://fps.org.mx - Guía del cultivo de sorgo
+Sorgo grano,Maduración,14,20-28,34,200-400,40-55,40-55,https://fps.org.mx - Guía del cultivo de sorgo
+Soya,Maduración,12,18-24,30,300-500,45-60,45-60,INIFAP - Leguminosas
+Tabaco,Maduración,16,22-28,32,400-600,55-65,55-70,INIFAP - Cultivos industriales
+Tomate rojo (jitomate),Maduración,16,18-24,28,400-600,60-70,60-70,https://elfield.com.mx - Requerimientos edafoclimáticos del tomate
+Tomate verde,Maduración,16,20-25,28,400-600,60-70,60-70,https://hydroenv.com.mx - Guía para el Cultivo de Tomate Verde
+Toronja (pomelo),Maduración,12,18-24,30,700-1000,70-80,65-75,INIFAP - Cultivos cítricos
+Trigo grano,Maduración,8,12-20,26,150-300,40-55,45-60,https://agrawdata.com - Guía Completa para el Cultivo Exitoso de Cereales
+Tuna,Maduración,16,22-28,32,300-500,40-55,40-55,INIFAP - Cultivos xerófitos
+Uva,Maduración,14,20-28,32,500-800,50-65,50-70,INIFAP - Cultivos frutales
+Zanahoria,Maduración,8,14-20,26,350-500,60-70,60-75,INIFAP - Hortalizas de raíz
+Zarzamora,Maduración,12,18-24,28,400-600,60-70,60-75,INIFAP - Cultivos de berries

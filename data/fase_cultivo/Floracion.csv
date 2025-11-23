@@ -1,0 +1,62 @@
+Cultivo,Fase,Temp. Opt. Mín. (°C),Temp. Recomendada (°C),Temp. Opt. Máx. (°C),Lluvia Óptima (mm),Humedad Ambiental (%),Humedad Suelo (%),Fuente URL
+Agave,Floración,20,27-30,34,700-800,50-65,45-55,https://cienciasagricolas.inifap.gob.mx - Caracterización agroclimática del cultivo de Agave
+Aguacate,Floración,12,20-24,30,1000-1200,70-85,65-75,https://mexico.infoagro.com - Requerimientos edafoclimáticos del cultivo
+Ajo,Floración,12,15-20,25,250-350,50-60,50-60,https://horticulturaar.com.ar - Fenología y producción del ajo
+Ajonjolí,Floración,20,24-28,32,400-500,60-75,55-65,INIFAP - Datos climáticos agrícolas
+Alfalfa,Floración,10,15-22,28,400-600,55-70,65-80,INIFAP - Requerimientos de cultivos forrajeros
+Amaranto,Floración,18,22-28,32,500-700,65-75,65-75,https://vun.inifap.gob.mx - Agenda Técnica
+Arroz palay,Floración,18,24-28,32,1000-1200,85-95,90-100,https://vun.inifap.gob.mx - Agenda Técnica del Cultivo de Arroz
+Avena forrajera en verde,Floración,8,13-18,25,400-500,60-75,65-80,https://agroecologiatornos.com - La guía definitiva de los cereales de invierno
+Avena grano,Floración,8,13-18,25,350-450,60-70,65-75,https://agroecologiatornos.com - La guía definitiva de los cereales de invierno
+Berenjena,Floración,20,24-28,32,500-700,65-75,65-75,INIFAP - Manual técnico para la producción de hortalizas
+Brócoli,Floración,12,16-22,26,500-700,70-80,70-80,https://vun.inifap.gob.mx - Manual técnico para la producción de hortalizas
+Cacao,Floración,20,24-26,32,1500-1800,80-90,75-85,https://espacioimasd.unach.mx - Manejo agroecológico de la nutrición; https://scielo.sa.cr - Factores climáticos en el desarrollo y producción de cacao
+Café cereza,Floración,18,21-24,28,600-800,75-85,70-80,INIFAP - Requerimientos climáticos de café
+Calabacita,Floración,18,22-28,32,500-700,65-75,65-75,INIFAP - Guía de hortalizas
+Caña de azúcar,Floración,20,25-30,35,800-1000,75-85,75-85,https://fira.gob.mx - Producción Sostenible de Caña de Azúcar
+Cebada grano,Floración,8,13-20,26,300-450,60-70,65-75,https://eos.com - Cultivo De Cebada
+Cebolla,Floración,12,18-24,30,300-500,55-65,60-70,INIFAP - Guía de hortalizas
+Chile verde,Floración,20,24-30,34,600-800,70-80,65-80,INIFAP - Requerimientos de chile
+Copra,Floración,22,26-30,34,1200-1600,80-90,75-85,INIFAP - Cultivos tropicales
+Crisantemo,Floración,15,18-25,28,400-500,65-75,65-75,https://es.scribd.com - Cultivo Del Crisantemo
+Cártamo,Floración,12,18-24,30,300-500,55-65,60-70,INIFAP - Cultivos de ciclo invierno
+Durazno,Floración,8,15-22,28,600-800,65-75,65-80,INIFAP - Cultivos frutales
+Elote,Floración,16,22-28,34,700-900,65-75,65-80,INIFAP - Maíz forrajero
+Espárrago,Floración,12,18-24,28,500-700,65-75,65-80,INIFAP - Hortalizas especializadas
+Frambuesa,Floración,10,15-20,25,600-800,70-80,70-85,INIFAP - Cultivos de berries
+Fresa,Floración,8,13-20,24,600-800,70-80,70-85,https://proain.com - PRODUCCIÓN DE FRESA
+Frijol,Floración,16,20-26,32,500-700,65-75,65-75,https://eos.com - Cultivo De Frijol
+Garbanzo grano,Floración,12,18-24,30,400-600,60-70,60-75,INIFAP - Leguminosas de grano
+Gladiola,Floración,15,20-25,28,400-500,65-75,65-75,https://es.scribd.com - Requerimientos Agroecológicos de Cultivos
+Guayaba,Floración,15,23-28,35,1000-1200,75-85,70-80,https://undp.org - INSTRUCTIVO TÉCNICO para el cultivo del guayabo
+Lechuga,Floración,8,14-20,24,400-500,70-80,70-80,INIFAP - Hortalizas de hoja
+Limón,Floración,15,20-25,32,800-1100,75-85,70-80,INIFAP - Cultivos cítricos
+Maguey pulquero,Floración,18,24-28,34,600-800,50-65,50-60,INIFAP - Maguey
+Mango,Floración,18,24-28,34,800-1200,75-85,70-80,https://jardinessinfronteras.com - ALGUNAS FRUTAS TROPICALES
+Manzana,Floración,8,15-20,26,700-900,65-75,65-80,INIFAP - Cultivos frutales templados
+Maíz forrajero en verde,Floración,14,20-26,32,600-800,65-75,65-80,INIFAP - Maíz forrajero
+Maíz grano,Floración,14,22-28,34,700-900,65-75,65-80,https://calidaddelaire.puebla.gob.mx - Vulnerabilidad del sector agrícola
+Melón,Floración,18,24-30,34,400-600,60-70,60-75,INIFAP - Cucurbitáceas
+Naranja,Floración,15,20-25,32,800-1100,75-85,70-80,INIFAP - Cultivos cítricos
+Nopalitos,Floración,18,25-30,35,400-600,45-60,45-60,INIFAP - Cultivos xerófitos
+Nuez,Floración,12,18-24,30,800-1100,65-75,65-80,INIFAP - Cultivos frutales especiales
+Papa,Floración,12,18-22,26,600-800,65-75,70-85,https://fps.org.mx - Predicción de la fenología de papa
+Papaya,Floración,20,26-30,34,1200-1600,80-90,75-85,https://frutales.files.wordpress.com - CULTIVOS FRUTICOLA
+Pepino,Floración,18,24-30,34,500-700,65-75,65-80,INIFAP - Cucurbitáceas
+Pera,Floración,8,15-20,26,700-900,65-75,65-80,INIFAP - Cultivos frutales templados
+Piña,Floración,20,26-30,34,1200-1600,80-90,75-85,https://frutales.files.wordpress.com - CULTIVOS FRUTICOLA
+Plátano,Floración,20,26-30,34,1400-1700,80-90,75-85,https://frutales.files.wordpress.com - CULTIVOS FRUTICOLA
+Rosa,Floración,15,18-25,28,400-500,65-75,65-75,INIFAP - Flores de corte
+Sandía,Floración,18,26-32,36,400-600,60-70,60-75,INIFAP - Cucurbitáceas
+Sorgo forrajero en verde,Floración,16,24-30,36,400-600,60-70,60-75,https://fps.org.mx - Guía del cultivo de sorgo
+Sorgo grano,Floración,16,24-30,36,400-600,60-70,60-75,https://fps.org.mx - Guía del cultivo de sorgo
+Soya,Floración,14,20-26,32,600-800,65-75,65-80,INIFAP - Leguminosas
+Tabaco,Floración,18,24-30,34,500-700,65-75,65-80,INIFAP - Cultivos industriales
+Tomate rojo (jitomate),Floración,18,22-28,32,500-700,65-75,65-75,https://elfield.com.mx - Requerimientos edafoclimáticos del tomate
+Tomate verde,Floración,18,22-26,30,500-700,65-75,65-75,https://hydroenv.com.mx - Guía para el Cultivo de Tomate Verde
+Toronja (pomelo),Floración,15,20-26,32,800-1100,75-85,70-80,INIFAP - Cultivos cítricos
+Trigo grano,Floración,10,15-22,28,300-500,60-70,65-75,https://agrawdata.com - Guía Completa para el Cultivo Exitoso de Cereales
+Tuna,Floración,18,25-30,35,400-600,45-60,45-60,INIFAP - Cultivos xerófitos
+Uva,Floración,12,18-25,30,700-1000,65-75,65-80,INIFAP - Cultivos frutales
+Zanahoria,Floración,10,16-22,28,450-650,65-75,65-80,INIFAP - Hortalizas de raíz
+Zarzamora,Floración,10,16-22,26,600-800,70-80,70-85,INIFAP - Cultivos de berries
