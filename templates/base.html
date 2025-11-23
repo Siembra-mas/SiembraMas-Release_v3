@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siembra + | {{ title }}</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
+</head>
+<body>
+
+    <nav id="navbar">
+        <div class="container nav-container">
+            <a href="{{ url_for('general.index') }}" class="logo">
+                <img src="{{ url_for('static', filename='img/logo_nav.svg') }}" alt="Siembra +" class="logo-nav-img">
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="{{ url_for('general.index') }}">Inicio</a></li>
+                <li><a href="{{ url_for('siembra_link.index') }}">Siembra Link</a></li>
+                <li><a href="{{ url_for('siembra_bot.index') }}">Siembra Bot</a></li>
+                <li><a href="{{ url_for('siembra_vision.index') }}">Siembra Visión</a></li>
+                <li><a href="{{ url_for('general.precios') }}">Precios</a></li>
+                <li><a href="{{ url_for('general.about') }}">Sobre Nosotros</a></li>
+            </ul>
+            
+            <div class="menu-toggle"><i class="fa-solid fa-bars"></i></div>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <div class="floating-bot" title="Hablar con IA">
+        <i class="fa-solid fa-microphone" style="color: white; font-size: 1.5rem;"></i>
+    </div>
+    <div id="bot-overlay" class="bot-overlay">
+        <div class="pulse-circle"></div>
+        <h2>Esperando instrucciones...</h2>
+        <p>Di "Analizar mi cultivo" o "Estado del clima"</p>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                
+                <div class="footer-brand">
+                    <a href="{{ url_for('general.index') }}">
+                        <img src="{{ url_for('static', filename='img/logo_nav.svg') }}" alt="Siembra +" class="logo-footer-img">
+                    </a>
+                    <p>
+                        Tecnología accesible para el campo mexicano. Democratizando la agricultura de precisión con IoT e Inteligencia Artificial.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Explorar</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="{{ url_for('general.index') }}">Siembra + (Inicio)</a></li>
+                        <li><a href="{{ url_for('siembra_link.index') }}">Siembra Link</a></li>
+                        <li><a href="{{ url_for('siembra_bot.index') }}">Siembra Bot</a></li>
+                        <li><a href="{{ url_for('siembra_vision.index') }}">Siembra Visión</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="{{ url_for('general.privacidad') }}">Aviso de Privacidad</a></li>
+                        <li><a href="{{ url_for('general.terminos') }}">Términos de Uso</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Conecta</h4>
+                    <div class="contact-info">
+                        <p><i class="fa-solid fa-location-dot"></i> Veracruz, MX</p>
+                        <p><i class="fa-solid fa-envelope"></i> contacto@siembramas.mx</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Siembra +. Proyecto para Expociencias Nacional.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

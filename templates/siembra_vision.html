@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="page-header bg-darker">
+    <div class="container">
+        <h1>Siembra Visión</h1>
+        <p>Diagnóstico fitosanitario por imagen.</p>
+    </div>
+</header>
+
+<section class="section-padding">
+    <div class="container">
+        
+        <div class="vision-options">
+            <button id="btn-camara" class="btn"><i class="fa-solid fa-camera"></i> Usar Cámara</button>
+            <button id="btn-upload" class="btn btn-outline" style="color: var(--dark-green); border-color: var(--dark-green);">
+                <i class="fa-solid fa-upload"></i> Subir Foto
+            </button>
+        </div>
+
+        <!-- Panel Cámara -->
+        <div id="panel-camara" class="vision-panel active">
+            <div style="background: #000; height: 300px; width: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;">
+                [Vista previa de cámara aquí]
+            </div>
+            <button class="btn" style="margin-top: 1rem;">Capturar</button>
+        </div>
+
+        <!-- Panel Upload -->
+        <div id="panel-upload" class="vision-panel">
+            <div class="upload-area">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: var(--medium-green);"></i>
+                <p>Arrastra tu imagen aquí o haz clic para seleccionar.</p>
+            </div>
+            <button class="btn" style="margin-top: 1rem;">Verificar Imagen</button>
+        </div>
+
+        <!-- Resultados Placeholder -->
+        <div style="margin-top: 3rem; border-top: 1px solid #ddd; padding-top: 2rem;">
+            <h3>Resultados de Análisis:</h3>
+            <ul style="list-style: none; margin-top: 1rem;">
+                <li style="background: #eee; padding: 1rem; margin-bottom: 0.5rem; border-left: 4px solid var(--accent-green);">
+                    <strong>Diagnóstico:</strong> Roya del café (Hemileia vastatrix)
+                </li>
+                <li style="background: #eee; padding: 1rem; margin-bottom: 0.5rem; border-left: 4px solid var(--alert-yellow);">
+                    <strong>Confianza:</strong> 92.5%
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

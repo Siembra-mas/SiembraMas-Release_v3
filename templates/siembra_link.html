@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="page-header bg-darker">
+    <div class="container">
+        <h1>Siembra Link</h1>
+        <p>Tu conexión directa con el suelo. Monitoreo IoT en tiempo real.</p>
+    </div>
+</header>
+
+<section class="section-padding">
+    <div class="container">
+        
+        <!-- Visualización Dinámica -->
+        <div class="plant-visual-container">
+            <div class="plant-stem">
+                <div class="plant-leaf"></div>
+            </div>
+            <p style="position: absolute; top: 20px; right: 20px; background: white; padding: 5px 10px; border-radius: 8px;">
+                <i class="fa-solid fa-circle" style="color: green; font-size: 0.8rem;"></i> En línea
+            </p>
+        </div>
+
+        <!-- Métricas -->
+        <div class="status-panel">
+            <div class="status-item status-ok">
+                <i class="fa-solid fa-check-circle"></i> Humedad OK
+            </div>
+            <div class="status-item status-warning">
+                <i class="fa-solid fa-triangle-exclamation"></i> Temp. Alta
+            </div>
+            <div class="status-item status-ok">
+                <i class="fa-solid fa-check-circle"></i> Suelo OK
+            </div>
+        </div>
+
+        <!-- Controles -->
+        <div class="control-panel" style="max-width: 600px; margin: 0 auto;">
+            <div class="form-group">
+                <label>Cultivo Actual</label>
+                <select class="form-select">
+                    <option>Maíz Blanco</option>
+                    <option>Frijol</option>
+                </select>
+            </div>
+            <button class="btn" style="width: 100%; background-color: var(--dark-green);">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Pronosticar (Premium)
+            </button>
+            <p style="text-align: center; font-size: 0.8rem; margin-top: 10px; opacity: 0.7;">
+                *Requiere 30 días de historial de datos.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

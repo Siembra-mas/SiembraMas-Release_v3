@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="hero-main">
+    <div class="container hero-content fade-in">
+        <div class="hero-text">
+            <span class="badge">Expociencias Nacional 2025</span>
+            <h1>Ideas que <br><span class="text-accent">Transforman</span> el Campo</h1>
+            <p>
+                Enfrentamos la crisis climática con datos. Un ecosistema integral: <strong>IoT + ML + IA</strong> para decisiones inteligentes.
+            </p>
+            <div class="cta-group" style="margin-top: 2rem;">
+                <a href="#recomendaciones" class="btn">Ir a Recomendaciones</a>
+                <a href="{{ url_for('siembra_link.index') }}" class="btn btn-outline">Ir a Siembra Link</a>
+            </div>
+        </div>
+        <div style="text-align: center;">
+                     </div>
+    </div>
+</header>
+
+<section id="recomendaciones" class="section-padding bg-cream">
+    <div class="container">
+        <h2 class="section-title center-text">Panel de Recomendación <span class="text-accent">Inteligente</span></h2>
+        
+        <div class="dashboard-grid">
+            <div class="control-panel">
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select class="form-select">
+                        <option>Veracruz</option>
+                        <option>Puebla</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Municipio</label>
+                    <select class="form-select">
+                        <option>Córdoba</option>
+                        <option>Xalapa</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <button class="btn" style="padding: 10px 20px; font-size: 0.9rem;">Ubicarme <i class="fa-solid fa-location-arrow"></i></button>
+                    <button class="btn btn-outline" style="border-color: var(--medium-green); color: var(--medium-green);">Predicción Mensual</button>
+                </div>
+
+                <hr style="margin: 1.5rem 0; border-color: #eee;">
+                
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <label style="margin:0; font-size: 0.9rem;">Usar datos Siembra Link <span class="badge" style="font-size: 0.7rem;">PREMIUM</span></label>
+                    <input type="checkbox" style="width: 20px; height: 20px;">
+                </div>
+
+                <button class="btn" style="width: 100%; margin-top: 1.5rem;">GENERAR ANÁLISIS</button>
+            </div>
+
+            <div>
+                <div class="map-placeholder">
+                    <p><i class="fa-solid fa-map"></i> Mapa Interactivo (API Google Maps)</p>
+                </div>
+                <div class="weather-cards">
+                    <div class="w-card">
+                        <i class="fa-solid fa-cloud-rain"></i>
+                        <div class="w-value">120mm</div>
+                        <div class="w-label">Precipitación</div>
+                    </div>
+                    <div class="w-card">
+                        <i class="fa-solid fa-droplet"></i>
+                        <div class="w-value">65%</div>
+                        <div class="w-label">Humedad</div>
+                    </div>
+                    <div class="w-card">
+                        <i class="fa-solid fa-temperature-arrow-up"></i>
+                        <div class="w-value">32°C</div>
+                        <div class="w-label">Max</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-toggle">
+            <h3>Ver Resultados de Análisis</h3>
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+
+        <div id="resultados-content" class="hidden container">
+            <div class="carousel-grid">
+                <div class="crop-card">
+                    <div class="crop-img">
+                                             </div>
+                    <div class="crop-body">
+                        <span class="viability">98% Viable</span>
+                        <h4>Café Arábica</h4>
+                        <p style="font-size: 0.9rem;">Condiciones óptimas de altura y humedad en la zona seleccionada.</p>
+                    </div>
+                </div>
+                <div class="crop-card">
+                    <div class="crop-img">
+                                             </div>
+                    <div class="crop-body">
+                        <span class="viability">85% Viable</span>
+                        <h4>Caña de Azúcar</h4>
+                        <p style="font-size: 0.9rem;">Requiere mayor riego en los próximos 2 meses según predicción.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

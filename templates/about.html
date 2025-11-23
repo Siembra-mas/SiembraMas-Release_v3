@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="page-header bg-darker">
+    <div class="container">
+        <h1>Sobre Nosotros</h1>
+        <p>Innovando desde Veracruz para México.</p>
+    </div>
+</header>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="center-text">
+            <h2>Nuestra Historia</h2>
+            <p>Nacidos en 2024 como respuesta a la necesidad de tecnificar el campo veracruzano ante el cambio climático. Un proyecto de estudiantes para agricultores.</p>
+        </div>
+
+        <!-- Línea de tiempo visual simple -->
+        <div style="display: flex; justify-content: space-between; margin: 4rem 0; position: relative;">
+            <div style="text-align: center; width: 30%;">
+                <div style="font-weight: 800; color: var(--accent-green); font-size: 1.5rem;">2024</div>
+                <p>Idea Inicial en Hackathon</p>
+            </div>
+            <div style="text-align: center; width: 30%;">
+                <div style="font-weight: 800; color: var(--accent-green); font-size: 1.5rem;">2025</div>
+                <p>Expociencias Regional Córdoba</p>
+            </div>
+            <div style="text-align: center; width: 30%;">
+                <div style="font-weight: 800; color: var(--accent-green); font-size: 1.5rem;">Futuro</div>
+                <p>Implementación Nacional</p>
+            </div>
+        </div>
+
+        <h2 class="center-text">El Equipo</h2>
+        <div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+            <!-- Creador 1 -->
+            <div class="plan-card">
+                <div style="width: 100px; height: 100px; background: #ddd; border-radius: 50%; margin: 0 auto 1rem;"></div>
+                <h4>Creador 1</h4>
+                <p style="font-size: 0.9rem;">Desarrollo Fullstack</p>
+            </div>
+             <!-- Creador 2 -->
+             <div class="plan-card">
+                <div style="width: 100px; height: 100px; background: #ddd; border-radius: 50%; margin: 0 auto 1rem;"></div>
+                <h4>Creador 2</h4>
+                <p style="font-size: 0.9rem;">Hardware & IoT</p>
+            </div>
+             <!-- Creador 3 -->
+             <div class="plan-card">
+                <div style="width: 100px; height: 100px; background: #ddd; border-radius: 50%; margin: 0 auto 1rem;"></div>
+                <h4>Creador 3</h4>
+                <p style="font-size: 0.9rem;">IA & Datos</p>
+            </div>
+        </div>
+        
+        <div class="bg-cream" style="padding: 2rem; border-radius: 12px; margin-top: 3rem; text-align: center;">
+            <h3>Aliados</h3>
+            <p>Validado por: Ciencias Regional Córdoba & Equipo Ciencias Estatal Xalapa</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
