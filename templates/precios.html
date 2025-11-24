@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="page-header bg-darker" style="padding: 4rem 0; text-align: center;">
+    <div class="container">
+        <h1>Planes Flexibles</h1>
+        <p style="color: var(--cream); opacity: 0.9;">Tecnología de punta al alcance de cualquier productor.</p>
+    </div>
+</header>
+
+<section class="section-padding">
+    <div class="container">
+        
+        <!-- Grid de Precios -->
+        <div class="pricing-grid">
+            
+            <!-- Plan Gratuito -->
+            <div class="plan-card">
+                <h3>Básico</h3>
+                <div class="plan-price">$0 <span style="font-size: 1rem; font-weight: 400; color: #666;">/mes</span></div>
+                <p style="margin-bottom: 2rem; font-size: 0.95rem;">Para pequeños productores que inician en la digitalización.</p>
+                <ul class="plan-features" style="text-align: left;">
+                    <li><i class="fa-solid fa-check text-accent"></i> Acceso a Siembra Bot (Básico)</li>
+                    <li><i class="fa-solid fa-check text-accent"></i> Monitoreo de Clima Local</li>
+                    <li><i class="fa-solid fa-check text-accent"></i> 1 Diagnóstico Visual al mes</li>
+                    <li style="opacity: 0.5;"><i class="fa-solid fa-xmark"></i> Sin integración IoT</li>
+                </ul>
+                <a href="#" class="btn btn-outline" style="color: var(--dark-green); border-color: var(--dark-green); margin-top: 1rem; width: 100%;">Empezar Gratis</a>
+            </div>
+
+            <!-- Plan Recomendado (Siembra Plus) -->
+            <div class="plan-card featured">
+                <div style="background: var(--accent-green); color: white; padding: 5px 15px; border-radius: 20px; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-weight: bold; font-size: 0.8rem;">MÁS POPULAR</div>
+                <h3 class="text-accent">Siembra Plus</h3>
+                <div class="plan-price">$299 <span style="font-size: 1rem; font-weight: 400; color: #666;">/mes</span></div>
+                <p style="margin-bottom: 2rem; font-size: 0.95rem;">La suite completa para potenciar tu rendimiento.</p>
+                <ul class="plan-features" style="text-align: left;">
+                    <li><i class="fa-solid fa-check text-accent"></i> <strong>Todo lo del plan Básico</strong></li>
+                    <li><i class="fa-solid fa-check text-accent"></i> Conexión Siembra Link (IoT)</li>
+                    <li><i class="fa-solid fa-check text-accent"></i> Predicciones de Cosecha (ML)</li>
+                    <li><i class="fa-solid fa-check text-accent"></i> Diagnósticos Visuales Ilimitados</li>
+                    <li><i class="fa-solid fa-check text-accent"></i> Alertas SMS/WhatsApp</li>
+                </ul>
+                <a href="#" class="btn" style="margin-top: 1rem; width: 100%;">Suscribirse Ahora</a>
+            </div>
+
+            <!-- Plan Enterprise -->
+            <div class="plan-card">
+                <h3>Cooperativas</h3>
+                <div class="plan-price">A Medida</div>
+                <p style="margin-bottom: 2rem; font-size: 0.95rem;">Soluciones escalables para asociaciones y grandes extensiones.</p>
+                <ul class="plan-features" style="text-align: left;">
+                    <li><i class="fa-solid fa-check text-accent"></i> Múltiples usuarios y roles</li>
+                    <li><i class="fa-solid fa-check text-accent"></i> API de Datos Personalizada</li>
+                    <li><i class="fa-solid fa-check text-accent"></i> Reportes Avanzados de Exportación</li>
+                    <li><i class="fa-solid fa-check text-accent"></i> Soporte Técnico Prioritario</li>
+                    <li><i class="fa-solid fa-check text-accent"></i> Instalación de Hardware en Sitio</li>
+                </ul>
+                <a href="#" class="btn btn-outline" style="color: var(--dark-green); border-color: var(--dark-green); margin-top: 1rem; width: 100%;">Contactar Ventas</a>
+            </div>
+
+        </div>
+
+        <!-- Sección de Convenios -->
+        <div class="bg-cream" style="margin-top: 4rem; padding: 3rem; border-radius: 16px; text-align: center;">
+            <i class="fa-solid fa-handshake" style="font-size: 3rem; color: var(--medium-green); margin-bottom: 1rem;"></i>
+            <h3>Convenios Institucionales</h3>
+            <p style="max-width: 700px; margin: 1rem auto;">
+                ¿Eres una institución educativa o gubernamental? Ofrecemos descuentos especiales y programas piloto para fomentar la tecnología en el campo mexicano.
+            </p>
+            <a href="#" style="font-weight: bold; color: var(--dark-green); text-decoration: underline;">Solicitar información de convenios</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

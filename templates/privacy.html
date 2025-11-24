@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="page-header bg-darker" style="padding: 3rem 0; text-align: center;">
+    <div class="container">
+        <h1>Centro Legal</h1>
+        <p style="color: var(--cream); opacity: 0.8;">Transparencia y seguridad para tus datos.</p>
+    </div>
+</header>
+
+<section class="section-padding">
+    <div class="container" style="max-width: 900px;">
+        
+        <!-- Navegación interna simple -->
+        <div style="margin-bottom: 3rem; border-bottom: 1px solid #ddd; padding-bottom: 1rem;">
+            <span style="font-weight: bold; color: var(--dark-green); margin-right: 20px;">Documentos:</span>
+            <a href="#privacidad" style="color: var(--accent-green); margin-right: 15px; font-weight: 600;">Aviso de Privacidad</a>
+            <a href="#terminos" style="color: #666;">Términos de Uso</a>
+        </div>
+
+        <!-- Contenido Aviso de Privacidad -->
+        <article id="privacidad" style="margin-bottom: 4rem;">
+            <h2 class="text-accent" style="margin-bottom: 1.5rem;">Aviso de Privacidad Integral</h2>
+            <p><strong>Última actualización: Noviembre 2024</strong></p>
+            
+            <p>En cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, <strong>Siembra +</strong> (en adelante "El Responsable"), con domicilio en Veracruz, México, pone a su disposición el presente Aviso de Privacidad.</p>
+
+            <h3 style="font-size: 1.3rem; margin-top: 2rem;">1. Datos que recabamos</h3>
+            <p>Para la prestación de nuestros servicios de agricultura de precisión, podemos recabar:</p>
+            <ul style="margin-left: 20px; list-style-type: disc; margin-bottom: 1rem;">
+                <li>Datos de identificación (Nombre, correo electrónico).</li>
+                <li>Datos de geolocalización de sus parcelas.</li>
+                <li>Datos agrometeorológicos capturados por sensores Siembra Link.</li>
+                <li>Imágenes de cultivos subidas a Siembra Visión.</li>
+            </ul>
+
+            <h3 style="font-size: 1.3rem; margin-top: 2rem;">2. Finalidad del tratamiento</h3>
+            <p>Sus datos serán utilizados exclusivamente para:</p>
+            <ul style="margin-left: 20px; list-style-type: disc; margin-bottom: 1rem;">
+                <li>Proveer los servicios de monitoreo y análisis solicitados.</li>
+                <li>Entrenar nuestros modelos de Inteligencia Artificial (de forma anonimizada).</li>
+                <li>Enviar alertas críticas sobre el estado de sus cultivos.</li>
+            </ul>
+
+            <h3 style="font-size: 1.3rem; margin-top: 2rem;">3. Derechos ARCO</h3>
+            <p>Usted tiene derecho a Acceder, Rectificar, Cancelar u Oponerse al tratamiento de sus datos personales contactándonos directamente al correo: <strong>privacidad@siembramas.mx</strong>.</p>
+        </article>
+
+        <hr style="border: 0; border-top: 2px dashed #ddd; margin: 3rem 0;">
+
+        <!-- Contenido Términos de Uso -->
+        <article id="terminos">
+            <h2 class="text-accent" style="margin-bottom: 1.5rem;">Términos y Condiciones de Uso</h2>
+            
+            <p>Al acceder y utilizar la plataforma Siembra +, usted acepta los siguientes términos:</p>
+
+            <h3 style="font-size: 1.3rem; margin-top: 2rem;">Uso Aceptable</h3>
+            <p>La plataforma debe ser utilizada únicamente para fines lícitos relacionados con la gestión agrícola. Queda prohibido el uso de nuestros servicios para actividades ilegales o que vulneren la seguridad de nuestros sistemas.</p>
+
+            <h3 style="font-size: 1.3rem; margin-top: 2rem;">Propiedad Intelectual</h3>
+            <p>Todo el código, diseño, logotipos (Siembra +), modelos de Machine Learning y contenido visual son propiedad exclusiva de los desarrolladores del proyecto Expociencias Nacional 2025.</p>
+
+            <h3 style="font-size: 1.3rem; margin-top: 2rem;">Limitación de Responsabilidad</h3>
+            <p>Las recomendaciones generadas por Siembra Bot y nuestros modelos predictivos son herramientas de apoyo a la decisión y no garantizan resultados específicos de cosecha, ya que estos dependen de múltiples factores naturales fuera de nuestro control.</p>
+        </article>
+
+    </div>
+</section>
+{% endblock %}

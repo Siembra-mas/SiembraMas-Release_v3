@@ -1,56 +1,167 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<header class="page-header bg-darker">
-    <div class="container">
-        <h1>Siembra Link</h1>
-        <p>Tu conexión directa con el suelo. Monitoreo IoT en tiempo real.</p>
-    </div>
-</header>
 
-<section class="section-padding">
+<div style="background-color: var(--dark-green); padding-top: 140px; padding-bottom: 3rem; border-bottom: 4px solid var(--medium-green);">
+    <div class="container center-text">
+        <img src="{{ url_for('static', filename='img/logo_link.svg') }}" alt="Siembra Link" class="title-logo-img" style="max-width: 300px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));">
+        <p style="color: var(--cream); font-size: 1.2rem; margin-top: 1rem;">
+            <i class="fa-solid fa-wifi text-accent"></i> Monitor de Cultivos Inteligente
+        </p>
+    </div>
+</div>
+
+<section class="section-padding bg-cream">
     <div class="container">
         
-        <!-- Visualización Dinámica -->
-        <div class="plant-visual-container">
-            <div class="plant-stem">
-                <div class="plant-leaf"></div>
+        <div class="dashboard-grid">
+            
+            <!-- PANEL IZQUIERDO: VISUALIZACIÓN CON PLANTAS SVG -->
+            <div>
+                <h3 style="color: var(--dark-green); margin-bottom: 1rem;">Estado del Cultivo</h3>
+                
+                <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); height: 100%;">
+                    
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <div style="font-size: 3rem; color: var(--accent-green); margin-bottom: 0.5rem;">
+                            <i class="fa-solid fa-seedling" id="icono-etapa"></i>
+                        </div>
+                        <h4 id="titulo-resumen" style="color: var(--medium-green);">Cargando datos...</h4>
+                        <p id="subtitulo-resumen" style="font-size: 0.9rem; color: #777;">
+                           Visualización en tiempo real de variables críticas
+                        </p>
+                    </div>
+
+                    <!-- NUEVA VISUALIZACIÓN: PLANTAS SVG -->
+
+                    <div class="dashboard-plantas-master">
+    
+                    <div class="master-plant-container">
+                        <div class="plant-circle-bg">
+                            <i class="fa-solid fa-plant-wilt plant-main-icon" id="master-plant-icon"></i>
+                        </div>
+                        <div class="plant-status-label">
+                            <span class="status-badge status-ok">Saludable</span>
+                        </div>
+                    </div>
+
+    <div class="master-stats-container">
+
+        <div class="stat-row">
+            <div class="stat-header">
+                <span><i class="fa-solid fa-temperature-half"></i> Temperatura</span>
+                <span class="stat-value-text" id="text-temp">24°C</span>
             </div>
-            <p style="position: absolute; top: 20px; right: 20px; background: white; padding: 5px 10px; border-radius: 8px;">
-                <i class="fa-solid fa-circle" style="color: green; font-size: 0.8rem;"></i> En línea
-            </p>
+            <div class="range-bar-wrapper">
+                <div class="range-track"></div>
+                <div class="range-ideal" style="left: 36%; width: 20%;"></div>
+                <div class="range-marker" style="left: 48%;">
+                    <div class="marker-tooltip">24°C</div>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <small>Min: 18°C</small>
+                <small>Promedio Ideal: 23°C</small>
+                <small>Max: 28°C</small>
+            </div>
         </div>
 
-        <!-- Métricas -->
-        <div class="status-panel">
-            <div class="status-item status-ok">
-                <i class="fa-solid fa-check-circle"></i> Humedad OK
+        <div class="stat-row">
+            <div class="stat-header">
+                <span><i class="fa-solid fa-droplet"></i> Humedad</span>
+                <span class="stat-value-text" id="text-hum">60%</span>
             </div>
-            <div class="status-item status-warning">
-                <i class="fa-solid fa-triangle-exclamation"></i> Temp. Alta
+            <div class="range-bar-wrapper">
+                <div class="range-track"></div>
+                <div class="range-ideal" style="left: 40%; width: 40%; background-color: var(--color-humedad); opacity: 0.3;"></div>
+                <div class="range-marker" style="left: 60%; background-color: var(--color-humedad);">
+                     <div class="marker-tooltip">60%</div>
+                </div>
             </div>
-            <div class="status-item status-ok">
-                <i class="fa-solid fa-check-circle"></i> Suelo OK
+            <div class="stat-footer">
+                <small>Min: 40%</small>
+                <small>Ideal</small>
+                <small>Max: 80%</small>
             </div>
         </div>
 
-        <!-- Controles -->
-        <div class="control-panel" style="max-width: 600px; margin: 0 auto;">
-            <div class="form-group">
-                <label>Cultivo Actual</label>
-                <select class="form-select">
-                    <option>Maíz Blanco</option>
-                    <option>Frijol</option>
-                </select>
+        <div class="stat-row">
+            <div class="stat-header">
+                <span><i class="fa-solid fa-cloud-rain"></i> Lluvia Acum.</span>
+                <span class="stat-value-text" id="text-lluvia">12mm</span>
             </div>
-            <button class="btn" style="width: 100%; background-color: var(--dark-green);">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Pronosticar (Premium)
-            </button>
-            <p style="text-align: center; font-size: 0.8rem; margin-top: 10px; opacity: 0.7;">
-                *Requiere 30 días de historial de datos.
-            </p>
+            <div class="range-bar-wrapper">
+                <div class="range-track"></div>
+                <div class="range-ideal" style="left: 0%; width: 30%; background-color: var(--color-precip); opacity: 0.3;"></div>
+                <div class="range-marker" style="left: 12%; background-color: var(--color-precip);">
+                    <div class="marker-tooltip">12mm</div>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <small>Seco</small>
+                <small>Riesgo Inundación</small>
+            </div>
         </div>
 
     </div>
+</div>
+
+                </div>
+            </div>
+
+            <!-- PANEL DERECHO: CONTROLES -->
+            <div class="dashboard-controls">
+                <div class="control-panel">
+                    <h4><i class="fa-solid fa-sliders"></i> Configuración</h4>
+                    
+                    <div class="form-group">
+                        <label>Etapa de Crecimiento</label>
+                        <div class="select-wrapper">
+                            <i class="fa-solid fa-layer-group select-icon"></i>
+                            <select id="etapa-select" class="form-select" style="padding-left: 45px;">
+                                <option value="1" selected>1. Germinación (Inicio)</option>
+                                <option value="2">2. Floración (Intermedia)</option>
+                                <option value="3">3. Maduración (Final)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tipo de Cultivo</label>
+                        <div class="select-wrapper">
+                            <i class="fa-solid fa-leaf select-icon"></i>
+                            <select id="cultivo-select" class="form-select" style="padding-left: 45px;">
+                                <option value="" disabled selected>-- Seleccionar --</option>
+                                {% for cultivo in lista_cultivos %}
+                                    <option value="{{ cultivo }}">{{ cultivo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sensor ID</label>
+                        <select class="form-select">
+                            <option>Arduino UNO - Sector A</option>
+                            <option>ESP32 - Sector B</option>
+                        </select>
+                    </div>
+
+                    <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #eee;">
+
+                    <!-- El botón ahora se controla desde main.js vía ID -->
+                    <button class="btn" id="btn-actualizar" style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Actualizar Análisis</span>
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                    
+                    <!-- SCRIPT INLINE ELIMINADO CORRECTAMENTE -->
+
+                </div>
+            </div>
+
+        </div> 
+    </div>
 </section>
+
 {% endblock %}
