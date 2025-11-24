@@ -880,6 +880,265 @@ footer {
     color: #888;
 }
 
+/* =========================================
+   NUEVO DISEÑO: GEMELO DIGITAL (TIPO APP)
+   ========================================= */
+
+/* Layout Principal de 2 Columnas */
+.gemelo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr; /* La columna de datos un poco más ancha */
+    gap: 2rem;
+    align-items: stretch;
+}
+
+/* --- COLUMNA IZQUIERDA: TARJETA PLANTA --- */
+.gemelo-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.05);
+    height: 100%; /* Llenar altura */
+    min-height: 600px;
+}
+
+.gemelo-header {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gemelo-header h3 {
+    font-size: 1.2rem;
+    color: var(--dark-green);
+    margin: 0;
+}
+
+.status-pill {
+    background: #F0F6EA;
+    color: var(--medium-green);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border: 1px solid #ddebd4;
+}
+
+/* Área Visual de la Planta */
+.plant-visual-area {
+    flex: 1; /* Ocupa el espacio restante */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    background: white;
+    /* Fondo opcional sutil si quieres */
+}
+
+/* EL SUELO */
+.digital-soil {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    background: #5D4037; /* Marrón tierra */
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    z-index: 10;
+}
+.digital-soil::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: #795548;
+    border-radius: 50%;
+}
+
+/* LA PLANTA (CSS ART) */
+.digital-stem {
+    position: absolute;
+    bottom: 25px; /* Justo encima del suelo */
+    width: 18px;
+    background: #74B74A; /* Tu accent-green */
+    border-radius: 10px 10px 0 0;
+    z-index: 5;
+    transition: height 1s ease-in-out;
+}
+
+.digital-leaf {
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    background: #32523A; /* Tu medium-green */
+    border-radius: 0 20px 0 20px;
+}
+
+.leaf-left {
+    left: -38px;
+    transform: rotate(-10deg);
+    border-radius: 20px 0 20px 0; /* Hoja apuntando a izq */
+}
+
+.leaf-right {
+    right: -38px;
+    transform: rotate(10deg);
+}
+
+/* Barra de Progreso dentro de la tarjeta planta */
+.progress-track {
+    width: 100%;
+    height: 10px;
+    background: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    background: var(--accent-green);
+    transition: width 0.5s ease;
+}
+
+/* --- COLUMNA DERECHA: DATOS --- */
+.data-column {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.section-label {
+    font-size: 1rem;
+    color: var(--dark-green);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Grid de Lecturas (3 tarjetas arriba) */
+.readings-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.reading-card {
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.2s;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+.reading-card:hover { transform: translateY(-3px); }
+
+/* Colores específicos de las tarjetas */
+.card-hum { background-color: #D1E7DD; color: #0f5132; } /* Verde menta */
+.card-temp { background-color: #F3E5AB; color: #856404; } /* Beige vainilla */
+.card-soil { background-color: #D4EDDA; color: #155724; } /* Verde claro */
+
+.reading-icon { font-size: 1.5rem; margin-bottom: 0.5rem; opacity: 0.7; }
+.reading-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; }
+.reading-value { display: block; font-size: 1.4rem; font-weight: 800; font-family: 'Montserrat', sans-serif; }
+
+/* --- TARJETA DE CONFIGURACIÓN --- */
+.config-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.config-title {
+    color: var(--dark-green);
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.form-group-clean {
+    margin-bottom: 1.2rem;
+}
+.form-group-clean label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+/* Select Personalizado */
+.select-box {
+    position: relative;
+    background: #F9F9F9;
+    border: 1px solid #DDD;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.clean-select {
+    width: 100%;
+    padding: 12px 12px 12px 45px; /* Espacio para el icono */
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    color: var(--dark-green);
+    appearance: none; /* Quitar flecha por defecto */
+    cursor: pointer;
+    font-family: 'Crimson Pro', serif;
+}
+.clean-select:focus { outline: 2px solid var(--accent-green); border-radius: 8px; }
+
+.icon-input {
+    position: absolute;
+    left: 15px;
+    color: var(--medium-green);
+}
+.icon-arrow {
+    position: absolute;
+    right: 15px;
+    color: #999;
+    font-size: 0.8rem;
+    pointer-events: none;
+}
+
+/* Botón Grande */
+.btn-pronostico {
+    width: 100%;
+    background-color: #74B74A; /* Accent Green */
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s;
+    box-shadow: 0 4px 15px rgba(116, 183, 74, 0.3);
+}
+.btn-pronostico:hover {
+    background-color: #5da035;
+    transform: translateY(-2px);
+}
+
+/* Responsive para móvil */
+@media (max-width: 900px) {
+    .gemelo-grid {
+        grid-template-columns: 1fr;
+    }
+    .gemelo-card {
+        min-height: 400px;
+    }
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .dashboard-plantas-master {
