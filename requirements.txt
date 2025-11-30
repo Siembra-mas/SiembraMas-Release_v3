@@ -1,0 +1,9 @@
+flask
+pandas
+numpy
+scikit-learn
+pyserial
+requests
+tensorflow
+pillow
+numpy

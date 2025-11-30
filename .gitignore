@@ -1,0 +1,27 @@
+
+# Entornos Virtuales
+vision/ 
+.venv/
+venv/
+env/
+# Ignorar el caché local de pip
+.pip_cache
+
+# Archivos de Python Compilados
+__pycache__/
+*.pyc
+*.pyd
+*.so
+
+# Archivos de Streamlit / TensorFlow
+.streamlit/
+# Archivos de logs de TensorFlow
+.tf_logs/
+
+# Archivos de Seguridad Local (CRUCIAL)
+cert.pem
+key.pem
+
+# Archivos Temporales del Sistema
+*.DS_Store
+*~

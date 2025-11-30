@@ -16,4 +16,6 @@ app.register_blueprint(siembra_bot_bp)
 app.register_blueprint(siembra_vision_bp)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # host='0.0.0.0': Permite conexiones desde otros dispositivos en la red
+    # port=5000: Define el puerto (puedes cambiarlo si lo necesitas)
+    app.run(host='0.0.0.0', port=5000, debug=True)
