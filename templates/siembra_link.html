@@ -1,77 +1,109 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <section class="section-padding" style="background-color: #E8F1E0; min-height: 100vh;">
     <div class="container">
         
-        <div style="margin-bottom: 2rem;">
-            <h2 style="color: var(--dark-green);">MONITOR DE CULTIVO</h2>
+        <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="color: var(--dark-green);">MONITOR DE CULTIVO IOT</h2>
+            <div id="alerta-global" style="padding: 10px 20px; border-radius: 8px; font-weight: bold; display: none;"></div>
         </div>
 
         <div class="gemelo-grid">
             
-            <div class="gemelo-card">
-                <div class="gemelo-header">
-                    <h3>Gemelo Digital</h3>
-                    <span class="status-pill"><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 5px;"></i> En línea</span>
-                </div>
-
-                <div class="plant-visual-area">
-                    <div class="digital-stem" style="height: 60%;">
-                        <div class="digital-leaf leaf-left" style="bottom: 20%;"></div>
-                        <div class="digital-leaf leaf-right" style="bottom: 40%;"></div>
-                        <div class="digital-leaf leaf-left" style="bottom: 70%;"></div>
-                    </div>
+            <div class="left-column-wrapper">
+                
+                <div class="gemelo-card" style="min-height: auto;">
                     
-                    <div class="digital-soil"></div>
+                    <div class="gemelo-header">
+                        <h3>Gemelo Digital</h3>
+                        <span id="status-badge" class="status-pill" style="background: #ccc; color: #666;">
+                            <i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 5px;"></i> Offline
+                        </span>
+                    </div>
+
+                    <div class="plant-visual-area boxplot-area">
+                        <div class="stem-gauge-wrapper type-temp">
+                            <div class="stem-header"><i class="fa-solid fa-temperature-half"></i> Temp</div>
+                            <div class="stem-track">
+                                <div id="box-temp" class="stem-range-box"></div>
+                                <div id="avg-temp" class="stem-avg-line"></div>
+                                <div id="stem-temp" class="digital-stem-gauge">
+                                    <div class="gauge-leaf leaf-left"></div>
+                                    <div class="gauge-leaf leaf-right"></div>
+                                </div>
+                            </div>
+                            <div id="val-visual-temp" class="stem-value">--</div>
+                        </div>
+
+                        <div class="stem-gauge-wrapper type-hum">
+                            <div class="stem-header"><i class="fa-solid fa-droplet"></i> H. Amb</div>
+                            <div class="stem-track">
+                                <div id="box-hum" class="stem-range-box"></div>
+                                <div id="avg-hum" class="stem-avg-line"></div>
+                                <div id="stem-hum" class="digital-stem-gauge">
+                                    <div class="gauge-leaf leaf-left"></div>
+                                    <div class="gauge-leaf leaf-right"></div>
+                                </div>
+                            </div>
+                            <div id="val-visual-hum" class="stem-value">--</div>
+                        </div>
+
+                        <div class="stem-gauge-wrapper type-soil">
+                            <div class="stem-header"><i class="fa-solid fa-layer-group"></i> H. Suelo</div>
+                            <div class="stem-track">
+                                <div id="box-suelo" class="stem-range-box"></div>
+                                <div id="avg-suelo" class="stem-avg-line"></div>
+                                <div id="stem-suelo" class="digital-stem-gauge">
+                                    <div class="gauge-leaf leaf-left"></div>
+                                    <div class="gauge-leaf leaf-right"></div>
+                                </div>
+                            </div>
+                            <div id="val-visual-suelo" class="stem-value">--</div>
+                        </div>
+                        
+                        <div class="digital-soil"></div>
+                    </div>
+
+                    <div style="padding: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; font-weight: bold; color: var(--medium-green);">
+                            <span>Progreso de Etapa</span>
+                            <span id="porcentaje-etapa">--%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="barra-progreso" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="gemelo-card chart-mode" style="padding: 1.5rem;">
+                    <h4 class="section-label">Historial en Tiempo Real</h4>
+                    <canvas id="chartTemperatura" style="max-height: 200px; margin-bottom: 20px;"></canvas>
+                    <canvas id="chartHumedad" style="max-height: 200px;"></canvas>
                 </div>
 
-                <div style="padding: 1.5rem;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; font-weight: bold; color: var(--medium-green);">
-                        <span>Progreso de Etapa</span>
-                        <span id="porcentaje-etapa">60%</span>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill" style="width: 60%;"></div>
-                    </div>
-                </div>
-            </div>
-
+            </div> 
             <div class="data-column">
                 
-                <h4 class="section-label">LECTURAS ACTUALES</h4>
-                <div class="readings-grid">
-                    <div class="reading-card card-hum">
-                        <div class="reading-icon"><i class="fa-solid fa-droplet"></i></div>
-                        <div class="reading-info">
-                            <span class="reading-label">Humedad</span>
-                            <span class="reading-value" id="text-hum">65%</span>
-                        </div>
-                    </div>
-
-                    <div class="reading-card card-temp">
-                        <div class="reading-icon"><i class="fa-solid fa-temperature-half"></i></div>
-                        <div class="reading-info">
-                            <span class="reading-label">Temp. Amb.</span>
-                            <span class="reading-value" id="text-temp">24°C</span>
-                        </div>
-                    </div>
-
-                    <div class="reading-card card-soil">
-                        <div class="reading-icon"><i class="fa-solid fa-layer-group"></i></div>
-                        <div class="reading-info">
-                            <span class="reading-label">Lluvia Acum.</span>
-                            <span class="reading-value" id="text-lluvia">12mm</span>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="config-card">
-                    <h4 class="config-title">CONFIGURACIÓN</h4>
+                    <h4 class="config-title">1. CONFIGURACIÓN Y CONTROL</h4>
 
                     <div class="form-group-clean">
-                        <label>Cultivo Monitoreado</label>
+                        <label>Etapa de Desarrollo</label>
+                        <div class="select-box">
+                            <i class="fa-solid fa-chart-line icon-input"></i>
+                            <select id="etapa-select" class="clean-select">
+                                <option value="1">1. Germinación</option>
+                                <option value="2">2. Floración</option>
+                                <option value="3">3. Maduración</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down icon-arrow"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group-clean">
+                        <label>Cultivo</label>
                         <div class="select-box">
                             <i class="fa-solid fa-seedling icon-input"></i>
                             <select id="cultivo-select" class="clean-select">
@@ -84,47 +116,209 @@
                         </div>
                     </div>
 
-                    <div class="form-group-clean">
-                        <label>Etapa de Desarrollo</label>
-                        <div class="select-box">
-                            <i class="fa-solid fa-chart-line icon-input"></i>
-                            <select id="etapa-select" class="clean-select">
-                                <option value="1" selected>1. Germinación (Inicio)</option>
-                                <option value="2">2. Floración (Intermedia)</option>
-                                <option value="3">3. Maduración (Final)</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down icon-arrow"></i>
-                        </div>
+                    <div style="display: flex; gap: 10px; margin-top: 1.5rem;">
+                        <button id="btn-iniciar" class="btn-pronostico" onclick="iniciarMonitoreo()">
+                            <span>▶ INICIAR</span>
+                        </button>
+                        <button id="btn-detener" class="btn-pronostico" style="background-color: #D9534F; display: none;" onclick="detenerMonitoreo()">
+                            <span>⏹ DETENER</span>
+                        </button>
                     </div>
-
-                    <div class="form-group-clean">
-                        <label>Frecuencia de Lectura</label>
-                        <div class="select-box">
-                            <i class="fa-regular fa-clock icon-input"></i>
-                            <select class="clean-select">
-                                <option>Tiempo Real (5 min)</option>
-                                <option>Ahorro Energía (1 hr)</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down icon-arrow"></i>
-                        </div>
-                    </div>
-
-                    <hr style="border: 0; border-top: 1px solid #eee; margin: 1.5rem 0;">
-
-                    <button id="btn-actualizar" class="btn-pronostico">
-                        <span>Actualizar / Pronosticar</span>
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    </button>
                     
-                    <div style="text-align: center; margin-top: 1rem;">
-                         <small style="color: #888; font-size: 0.8rem;"><i class="fa-solid fa-circle-info"></i> Requiere 30 días de historial para activar IA.</small>
-                    </div>
-
+                    <a href="/api/descargar_csv" id="btn-descargar" class="btn-outline-dark" style="display: block; text-align: center; margin-top: 10px; padding: 10px; border-radius: 50px; text-decoration: none; font-size: 0.9rem; display: none;">
+                        <i class="fa-solid fa-download"></i> Descargar Historial CSV
+                    </a>
                 </div>
 
-            </div>
-        </div>
-    </div>
+                <h4 class="section-label" style="margin-top: 2rem;">LECTURAS ACTUALES</h4>
+                
+                <div class="readings-grid">
+                    <div class="reading-card card-temp">
+                        <div class="reading-icon"><i class="fa-solid fa-temperature-half"></i></div>
+                        <div class="reading-info">
+                            <span class="reading-label">Temperatura</span>
+                            <span class="reading-value" id="val-temp">--</span>
+                            <small id="status-temp" style="font-weight: bold;">--</small>
+                        </div>
+                    </div>
+
+                    <div class="reading-card card-hum">
+                        <div class="reading-icon"><i class="fa-solid fa-droplet"></i></div>
+                        <div class="reading-info">
+                            <span class="reading-label">Humedad Amb.</span>
+                            <span class="reading-value" id="val-hum">--</span>
+                            <small id="status-hum" style="font-weight: bold;">--</small>
+                        </div>
+                    </div>
+
+                    <div class="reading-card card-soil">
+                        <div class="reading-icon"><i class="fa-solid fa-layer-group"></i></div>
+                        <div class="reading-info">
+                            <span class="reading-label">Humedad Suelo</span>
+                            <span class="reading-value" id="val-suelo">--</span>
+                            <small id="status-suelo" style="font-weight: bold;">--</small>
+                        </div>
+                    </div>
+                </div>
+                
+                 <div class="reading-card" style="background: white; border: 1px solid #eee; margin-top: 10px;">
+                    <div class="reading-info">
+                        <span class="reading-label">Precipitación (Raw)</span>
+                        <span class="reading-value" id="val-lluvia">--</span>
+                    </div>
+                </div>
+
+            </div> 
+            </div> </div>
 </section>
 
+<script>
+    // ... (Mantén el script que te di en la respuesta anterior)
+    let intervaloCheck;
+    let chartT, chartH;
+    const ESCALA_MAX_TEMP = 50; 
+    const ESCALA_MAX_PCT = 100; 
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctxT = document.getElementById('chartTemperatura').getContext('2d');
+        const ctxH = document.getElementById('chartHumedad').getContext('2d');
+
+        chartT = new Chart(ctxT, {
+            type: 'line',
+            data: { labels: [], datasets: [{ label: 'Temperatura (°C)', data: [], borderColor: '#e67e22', tension: 0.4 }] },
+            options: { responsive: true, scales: { y: { beginAtZero: false } } }
+        });
+
+        chartH = new Chart(ctxH, {
+            type: 'line',
+            data: { labels: [], datasets: [{ label: 'Hum. Suelo (%)', data: [], borderColor: '#2ecc71', tension: 0.4 }] },
+            options: { responsive: true, scales: { y: { min: 0, max: 100 } } }
+        });
+    });
+
+    function iniciarMonitoreo() {
+        const cultivo = document.getElementById('cultivo-select').value;
+        const etapa = document.getElementById('etapa-select').value;
+
+        if (!cultivo) { alert("Por favor selecciona un cultivo."); return; }
+        
+        // Simular progreso visual
+        document.getElementById('porcentaje-etapa').innerText = "Iniciando...";
+        document.getElementById('barra-progreso').style.width = "10%";
+
+        fetch('/api/iniciar_monitoreo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cultivo: cultivo, etapa: etapa })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                document.getElementById('btn-iniciar').style.display = 'none';
+                document.getElementById('btn-detener').style.display = 'flex';
+                document.getElementById('btn-descargar').style.display = 'none';
+                
+                document.getElementById('status-badge').innerHTML = '<i class="fa-solid fa-circle" style="color: #4CAF50; font-size: 8px; margin-right: 5px;"></i> Recibiendo Datos';
+                document.getElementById('status-badge').style.background = '#e8f5e9';
+                document.getElementById('status-badge').style.color = '#2e7d32';
+
+                intervaloCheck = setInterval(actualizarDatos, 1500);
+            } else {
+                alert("Error: " + data.msg);
+            }
+        });
+    }
+
+    function detenerMonitoreo() {
+        fetch('/api/detener_monitoreo', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            clearInterval(intervaloCheck);
+            document.getElementById('btn-iniciar').style.display = 'flex';
+            document.getElementById('btn-detener').style.display = 'none';
+            document.getElementById('btn-descargar').style.display = 'block';
+            
+            document.getElementById('status-badge').innerHTML = '<i class="fa-solid fa-circle" style="color: #999; font-size: 8px; margin-right: 5px;"></i> Detenido';
+        });
+    }
+
+    function actualizarDatos() {
+        fetch('/api/obtener_datos')
+        .then(res => res.json())
+        .then(data => {
+            if (data.activo && data.actual) {
+                const lectura = data.actual;
+                const refs = data.referencias; 
+
+                document.getElementById('val-temp').innerText = lectura.temperatura + " °C";
+                document.getElementById('val-hum').innerText = lectura.humedad_ambiente + "%";
+                document.getElementById('val-suelo').innerText = lectura.humedad_suelo_pct + "%";
+                document.getElementById('val-lluvia').innerText = lectura.precipitacion_raw;
+
+                document.getElementById('val-visual-temp').innerText = lectura.temperatura + "°";
+                document.getElementById('val-visual-hum').innerText = lectura.humedad_ambiente + "%";
+                document.getElementById('val-visual-suelo').innerText = lectura.humedad_suelo_pct + "%";
+
+                actualizarStatusColor('status-temp', lectura.status_temp);
+                actualizarStatusColor('status-hum', lectura.status_hum);
+                actualizarStatusColor('status-suelo', lectura.status_suelo);
+
+                const alertaBox = document.getElementById('alerta-global');
+                alertaBox.style.display = 'block';
+                alertaBox.innerText = lectura.nivel_alerta;
+                if (lectura.nivel_alerta.includes("CONDICIONES ÓPTIMAS")) {
+                    alertaBox.style.backgroundColor = "#d4edda"; alertaBox.style.color = "#155724";
+                } else {
+                    alertaBox.style.backgroundColor = "#f8d7da"; alertaBox.style.color = "#721c24";
+                }
+
+                const calcPct = (val, maxScale) => Math.max(0, Math.min(100, (val / maxScale) * 100));
+
+                if(refs) {
+                    if(refs.temp) {
+                        document.getElementById('stem-temp').style.height = `${calcPct(lectura.temperatura, ESCALA_MAX_TEMP)}%`;
+                        let minPct = calcPct(refs.temp.min, ESCALA_MAX_TEMP);
+                        let maxPct = calcPct(refs.temp.max, ESCALA_MAX_TEMP);
+                        document.getElementById('box-temp').style.bottom = `${minPct}%`;
+                        document.getElementById('box-temp').style.height = `${maxPct - minPct}%`;
+                        document.getElementById('avg-temp').style.bottom = `${calcPct(refs.temp.avg, ESCALA_MAX_TEMP)}%`;
+                    }
+                    if(refs.hum_amb) {
+                        document.getElementById('stem-hum').style.height = `${calcPct(lectura.humedad_ambiente, ESCALA_MAX_PCT)}%`;
+                        let minPct = calcPct(refs.hum_amb.min, ESCALA_MAX_PCT);
+                        let maxPct = calcPct(refs.hum_amb.max, ESCALA_MAX_PCT);
+                        document.getElementById('box-hum').style.bottom = `${minPct}%`;
+                        document.getElementById('box-hum').style.height = `${maxPct - minPct}%`;
+                        document.getElementById('avg-hum').style.bottom = `${calcPct(refs.hum_amb.avg, ESCALA_MAX_PCT)}%`;
+                    }
+                    if(refs.hum_suelo) {
+                        document.getElementById('stem-suelo').style.height = `${calcPct(lectura.humedad_suelo_pct, ESCALA_MAX_PCT)}%`;
+                        let minPct = calcPct(refs.hum_suelo.min, ESCALA_MAX_PCT);
+                        let maxPct = calcPct(refs.hum_suelo.max, ESCALA_MAX_PCT);
+                        document.getElementById('box-suelo').style.bottom = `${minPct}%`;
+                        document.getElementById('box-suelo').style.height = `${maxPct - minPct}%`;
+                        document.getElementById('avg-suelo').style.bottom = `${calcPct(refs.hum_suelo.avg, ESCALA_MAX_PCT)}%`;
+                    }
+                }
+
+                if (data.historial.length > 0) {
+                    const labels = data.historial.map(d => d.timestamp);
+                    chartT.data.labels = labels;
+                    chartT.data.datasets[0].data = data.historial.map(d => d.temperatura);
+                    chartT.update();
+                    chartH.data.labels = labels;
+                    chartH.data.datasets[0].data = data.historial.map(d => d.humedad_suelo_pct);
+                    chartH.update();
+                }
+            }
+        });
+    }
+
+    function actualizarStatusColor(elementId, status) {
+        const el = document.getElementById(elementId);
+        el.innerText = status;
+        if (status === "OK") el.style.color = "green";
+        else el.style.color = "red";
+    }
+</script>
 {% endblock %}

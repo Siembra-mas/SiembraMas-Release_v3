@@ -1,76 +1,75 @@
-from flask import Blueprint, render_template
-import pandas as pd
+from flask import Blueprint, render_template, jsonify, request, send_file
 import json
-import os
+import pandas as pd
+import io
+
+# Importamos la lógica que acabamos de crear
+from logic.monitor_logic import monitor_service
 
 siembra_link_bp = Blueprint('siembra_link', __name__)
 
-def cargar_datos_csv():
-    """
-    Carga los CSVs de Germinación, Floración y Maduración.
-    Estructura los datos para enviarlos al Frontend.
-    """
-    # Mapeo de Etapa (Select HTML) -> Nombre del Archivo
-    archivos = {
-        "1": "data/fase_cultivo/Germinacion_procesado.csv",
-        "2": "data/fase_cultivo/Floracion_procesado.csv",
-        "3": "data/fase_cultivo/Maduracion_procesado.csv"
-    }
-    
-    base_datos = {}
-
-    for etapa_id, archivo in archivos.items():
-        try:
-            # Leemos el CSV
-            df = pd.read_csv(archivo)
-            base_datos[etapa_id] = {}
-            
-            for index, row in df.iterrows():
-                cultivo = row['Cultivo']
-                
-                # Guardamos Mínimo, Máximo y PROMEDIO para cada variable
-                base_datos[etapa_id][cultivo] = {
-                    # Temperatura
-                    "temp_min": row.get('Temp. Recomendada (°C)_valor_mínimo', 0),
-                    "temp_max": row.get('Temp. Recomendada (°C)_valor_máximo', 0),
-                    "temp_prom": row.get('Temp. Recomendada (°C)_valor_promedio', 0),
-                    
-                    # Humedad Suelo
-                    "hum_suelo_min": row.get('Humedad Suelo (%)_valor_mínimo', 0),
-                    "hum_suelo_max": row.get('Humedad Suelo (%)_valor_máximo', 0),
-                    "hum_suelo_prom": row.get('Humedad Suelo (%)_valor_promedio', 0),
-                    
-                    # Precipitación (Lluvia)
-                    "lluvia_min": row.get('Lluvia Óptima (mm)_valor_mínimo', 0),
-                    "lluvia_max": row.get('Lluvia Óptima (mm)_valor_máximo', 0),
-                    "lluvia_prom": row.get('Lluvia Óptima (mm)_valor_promedio', 0)
-                }
-        except Exception as e:
-            print(f"⚠️ Error cargando {archivo}: {e}")
-            
-    return base_datos
-
 @siembra_link_bp.route('/siembra-link')
 def index():
-    # 1. Cargar base de conocimientos
-    datos_cultivos = cargar_datos_csv()
-    
-    # 2. Obtener lista de cultivos para llenar el Select (usamos etapa 1 como referencia)
-    lista_cultivos = sorted(list(datos_cultivos.get("1", {}).keys())) if datos_cultivos else []
-
-    # 3. DATOS SIMULADOS DEL SENSOR (Esto vendrá de tu Arduino 'monitoreo.py' después)
-    # Aquí simulamos valores actuales para probar la visualización
-    datos_sensor_actual = {
-        "temp": 26,           # °C
-        "humedad_suelo": 48,  # %
-        "lluvia": 650         # mm
-    }
-    
-    # Convertimos a JSON string para que JS lo pueda leer
-    db_json = json.dumps(datos_cultivos)
+    # Usamos el servicio para obtener la lista de cultivos de la etapa 1 por defecto
+    datos_etapa_1 = monitor_service.dict_fases.get("1")
+    lista_cultivos = sorted(datos_etapa_1['Cultivo'].unique()) if datos_etapa_1 is not None else []
     
     return render_template('siembra_link.html', 
                            title="Siembra Link (IoT)", 
-                           datos_sensor=datos_sensor_actual,
-                           db_cultivos=db_json,
                            lista_cultivos=lista_cultivos)
+
+# --- RUTAS API (Para que JavaScript hable con Python) ---
+
+@siembra_link_bp.route('/api/iniciar_monitoreo', methods=['POST'])
+def iniciar_monitoreo():
+    data = request.json
+    cultivo = data.get('cultivo')
+    etapa = data.get('etapa')
+    
+    # Configuramos el monitor con lo que eligió el usuario
+    monitor_service.set_configuracion_cultivo(etapa, cultivo)
+    
+    # Conectamos Arduino
+    exito = monitor_service.conectar()
+    
+    if exito:
+        return jsonify({"status": "ok", "msg": f"Monitoreando {cultivo} en etapa {etapa}"})
+    else:
+        return jsonify({"status": "error", "msg": "No se pudo conectar al Arduino (COM11)"}), 500
+
+@siembra_link_bp.route('/api/detener_monitoreo', methods=['POST'])
+def detener_monitoreo():
+    monitor_service.desconectar()
+    return jsonify({"status": "ok", "msg": "Monitoreo detenido"})
+
+@siembra_link_bp.route('/api/obtener_datos')
+def obtener_datos():
+    """Devuelve la última lectura, estado y REFERENCIAS para la UI"""
+    if not monitor_service.running:
+        return jsonify({"activo": False})
+    
+    return jsonify({
+        "activo": True,
+        "actual": monitor_service.ultima_lectura,
+        # NUEVO: Enviamos las referencias para pintar las cajas
+        "referencias": monitor_service.referencias_visuales, 
+        "historial": monitor_service.datos_historial
+    })
+
+@siembra_link_bp.route('/api/descargar_csv')
+def descargar_csv():
+    """Genera un CSV con los datos capturados en memoria"""
+    if not monitor_service.datos_historial:
+        return "No hay datos para descargar", 404
+        
+    df = pd.DataFrame(monitor_service.datos_historial)
+    
+    # Crear buffer en memoria
+    output = io.BytesIO()
+    df.to_csv(output, index=False)
+    output.seek(0)
+    
+    return send_file(output, 
+                     mimetype="text/csv", 
+                     as_attachment=True, 
+                     download_name="datos_siembra_iot.csv")

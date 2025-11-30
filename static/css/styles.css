@@ -887,9 +887,10 @@ footer {
 /* Layout Principal de 2 Columnas */
 .gemelo-grid {
     display: grid;
-    grid-template-columns: 1fr 1.2fr; /* La columna de datos un poco más ancha */
+    /* Divide el espacio: 1 parte izquierda, 1 parte derecha */
+    grid-template-columns: 1fr 1fr; 
     gap: 2rem;
-    align-items: stretch;
+    align-items: start; /* Alinea todo al tope superior */
 }
 
 /* --- COLUMNA IZQUIERDA: TARJETA PLANTA --- */
@@ -1139,6 +1140,152 @@ footer {
     }
 }
 
+.gemelo-card.chart-mode {
+    min-height: auto !important;
+    height: auto !important;
+    overflow: visible !important; /* IMPORTANTE: Esto evita el corte */
+    padding-bottom: 2rem;
+}
+
+canvas {
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 250px; /* Altura máxima fija para que no se estire */
+}
+
+.boxplot-area {
+    display: flex;
+    justify-content: space-around; /* Separar los 3 tallos */
+    align-items: flex-end;
+    padding-bottom: 30px; /* Espacio para el suelo */
+    background: linear-gradient(to top, #f9fbe7 0%, #ffffff 100%); /* Fondo sutil */
+}
+
+.stem-gauge-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    position: relative;
+    z-index: 20; /* Encima del suelo */
+}
+
+.stem-header {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--dark-green);
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.stem-track {
+    position: relative;
+    width: 40px;
+    height: 200px; /* Altura fija para el gauge */
+    background-color: rgba(0,0,0,0.05);
+    border-radius: 20px;
+    border: 2px solid rgba(50, 82, 58, 0.1);
+}
+
+.stem-range-box {
+    position: absolute;
+    width: 100%;
+    /* bottom y height se definen por JS */
+    background-color: var(--accent-green); /* Color base */
+    opacity: 0.3; /* Semitransparente */
+    border-radius: 4px;
+    border-top: 2px solid var(--accent-green);
+    border-bottom: 2px solid var(--accent-green);
+    transition: all 0.5s ease;
+}
+
+.stem-avg-line {
+    position: absolute;
+    width: 120%; /* Un poco más ancha que la pista */
+    left: -10%;
+    height: 0;
+    /* bottom definido por JS */
+    border-top: 3px dotted var(--dark-green);
+    z-index: 5;
+    transition: all 0.5s ease;
+}
+
+.stem-avg-line::after {
+    content: 'Avg';
+    position: absolute;
+    right: -25px;
+    top: -8px;
+    font-size: 0.7rem;
+    color: var(--dark-green);
+    font-weight: bold;
+}
+
+.digital-stem-gauge {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    /* height definido por JS */
+    background-color: var(--dark-green); /* Color por defecto */
+    border-radius: 10px 10px 0 0;
+    z-index: 10;
+    transition: height 1s cubic-bezier(0.34, 1.56, 0.64, 1); /* Efecto rebote */
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.gauge-leaf {
+    position: absolute;
+    top: -5px;
+    width: 20px;
+    height: 10px;
+    background-color: inherit; /* Hereda color del tallo */
+    border-radius: 20px 0 20px 0;
+}
+.gauge-leaf.leaf-left { left: -18px; transform: rotate(-20deg); }
+.gauge-leaf.leaf-right { right: -18px; transform: rotate(20deg); border-radius: 0 20px 0 20px; }
+
+.stem-value {
+    margin-top: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--dark-green);
+}
+
+.type-temp .stem-range-box { background-color: #f0ad4e; border-color: #f0ad4e;}
+.type-temp .digital-stem-gauge, .type-temp .gauge-leaf { background-color: #d9534f; }
+.type-temp .stem-avg-line { border-color: #c9302c; }
+
+/* Humedad (Azul) */
+.type-hum .stem-range-box { background-color: #5bc0de; border-color: #5bc0de;}
+.type-hum .digital-stem-gauge, .type-hum .gauge-leaf { background-color: #0275d8; }
+.type-hum .stem-avg-line { border-color: #025aa5; }
+
+/* Suelo (Verde Original) */
+.type-soil .stem-range-box { background-color: #74B74A; border-color: #74B74A;}
+.type-soil .digital-stem-gauge, .type-soil .gauge-leaf { background-color: #32523A; }
+.type-soil .stem-avg-line { border-color: #19291D; }
+
+/* Ajuste del suelo para que no tape los tallos */
+.boxplot-area .digital-soil {
+    z-index: 15;
+    height: 25px;
+    opacity: 0.9;
+}
+
+.left-column-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.data-column {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .dashboard-plantas-master {
@@ -1152,6 +1299,17 @@ footer {
         margin-bottom: 1rem;
     }
 }
+
+@media (max-width: 600px) {
+    .gemelo-card.chart-mode {
+        padding: 1rem;
+    }
+    canvas {
+        max-height: 200px;
+    }
+}
+
+
 
 /* Responsive */
 @media (max-width: 600px) {
