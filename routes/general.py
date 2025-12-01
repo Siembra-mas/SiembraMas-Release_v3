@@ -7,15 +7,13 @@ import unicodedata
 import re
 import requests
 import pandas as pd
-from flask import Blueprint, render_template, request, url_for
+from flask import Blueprint, render_template, request, url_for, jsonify
 
 # --- CONFIGURACIÓN DE RUTAS ---
-# Obtenemos la ruta del directorio actual (donde está este archivo)
 current_file_path = os.path.abspath(__file__)
-current_dir = os.path.dirname(current_file_path) # carpeta 'routes' (o donde esté este archivo)
-project_root = os.path.dirname(current_dir)      # carpeta raíz del proyecto
+current_dir = os.path.dirname(current_file_path)
+project_root = os.path.dirname(current_dir)
 
-# Añadimos la raíz al path para importar los módulos logic
 if project_root not in sys.path:
     sys.path.append(project_root)
 
@@ -24,7 +22,6 @@ from logic.prediccion import prediccion
 from logic.cultivos import obtener_cultivos
 from logic.catalogos import estados, municipios, coordenadas, coordenadas_municipios
 
-# Creamos el Blueprint
 general_bp = Blueprint('general', __name__)
 
 # ================================= Utilidades ================================
@@ -50,20 +47,14 @@ def buscar_coords(ruta: str, lugar: str) -> Tuple[Optional[float], Optional[floa
     return pool_norm.get(normalizar_texto(lugar), (None, None))
 
 def obtener_clima_ultimos_30_dias(lat: float, lon: float):
-    """
-    Obtiene precipitación acumulada y humedad promedio de los últimos 30 días.
-    """
-    # Validación básica de coordenadas
     if not lat or not lon:
         return None, None
 
-    # --- Cálculo dinámico de fechas ---
     fecha_fin = date.today()
     fecha_inicio = fecha_fin - timedelta(days=30)
     
     start_date = fecha_inicio.strftime("%Y-%m-%d")
     end_date = fecha_fin.strftime("%Y-%m-%d")
-    # ----------------------------------
 
     api_url = (
         f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}"
@@ -170,8 +161,6 @@ MESES = ("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Sept
 ANIOS = (datetime.now().year,)
 def mes_actual_nombre() -> str: return MESES[datetime.now().month - 1]
 
-# Carga de CSV de condiciones
-# Se usa os.path.join para asegurar que la ruta sea correcta independientemente del OS
 try:
     csv_path = os.path.join(project_root, "data", "condiciones_ideales", "CondicionesIdeales.csv")
     CONDICIONES_DF = pd.read_csv(csv_path, encoding="utf-8")
@@ -206,14 +195,26 @@ def index():
     }
     return render_template('index.html', **context)
 
+# --- NUEVA RUTA API PARA FETCH ---
+@general_bp.route('/api/municipios')
+def api_municipios():
+    """Devuelve la lista de municipios en formato JSON para consumo vía Fetch"""
+    return jsonify(municipios)
+
 @general_bp.route('/generar_analisis', methods=['POST'])
 def generar_analisis():
-    ruta = request.form.get("ruta", "Municipios")
     estado_input = request.form.get("estado")
     municipio_input = request.form.get("municipio")
     
-    lugar = municipio_input if municipio_input and municipio_input != "Seleccionar..." else estado_input
-    ruta = "Municipios" if municipio_input and municipio_input != "Seleccionar..." else "Estados"
+    # --- LOGICA CORREGIDA PARA 'GENERAL' ---
+    # Si el municipio es "General", "Seleccionar..." o está vacío, analizamos el Estado completo.
+    if municipio_input and municipio_input not in ["Seleccionar...", "General", ""]:
+        lugar = municipio_input
+        ruta = "Municipios"
+    else:
+        lugar = estado_input
+        ruta = "Estados"
+    # ---------------------------------------
 
     mes_texto = mes_actual_nombre()
     anio = ANIOS[0]
@@ -230,9 +231,7 @@ def generar_analisis():
                 temp_min, temp_max = int(df_pred["Pred_TempMin"].iloc[0]), int(df_pred["Pred_tempMax"].iloc[0])
                 lat, lon = buscar_coords(ruta, lugar)
                 
-                # --- CORRECCIÓN AQUÍ: Llamamos a la nueva función con los argumentos correctos ---
                 precipitacion, humedad = obtener_clima_ultimos_30_dias(lat, lon)
-                # ---------------------------------------------------------------------------------
                 
         except Exception as e:
             print(f"Error obteniendo predicciones: {e}")
@@ -242,7 +241,6 @@ def generar_analisis():
     # 2. Generar Recomendaciones
     if lugar and all(v is not None for v in [temp_min, temp_max, precipitacion, humedad]):
         try:
-            # Construcción segura de rutas para los archivos CSV de cultivos
             if ruta == "Estados":
                 ruta_csv_cultivos = os.path.join(project_root, "data", "Ideal", "CultivoEstado.csv")
             else:

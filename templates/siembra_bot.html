@@ -1,14 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<header class="page-header bg-darker">
-    <div class="container">
-        <h1>Siembra Bot</h1>
-        <p>Inteligencia Artificial Generativa entrenada para el campo.</p>
-    </div>
-</header>
+<div class="hero-main hero-short"> 
+    <video autoplay muted loop playsinline class="hero-bg-video">
+        <source src="{{ url_for('static', filename='img/campo_1.mp4') }}" type="video/mp4">
+    </video>
 
-<section class="section-padding bg-cream">
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-content hero-flex-center">
+        
+        <img src="{{ url_for('static', filename='img/logo_bot.svg') }}" alt="Siembra Link Logo" class="hero-logo-large">
+        
+        <p class="hero-desc-text">
+        Dialoga directamente con la inteligencia de tu campo. Recibe diagnósticos instantáneos, interpreta alertas complejas y obtén recomendaciones agronómicas personalizadas en una conversación sencilla para optimizar cada recurso.
+        </p>
+    </div>
+</div>
+
+<section class="section-padding bg-dashboard no-lift"> 
+
+<section class="summary-section">
+    <div class="container">
+        <div class="cards-grid">
+            
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-comments"></i> </div>
+                <h3>Diagnóstico Conversacional</h3>
+                <p>Describe lo que ves en el campo con tus propias palabras. El agente entiende lenguaje natural para identificar problemas al instante.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-satellite"></i> </div>
+                <h3>Vigilancia Climática Activa</h3>
+                <p>El bot monitorea 24/7 los pronósticos locales y te envía alertas proactivas antes de que una helada o sequía afecte tu lote.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-chart-line"></i> </div>
+                <h3>Soporte de Decisiones</h3>
+                <p>Pregunta "¿Cuándo es mejor sembrar?" y recibe una estrategia basada en el cruce de datos históricos y predictivos.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="section-padding bg-cream no-lift">
     <div class="container">
         <div class="chat-wrapper">
             <div class="chat-header" style="background: var(--dark-green); color: white; padding: 1rem;">

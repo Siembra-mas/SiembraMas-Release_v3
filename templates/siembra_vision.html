@@ -1,14 +1,58 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<header class="page-header bg-darker">
-    <div class="container">
-        <h1>Siembra Visión</h1>
-        <p>Diagnóstico fitosanitario por imagen.</p>
-    </div>
-</header>
+<div class="hero-main hero-short"> 
+    <video autoplay muted loop playsinline class="hero-bg-video">
+        <source src="{{ url_for('static', filename='img/campo_1.mp4') }}" type="video/mp4">
+    </video>
 
-<section class="section-padding">
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-content hero-flex-center">
+        
+        <img src="{{ url_for('static', filename='img/logo_vision.svg') }}" alt="Siembra Link Logo" class="hero-logo-large">
+        
+        <p class="hero-desc-text">
+           Dota a tu campo de visión artificial experta. Identifica plagas y enfermedades en etapas tempranas, monitorea la evolución visual del cultivo y ejecuta tratamientos localizados para reducir pérdidas y costos.
+        </p>
+    </div>
+</div>
+
+<section class="section-padding bg-dashboard no-lift "> 
+
+<section class="summary-section">
+    <div class="container">
+        <div class="cards-grid">
+            
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+                <h3>Diagnóstico por Imagen</h3>
+                <p>Convierte tu smartphone en un laboratorio portátil. Captura una foto de la hoja y obtén un análisis de salud instantáneo.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-bug"></i>
+                </div>
+                <h3>Identificación de Plagas</h3>
+                <p>Algoritmos de visión entrenados para distinguir entre cientos de tipos de insectos, hongos y deficiencias nutricionales.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <i class="fa-solid fa-file-medical"></i>
+                </div>
+                <h3>Historial Fitosanitario</h3>
+                <p>Guarda un registro visual de cada lote para monitorear la evolución de la enfermedad y validar la efectividad del tratamiento.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="section-padding no-lift">
     <div class="container">
         
         <div class="vision-options" style="margin-bottom: 20px;">

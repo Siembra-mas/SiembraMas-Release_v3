@@ -29,7 +29,6 @@
     document.addEventListener("DOMContentLoaded", function() {
         const videoElement = document.getElementById('heroVideo');
         
-        // A. Lista de videos
         const videos = [
             "{{ url_for('static', filename='img/campo_1.mp4') }}",
             "{{ url_for('static', filename='img/campo_2.mp4') }}", 
@@ -38,50 +37,44 @@
 
         let currentIndex = Math.floor(Math.random() * videos.length);
 
-        // Función inicial (sin fade, solo carga inmediata)
         function initVideo() {
             videoElement.src = videos[currentIndex];
             videoElement.play().catch(e => console.log("Autoplay bloqueado:", e));
         }
 
-        // B. Detectar cuando termina el video
         videoElement.addEventListener('ended', function() {
-            // 1. Iniciar Fade Out (Ocultar video actual)
             videoElement.classList.add('video-hidden');
 
-            // 2. Esperar 1 segundo (1000ms) a que termine la animación de CSS
             setTimeout(() => {
-                // Calcular siguiente video
                 currentIndex++;
                 if (currentIndex >= videos.length) currentIndex = 0;
-
-                // Cambiar la fuente del video
                 videoElement.src = videos[currentIndex];
                 
-                // Cargar y reproducir
                 videoElement.play().then(() => {
-                    // 3. Una vez que esté reproduciendo, hacer Fade In (Mostrar video)
-                    // Pequeño retraso de 50ms para asegurar que el navegador ya tiene el nuevo frame listo
                     setTimeout(() => {
                         videoElement.classList.remove('video-hidden');
                     }, 50);
                 }).catch(e => {
                     console.log("Error al reproducir siguiente video:", e);
-                    // Si falla, mostramos el video de todos modos para no dejar pantalla negra
                     videoElement.classList.remove('video-hidden');
                 });
 
-            }, 1000); // Este tiempo debe coincidir con 'transition: opacity 1s' del CSS
+            }, 1000); 
         });
 
-        // Arrancar el primero
         initVideo();
     });
 </script>
 
+
 <section id="recomendaciones" class="section-padding bg-cream">
     <div class="container">
-        <h2 class="section-title center-text">Panel de Recomendación <span class="text-accent">Inteligente</span></h2>
+        <div class="center-text">
+            <h2 class="section-title">Panel de Recomendación <span class="text-accent">Inteligente</span></h2>
+            <p class="section-subtitle">
+            Configura tu ubicación para analizar temperatura y clima con datos históricos, modelo de ML y API meteorológica que recomiendan cultivos.
+            </p>
+        </div>
         
         <div class="dashboard-grid">
             
@@ -90,7 +83,7 @@
                     <div class="form-row"> 
                         <div class="form-group">
                             <label>Estado</label>
-                            <select class="form-select" name="estado" id="estadoSelect">
+                            <select class="form-select" name="estado" id="estadoSelect" required>
                                 <option value="" disabled {% if not estado_sel %}selected{% endif %}>Seleccionar...</option>
                                 {% for edo in estados %}
                                     <option value="{{ edo }}" {% if estado_sel == edo %}selected{% endif %}>{{ edo }}</option>
@@ -100,10 +93,7 @@
                         <div class="form-group">
                             <label>Municipio</label>
                             <select class="form-select" name="municipio" id="municipioSelect">
-                                <option value="" disabled {% if not municipio_sel %}selected{% endif %}>Seleccionar...</option>
-                                {% for muni in municipios %}
-                                    <option value="{{ muni }}" {% if municipio_sel == muni %}selected{% endif %}>{{ muni }}</option>
-                                {% endfor %}
+                                <option value="General">General</option>
                             </select>
                         </div>
                     </div>
@@ -179,6 +169,9 @@
 
         <div class="crops-header" style="margin-top: 4rem;">
             <h3>CULTIVOS RECOMENDADOS</h3>
+            <p class="section-subtitle" style="max-width: 700px; margin: 0 auto 2rem auto;">
+            Te mostraremos los cultivos comunes de tu zona y opciones generales para evaluar si son viables según tu ubicación específica.
+            </p>
             
             <div class="filter-buttons">
                 <button type="button" class="btn btn-sm active" id="btnZona" onclick="filtrarCultivos('zona')">Recomendados para la zona</button>
@@ -225,6 +218,56 @@
 </section>
 
 <script>
+    // --- LÓGICA DE ESTADOS Y MUNICIPIOS CON FETCH ---
+    let todosLosMunicipios = [];
+    const estadoSelect = document.getElementById('estadoSelect');
+    const municipioSelect = document.getElementById('municipioSelect');
+    const municipioPreseleccionado = "{{ municipio_sel if municipio_sel else 'General' }}";
+
+    function cargarMunicipios() {
+        // Hacemos petición asíncrona a Flask para obtener los datos
+        fetch("{{ url_for('general.api_municipios') }}")
+            .then(response => response.json())
+            .then(data => {
+                todosLosMunicipios = data;
+                // Si el usuario ya había seleccionado Veracruz, refrescamos la lista ahora que tenemos datos
+                if (estadoSelect.value === 'Veracruz') {
+                    actualizarMunicipios();
+                }
+            })
+            .catch(error => console.error('Error cargando municipios:', error));
+    }
+
+    function actualizarMunicipios() {
+        const estadoActual = estadoSelect.value;
+        municipioSelect.innerHTML = '';
+
+        // Opción predeterminada siempre presente
+        const opcionGeneral = document.createElement('option');
+        opcionGeneral.value = "General";
+        opcionGeneral.textContent = "General";
+        municipioSelect.appendChild(opcionGeneral);
+
+        // Solo poblar si es Veracruz Y ya se descargaron los datos
+        if (estadoActual === 'Veracruz' && todosLosMunicipios.length > 0) {
+            todosLosMunicipios.forEach(muni => {
+                const opcion = document.createElement('option');
+                opcion.value = muni;
+                opcion.textContent = muni;
+                municipioSelect.appendChild(opcion);
+            });
+        }
+
+        // Restaurar selección previa (útil tras enviar formulario)
+        for (let i = 0; i < municipioSelect.options.length; i++) {
+            if (municipioSelect.options[i].value === municipioPreseleccionado) {
+                municipioSelect.selectedIndex = i;
+                break;
+            }
+        }
+    }
+
+    // --- FILTRADO DE CULTIVOS ---
     function filtrarCultivos(tipo) {
         const tarjetas = document.querySelectorAll('.crop-card');
         const btnZona = document.getElementById('btnZona');
@@ -255,8 +298,16 @@
         }
     }
 
-    // Inicializar filtro al cargar (mostrar solo zona por defecto si hay resultados)
-    document.addEventListener('DOMContentLoaded', function() {
+    // --- INICIALIZACIÓN ---
+    estadoSelect.addEventListener('change', actualizarMunicipios);
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        // 1. Configurar estado visual inicial
+        actualizarMunicipios();
+        // 2. Descargar datos de municipios en segundo plano
+        cargarMunicipios();
+        
+        // 3. Inicializar filtros si hay resultados
         if (document.querySelectorAll('.crop-card').length > 0) {
             filtrarCultivos('zona');
         }

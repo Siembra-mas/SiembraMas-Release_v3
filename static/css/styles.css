@@ -37,6 +37,10 @@ a { text-decoration: none; }
 .text-accent { color: var(--accent-green); }
 .center-text { text-align: center; max-width: 800px; margin: 0 auto 3rem; }
 .hidden { display: none !important; }
+.section-padding.no-lift {
+    padding-bottom: 0 !important; /* Elimina el espacio de abajo */
+    margin-bottom: 0;             /* Asegura que no haya margen extra */
+}
 
 /* --- BOTONES ACCESIBLES --- */
 .btn {
@@ -69,7 +73,7 @@ a { text-decoration: none; }
 
 /* --- NAVBAR --- */
 nav {
-    position: fixed; top: 0; width: 100%; padding: 0.8rem 0;
+    top: 0; width: 100%; padding: 0.8rem 0;
     z-index: 1000; background: rgba(25, 41, 29, 0.98);
     border-bottom: 2px solid var(--medium-green);
 }
@@ -82,18 +86,13 @@ nav {
 .menu-toggle { display: none; color: var(--cream); font-size: 2rem; cursor: pointer; }
 
 /* --- HERO GENERAL --- */
-.hero-main {
-    min-height: 85vh;
-    background: linear-gradient(135deg, var(--dark-green), var(--medium-green));
-    display: flex; align-items: center; color: var(--cream); padding-top: 100px;
-}
-.hero-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+
 .hero-text h1 { font-size: 3.5rem; line-height: 1.1; margin: 1rem 0; }
 .badge { background: var(--accent-green); padding: 5px 15px; border-radius: 50px; font-size: 0.9rem; font-weight: bold; color: white;}
 
 /* --- PÁGINA 1: DASHBOARD --- */
 .dashboard-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; margin-top: 3rem; }
-.control-panel { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+.control-panel { background: var(--white); padding: 2rem; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
 .form-group { margin-bottom: 1.5rem; }
 .form-group label { display: block; font-weight: bold; margin-bottom: 0.5rem; color: var(--dark-green); }
 .form-select { width: 100%; padding: 12px; border: 2px solid var(--medium-green); border-radius: 8px; font-size: 1.1rem; background: var(--white); }
@@ -290,13 +289,6 @@ footer {
 }
 
 /* Panel de control */
-.control-panel { 
-    background: white; 
-    padding: 2rem; 
-    border-radius: 16px; 
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
-    height: 100%; /* Para que tenga la misma altura que el mapa */
-}
 
 .form-row {
     display: grid;
@@ -341,7 +333,6 @@ footer {
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* 6 Columnas base */
     gap: 1.5rem;
-    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -415,12 +406,11 @@ footer {
 
 /* 1. Contenedor Principal */
 .hero-main {
-    min-height: 85vh;
+    min-height: 80vh;
     position: relative; 
     display: flex; 
     align-items: center; 
     color: var(--cream); 
-    padding-top: 100px;
     overflow: hidden;
     background-color: var(--dark-green); /* <--- IMPORTANTE: Fondo base */
 }
@@ -463,7 +453,7 @@ footer {
     z-index: 3; /* Capa superior */
     display: grid; 
     grid-template-columns: 1fr 1fr; 
-    gap: 4rem; 
+    gap: 2rem; 
     align-items: center;
     width: 100%; /* Aseguramos que ocupe el ancho disponible */
 }
@@ -1286,6 +1276,7 @@ canvas {
     gap: 2rem;
 }
 
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .dashboard-plantas-master {
@@ -1309,7 +1300,103 @@ canvas {
     }
 }
 
+/* =========================================
+   ESTILOS PÁGINA SIEMBRA LINK (HERO & DASHBOARD)
+   ========================================= */
 
+/* Hero más corto para páginas internas (40vh) */
+.hero-short {
+    min-height: 30vh;
+}
+
+/* Centrar contenido vertical y horizontalmente en el hero */
+.hero-flex-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 3;
+    height: 100%;
+}
+
+/* Estilo específico para el logo grande en el hero */
+.hero-logo-large {
+    max-width: 400px;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.2));
+}
+
+/* Párrafo descriptivo del hero */
+.hero-desc-text {
+    color: var(--cream);
+    font-size: 1.2rem;
+    max-width: 700px;
+    line-height: 1.5;
+}
+
+/* Contenedor principal del dashboard (Fondo verde claro) */
+.bg-dashboard {
+    background-color: #E8F1E0;
+    min-height: 100vh;
+    margin-top: -2px; /* Elimina líneas blancas entre secciones */
+}
+
+/* Estilos para la sección de resumen */
+.summary-section {
+    padding: 3rem 0;
+    position: relative;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive automático */
+    gap: 2rem;
+    margin-top: -4rem; /* EFECTO MODERNO: Hace que las tarjetas "floten" sobre el video/hero */
+    z-index: 10;
+    position: relative;
+}
+
+.feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Sombra suave y moderna */
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.icon-wrapper {
+    width: 60px;
+    height: 60px;
+    background: var(--dark-green, #2c5e2e); /* Usa tu variable o un verde por defecto */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 1.5rem auto;
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.8rem;
+}
+
+.feature-card p {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
 
 /* Responsive */
 @media (max-width: 600px) {
