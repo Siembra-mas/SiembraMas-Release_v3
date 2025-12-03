@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
 </head>
 <body>
@@ -33,14 +36,45 @@
 
     {% block content %}{% endblock %}
 
-    <div class="floating-bot" title="Hablar con IA">
-        <i class="fa-solid fa-microphone" style="color: white; font-size: 1.5rem;"></i>
+    <div class="floating-bot" id="botTrigger" title="Hablar con SiembraBot">
+        <i class="fa-solid fa-robot"></i>
     </div>
-    <div id="bot-overlay" class="bot-overlay">
-        <div class="pulse-circle"></div>
-        <h2>Esperando instrucciones...</h2>
-        <p>Di "Analizar mi cultivo" o "Estado del clima"</p>
+
+    <div class="chat-widget" id="chatWidget">
+        
+        <div class="chat-header">
+            <div class="chat-title">
+                <i class="fa-solid fa-leaf"></i> SiembraBot
+            </div>
+            <button class="close-chat" id="closeChat" title="Minimizar">
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message msg-bot">
+                ¡Hola! Soy tu asistente agrícola inteligente. 🌱<br>
+                Puedo analizar el clima o darte consejos de cultivo. ¿En qué te ayudo?
+            </div>
+        </div>
+
+        <div id="statusIndicator" class="status-indicator hidden">
+            <span class="status-text">Procesando...</span>
+            <div class="typing-dots"><span>.</span><span>.</span><span>.</span></div>
+        </div>
+
+        <div class="chat-input-area">
+            <button id="recordBtn" class="btn-icon btn-mic" title="Presionar para hablar">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            <input type="text" id="chatInput" placeholder="Escribe tu duda..." autocomplete="off">
+            <button id="sendBtn" class="btn-icon btn-send" title="Enviar mensaje">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
     </div>
+
+    <audio id="botAudioPlayer" style="display:none;"></audio>
 
     <footer>
         <div class="container">
@@ -99,5 +133,6 @@
     </footer>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>

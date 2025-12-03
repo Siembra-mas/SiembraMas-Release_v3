@@ -1,57 +1,98 @@
-import threading
 import sys
 import os
-from flask import Blueprint, render_template, jsonify
-from datetime import datetime
+import uuid
+from flask import Blueprint, render_template, jsonify, request, url_for, current_app
 
-# Ajuste de path para importar lógica
-current_file = os.path.abspath(__file__)
-project_root = os.path.dirname(os.path.dirname(current_file))
-if project_root not in sys.path:
-    sys.path.append(project_root)
-
-# Importamos la lógica consolidada del Agente
-from logic.agente_voz import ejecutar_agente
-# Importamos catálogos para llenar los <select> del HTML
-from logic.catalogos import estados, municipios, coordenadas
+# --- NUEVO IMPORT: Usamos el cerebro centralizado ---
+from logic.cerebro_bot import consultar_cerebro, transcribir_audio_groq, generar_audio_respuesta
 
 base_bp = Blueprint('base', __name__)
 
-# --- RUTA 1: PÁGINA DE INICIO ---
 @base_bp.route('/')
 def index():
-    # Datos necesarios para que index.html no falle
-    meses = ("Enero","Febrero","Marzo","Abril","Mayo","Junio",
-             "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
-    anio_actual = datetime.now().year
-    mes_actual = meses[datetime.now().month - 1]
-
     context = {
         "title": "Inicio",
-        "mes_sel": mes_actual, 
-        "anio_sel": anio_actual, 
-        "recomendaciones": [],
-        "estados": estados, 
-        "municipios": municipios, 
-        "meses": meses, 
-        "anios": [anio_actual],
-        # Valores por defecto para evitar errores jinja2
-        "temp_max": None, "temp_min": None, "precipitacion": None, 
-        "humedad": None, "nombre_mes": None,
-        "latitud_mapa": 19.1738, "longitud_mapa": -96.1342
+        # ... tus otros datos ...
     }
-    # Renderizamos index.html que extiende de base.html
     return render_template('index.html', **context)
 
-# --- RUTA 2: API DE VOZ (Llamada por el botón flotante) ---
-@base_bp.route('/api/activar-voz', methods=['POST'])
-def activar_voz():
-    """Lanza el agente en segundo plano"""
+# --- API DEL CHAT FLOTANTE (GLOBAL) ---
+
+@base_bp.route('/api/chat', methods=['POST'])
+def api_chat():
+    """
+    Maneja mensajes de TEXTO enviados desde el widget flotante.
+    """
+    data = request.json
+    mensaje = data.get('mensaje')
+    historial = data.get('historial', []) 
+    
+    # Intentamos obtener ubicación si el JS la envía (opcional)
+    lat = data.get('lat')
+    lon = data.get('lon')
+    
+    if not mensaje:
+        return jsonify({"error": "Mensaje vacío"}), 400
+
+    # 1. Consultar cerebro (Lógica centralizada)
+    respuesta_texto = consultar_cerebro(mensaje, historial, lat, lon)
+    
+    # 2. Generar Audio de la respuesta
+    # Usamos current_app.static_folder para asegurar la ruta correcta en cualquier OS
+    audio_url = generar_audio_respuesta(respuesta_texto, current_app.static_folder)
+    
+    # Ajustamos la URL para que sea accesible desde el navegador
+    # generar_audio_respuesta devuelve algo como "audio/archivo.mp3"
+    full_audio_url = url_for('static', filename=audio_url) if audio_url else None
+
+    return jsonify({
+        "respuesta": respuesta_texto,
+        "audio_url": full_audio_url
+    })
+
+@base_bp.route('/api/audio-upload', methods=['POST'])
+def api_audio_upload():
+    """
+    Maneja grabación de AUDIO (micrófono) desde el widget flotante.
+    """
+    if 'audio' not in request.files:
+        return jsonify({"error": "No audio file"}), 400
+        
+    audio_file = request.files['audio']
+    
+    # Intentamos obtener ubicación del form data si el JS la envía
+    lat = request.form.get('lat')
+    lon = request.form.get('lon')
+    
+    # Guardar temporalmente el audio del usuario
+    filename = f"input_{uuid.uuid4().hex}.wav"
+    temp_path = os.path.join(current_app.static_folder, 'temp', filename)
+    
+    # Asegurar que existe la carpeta temp
+    os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+    audio_file.save(temp_path)
+    
+    # 1. Transcribir con Groq (Igual que en SiembraBot)
+    texto_usuario = transcribir_audio_groq(temp_path)
+    
+    # Limpieza: Borrar el audio de entrada para no llenar el servidor
     try:
-        # Usamos threading para no congelar la página web mientras el bot escucha
-        hilo = threading.Thread(target=ejecutar_agente)
-        hilo.start()
-        return jsonify({"status": "success", "message": "Agente escuchando..."}), 200
-    except Exception as e:
-        print(f"Error activando voz: {e}")
-        return jsonify({"status": "error", "message": str(e)}), 500
+        os.remove(temp_path)
+    except:
+        pass
+    
+    if not texto_usuario:
+        return jsonify({"respuesta": "No pude escuchar bien, intenta de nuevo.", "transcripcion": ""})
+
+    # 2. Consultar Cerebro
+    respuesta_texto = consultar_cerebro(texto_usuario, [], lat, lon)
+    
+    # 3. Generar Audio Respuesta
+    audio_url_rel = generar_audio_respuesta(respuesta_texto, current_app.static_folder)
+    full_audio_url = url_for('static', filename=audio_url_rel) if audio_url_rel else None
+
+    return jsonify({
+        "transcripcion": texto_usuario,
+        "respuesta": respuesta_texto,
+        "audio_url": full_audio_url
+    })

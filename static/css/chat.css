@@ -1,0 +1,263 @@
+/* =========================================
+   ESTILOS EXCLUSIVOS DEL WIDGET DE CHAT
+   ========================================= */
+
+/* --- 1. BOTÓN FLOTANTE (TRIGGER) --- */
+.floating-bot {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    background: var(--dark-green, #19291D); /* Fallback si falla la variable */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2000;
+    box-shadow: 0 8px 25px rgba(25, 41, 29, 0.4);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid var(--accent-green, #74B74A);
+}
+
+.floating-bot:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 30px rgba(116, 183, 74, 0.6);
+}
+
+.floating-bot i {
+    font-size: 1.8rem;
+    color: var(--white, #F0F6EA);
+    transition: transform 0.3s;
+}
+
+.floating-bot:hover i {
+    transform: rotate(15deg);
+}
+
+/* --- 2. WIDGET DE CHAT (CONTENEDOR) --- */
+.chat-widget {
+    position: fixed;
+    bottom: 110px; /* Se coloca encima del botón flotante */
+    right: 30px;
+    width: 380px;
+    height: 550px;
+    background-color: var(--white, #F0F6EA);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    z-index: 2500;
+    overflow: hidden;
+    
+    /* Estado inicial: oculto y desplazado hacia abajo */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    border: 1px solid rgba(116, 183, 74, 0.3);
+}
+
+/* Clase activa: Muestra el chat */
+.chat-widget.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0) scale(1);
+}
+
+/* --- 3. HEADER DEL CHAT --- */
+.chat-header {
+    background: linear-gradient(135deg, var(--dark-green, #19291D), var(--medium-green, #32523A));
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid var(--accent-green, #74B74A);
+    color: var(--white, #F0F6EA);
+}
+
+.chat-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.5px;
+}
+
+.close-chat {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: var(--white, #F0F6EA);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.close-chat:hover {
+    background: rgba(217, 83, 79, 0.8); /* Rojo alerta */
+}
+
+/* --- 4. ÁREA DE MENSAJES --- */
+.chat-messages {
+    flex: 1; /* Ocupa todo el espacio disponible */
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f4f8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    scroll-behavior: smooth;
+}
+
+/* Burbujas de mensaje */
+.message {
+    padding: 12px 16px;
+    border-radius: 15px;
+    font-size: 1rem;
+    max-width: 85%;
+    line-height: 1.5;
+    font-family: 'Crimson Pro', serif;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.msg-bot {
+    background-color: var(--white, #F0F6EA);
+    color: var(--dark-green, #19291D);
+    border: 1px solid #dcdcdc;
+    align-self: flex-start; /* Alineado a la izquierda */
+    border-bottom-left-radius: 2px;
+}
+
+.msg-user {
+    background-color: var(--medium-green, #32523A);
+    color: var(--white, #F0F6EA);
+    align-self: flex-end; /* Alineado a la derecha */
+    border-bottom-right-radius: 2px;
+}
+
+/* --- 5. ÁREA DE INPUT --- */
+.chat-input-area {
+    padding: 15px;
+    background: var(--white, #F0F6EA);
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#chatInput {
+    flex: 1;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    padding: 10px 15px;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+    background: white;
+}
+
+#chatInput:focus {
+    border-color: var(--accent-green, #74B74A);
+}
+
+/* Botones circulares (Micrófono y Enviar) */
+.btn-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.btn-mic {
+    background-color: #f0f0f0;
+    color: var(--dark-green, #19291D);
+}
+
+.btn-mic:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.05);
+}
+
+/* Animación cuando está grabando */
+.btn-mic.recording {
+    background-color: var(--alert-red, #D9534F);
+    color: white;
+    animation: pulse-red 1.5s infinite;
+}
+
+.btn-send {
+    background-color: var(--accent-green, #74B74A);
+    color: white;
+}
+
+.btn-send:hover {
+    background-color: var(--dark-green, #19291D);
+    transform: translateY(-2px);
+}
+
+/* --- 6. INDICADOR DE ESTADO (Feedback) --- */
+.status-indicator {
+    padding: 8px;
+    background: #fafafa;
+    border-top: 1px solid #eee;
+    color: var(--medium-green, #32523A);
+    font-size: 0.85rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.status-indicator.hidden {
+    display: none;
+}
+
+/* Animación de puntos (...) */
+.typing-dots span {
+    animation: typing 1.4s infinite ease-in-out both;
+    font-size: 1.2rem;
+    line-height: 0.5;
+}
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+/* --- 7. ANIMACIONES Y KEYFRAMES --- */
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(217, 83, 79, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(217, 83, 79, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(217, 83, 79, 0); }
+}
+
+@keyframes typing {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+/* --- 8. RESPONSIVE (Móviles) --- */
+@media (max-width: 480px) {
+    .chat-widget {
+        width: 90%; /* Ocupa casi todo el ancho */
+        right: 5%;
+        left: 5%;
+        bottom: 100px;
+        height: 65vh; /* Altura más cómoda en móvil */
+    }
+}

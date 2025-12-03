@@ -15,4 +15,4 @@ app.register_blueprint(siembra_vision_bp)
 app.register_blueprint(base_bp)  # NUEVO: Registramos el router base
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)

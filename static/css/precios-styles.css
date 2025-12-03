@@ -1,0 +1,412 @@
+/* static/css/precios-styles.css */
+/* ADAPTADO A BRANDING SIEMBRA+ */
+
+/* --- VARIABLES REDEFINIDAS (Siembra+) --- */
+:root {
+    /* Mapeo de identidad Siembra+ */
+    --primary-green: #74B74A; /* Tu --accent-green */
+    --dark-green: #19291D;    /* Tu --dark-green */
+    --medium-green: #32523A;  /* Tu --medium-green */
+    --light-green: #E1EDD5;   /* Tu --cream */
+    --accent: #74B74A;        /* Usamos el verde acento para destacar */
+    
+    --bg-body: #F0F6EA;       /* Tu --white (fondo general) */
+    --bg-card: #FFFFFF;       /* Tarjetas blancas para contraste limpio */
+    
+    --text-main: #19291D;     /* Texto principal oscuro */
+    --text-muted: #32523A;    /* Texto secundario (verde medio) */
+    --border-subtle: #E1EDD5; /* Bordes color crema */
+    
+    --shadow-soft: 0 10px 40px -10px rgba(25, 41, 29, 0.05);
+    --shadow-hover: 0 20px 60px -12px rgba(116, 183, 74, 0.2);
+}
+
+body {
+    background-color: var(--bg-body);
+    font-family: 'Crimson Pro', serif; /* Base serif como en Siembra+ */
+    color: var(--text-main);
+}
+
+/* --- HEADER --- */
+.pricing-header {
+    padding: 8rem 0 5rem;
+    text-align: center;
+    /* Gradiente sutil usando tus verdes */
+    background: linear-gradient(180deg, rgba(116, 183, 74, 0.05) 0%, rgba(240, 246, 234, 0) 100%);
+    margin-bottom: 2rem;
+}
+
+.pricing-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800; /* Extra bold como en Siembra+ */
+    font-size: 3.5rem;
+    color: var(--dark-green);
+    margin-bottom: 1rem;
+    letter-spacing: -1.5px;
+    text-transform: uppercase;
+}
+
+.pricing-header p {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.35rem;
+    color: var(--text-muted); /* Verde medio para mejor lectura */
+    max-width: 550px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.pricing-section-title {
+    text-align: center;
+    margin: 3rem 0 4rem;
+    font-size: 1.25rem;
+    color: var(--medium-green);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.pricing-section-title::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: var(--primary-green);
+    margin: 15px auto 0;
+    border-radius: 2px;
+}
+
+/* --- GRID SYSTEM (4 COLUMNAS) --- */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 1.5rem;
+    margin-bottom: 6rem;
+    align-items: stretch;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .pricing-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* --- TARJETAS (PLAN CARDS) --- */
+.plan-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    padding: 2.5rem 1.5rem;
+    border-radius: 16px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: var(--shadow-soft);
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-green);
+}
+
+/* Estilo Destacado (Siembra+ Style) */
+.plan-card.featured {
+    background: var(--medium-green); /* Usamos el verde medio sólido */
+    color: white;
+    border: 2px solid var(--primary-green);
+    transform: scale(1.02);
+}
+
+.plan-card.featured:hover {
+    transform: scale(1.02) translateY(-5px);
+}
+
+/* Textos dentro de Featured */
+.plan-card.featured h3,
+.plan-card.featured .plan-price,
+.plan-card.featured .plan-period,
+.plan-card.featured .plan-description,
+.plan-card.featured .plan-features li,
+.plan-card.featured i {
+    color: var(--light-green) !important; /* Color Crema para contraste */
+}
+
+.plan-card.featured .plan-features li {
+    opacity: 1;
+    border-bottom-color: rgba(225, 237, 213, 0.2);
+}
+
+/* Badges */
+.plan-type-badge {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--primary-green);
+    margin-bottom: 1rem;
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.plan-card.featured .plan-type-badge {
+    color: var(--light-green);
+}
+
+.popular-badge {
+    background: var(--primary-green); /* Verde Acento */
+    color: white;
+    padding: 4px 12px;
+    border-radius: 50px;
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Tipografía Card */
+.plan-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--dark-green);
+    text-transform: uppercase;
+}
+
+.plan-price {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--dark-green);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.plan-period {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    font-family: 'Crimson Pro', serif;
+}
+
+.annual-price {
+    font-size: 0.9rem;
+    color: var(--primary-green);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    opacity: 1;
+    font-family: 'Crimson Pro', serif;
+}
+
+.hardware-cost {
+    font-size: 0.75rem;
+    background: var(--light-green); /* Cream background */
+    color: var(--dark-green);
+    padding: 8px 12px;
+    border-radius: 50px; /* Pill shape más acorde a Siembra+ */
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.plan-card.featured .hardware-cost {
+    background: rgba(255,255,255,0.15);
+    color: var(--light-green);
+}
+
+.plan-description {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    min-height: 3.5rem;
+}
+
+/* Lista de Features */
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.plan-features li {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    color: var(--text-main);
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.5rem;
+}
+
+.plan-features li:last-child {
+    border-bottom: none;
+}
+
+.plan-features i {
+    color: var(--primary-green);
+    font-size: 0.9rem;
+}
+
+/* --- BOTONES --- */
+.plan-card .btn {
+    width: 100%;
+    padding: 14px 0;
+    border-radius: 50px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border: 3px solid transparent; /* Para igualar el estilo de botones Siembra+ */
+}
+
+/* Botón Outline Normal */
+.plan-card .btn-outline {
+    background: transparent;
+    border: 3px solid var(--primary-green);
+    color: var(--primary-green);
+}
+
+.plan-card .btn-outline:hover {
+    background: var(--primary-green);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(116, 183, 74, 0.3);
+}
+
+/* Botón en tarjeta destacada */
+.plan-card.featured .btn {
+    background: var(--primary-green);
+    color: white;
+    border: 3px solid var(--primary-green);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.plan-card.featured .btn:hover {
+    background: var(--light-green);
+    border-color: var(--light-green);
+    color: var(--dark-green);
+}
+
+/* Utilidad para Add-ons */
+.bg-cream {
+    background: #FAF9F6;
+    border: 2px dashed var(--border-subtle);
+}
+
+/* --- HEADER CON VIDEO (Actualizado) --- */
+.pricing-header {
+    position: relative; /* Necesario para contener los elementos absolutos */
+    padding: 10rem 0 6rem; /* Un poco más de alto para lucir el video */
+    text-align: center;
+    background-color: var(--dark-green); /* Color de respaldo si no carga el video */
+    overflow: hidden; /* Corta el video si es muy grande */
+    margin-bottom: 3rem;
+}
+
+/* 1. Estilos del Video */
+.pricing-video-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que cubra todo el espacio sin deformarse */
+    z-index: 0;
+    opacity: 0.6; /* Hacemos el video un poco sutil por defecto */
+}
+
+/* 2. Estilos del Overlay (Capa Verde) */
+.pricing-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Gradiente verde oscuro semitransparente (Estilo Siembra+) */
+    background: linear-gradient(135deg, rgba(25, 41, 29, 0.92), rgba(50, 82, 58, 0.85));
+    z-index: 1;
+}
+
+/* 3. Estilos del Contenido (Texto) */
+.pricing-content {
+    position: relative;
+    z-index: 2; /* Asegura que el texto esté encima del video */
+}
+
+.pricing-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 3.5rem;
+    /* CAMBIO IMPORTANTE: Texto claro para contrastar con el video */
+    color: var(--bg-body); 
+    margin-bottom: 1rem;
+    letter-spacing: -1.5px;
+    text-transform: uppercase;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Sombra para legibilidad */
+}
+
+.pricing-header p {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.35rem;
+    /* CAMBIO IMPORTANTE: Texto claro */
+    color: var(--light-green);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+.pricing-section-title {
+    text-align: center;
+    margin: 3rem 0 4rem;
+    font-size: 1.25rem;
+    color: var(--medium-green);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.pricing-section-title::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: var(--primary-green);
+    margin: 15px auto 0;
+    border-radius: 2px;
+}

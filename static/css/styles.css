@@ -1337,7 +1337,6 @@ canvas {
 /* Contenedor principal del dashboard (Fondo verde claro) */
 .bg-dashboard {
     background-color: #E8F1E0;
-    min-height: 100vh;
     margin-top: -2px; /* Elimina líneas blancas entre secciones */
 }
 

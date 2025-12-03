@@ -9,9 +9,7 @@
     <div class="hero-overlay"></div>
 
     <div class="container hero-content hero-flex-center">
-        
         <img src="{{ url_for('static', filename='img/logo_bot.svg') }}" alt="Siembra Link Logo" class="hero-logo-large">
-        
         <p class="hero-desc-text">
         Dialoga directamente con la inteligencia de tu campo. Recibe diagnósticos instantáneos, interpreta alertas complejas y obtén recomendaciones agronómicas personalizadas en una conversación sencilla para optimizar cada recurso.
         </p>
@@ -19,62 +17,212 @@
 </div>
 
 <section class="section-padding bg-dashboard no-lift"> 
+    <section class="summary-section">
+        <div class="container">
+            <div class="cards-grid">
+                <div class="feature-card">
+                    <div class="icon-wrapper">
+                        <i class="fa-solid fa-comments"></i> </div>
+                    <h3>Diagnóstico Conversacional</h3>
+                    <p>Describe lo que ves en el campo con tus propias palabras. El agente entiende lenguaje natural para identificar problemas al instante.</p>
+                </div>
 
-<section class="summary-section">
-    <div class="container">
-        <div class="cards-grid">
-            
-            <div class="feature-card">
-                <div class="icon-wrapper">
-                    <i class="fa-solid fa-comments"></i> </div>
-                <h3>Diagnóstico Conversacional</h3>
-                <p>Describe lo que ves en el campo con tus propias palabras. El agente entiende lenguaje natural para identificar problemas al instante.</p>
+                <div class="feature-card">
+                    <div class="icon-wrapper">
+                        <i class="fa-solid fa-satellite"></i> </div>
+                    <h3>Vigilancia Climática Activa</h3>
+                    <p>El bot monitorea 24/7 los pronósticos locales y te envía alertas proactivas antes de que una helada o sequía afecte tu lote.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon-wrapper">
+                        <i class="fa-solid fa-chart-line"></i> </div>
+                    <h3>Soporte de Decisiones</h3>
+                    <p>Pregunta "¿Cuándo es mejor sembrar?" y recibe una estrategia basada en el cruce de datos históricos y predictivos.</p>
+                </div>
             </div>
-
-            <div class="feature-card">
-                <div class="icon-wrapper">
-                    <i class="fa-solid fa-satellite"></i> </div>
-                <h3>Vigilancia Climática Activa</h3>
-                <p>El bot monitorea 24/7 los pronósticos locales y te envía alertas proactivas antes de que una helada o sequía afecte tu lote.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon-wrapper">
-                    <i class="fa-solid fa-chart-line"></i> </div>
-                <h3>Soporte de Decisiones</h3>
-                <p>Pregunta "¿Cuándo es mejor sembrar?" y recibe una estrategia basada en el cruce de datos históricos y predictivos.</p>
-            </div>
-
         </div>
-    </div>
+    </section>
 </section>
 
 <section class="section-padding bg-cream no-lift">
     <div class="container">
         <div class="chat-wrapper">
-            <div class="chat-header" style="background: var(--dark-green); color: white; padding: 1rem;">
-                <i class="fa-solid fa-robot"></i> Asistente Agrónomo Virtual
-            </div>
-            
-            <div class="chat-window">
-                <div class="message msg-bot">
-                    Hola, soy SiembraBot. ¿En qué puedo ayudarte hoy? Puedo analizar plagas o recomendar fechas de siembra.
-                </div>
-                <!-- Aquí se inyectarán mensajes dinámicamente -->
-                <!-- Placeholder de mensaje de usuario -->
-                <!-- <div class="message msg-user">Quiero saber cuándo sembrar maíz en Córdoba.</div> -->
+            <div class="chat-header"
+                style="background: var(--dark-green); color: white; padding: 1rem; display:flex; justify-content:space-between; align-items: center;">
+                <span><i class="fa-solid fa-robot"></i> SiembraBot</span>
+                <span id="status-indicator" style="font-size:0.8rem; opacity:0.8;">En línea</span>
             </div>
 
-            <div class="chat-input-area">
-                <input type="text" class="chat-input" placeholder="Escribe tu consulta aquí..." aria-label="Escribe tu consulta">
-                <button class="btn" style="padding: 10px 20px;"><i class="fa-solid fa-paper-plane"></i></button>
+            <div class="chat-window" id="chat-box">
+                <div class="message msg-bot">
+                    Hola, soy SiembraBot. ¿En qué puedo ayudarte hoy?
+                </div>
             </div>
+
+            <div class="chat-input-area" style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="input-texto" class="chat-input" placeholder="Escribe o usa el micrófono..."
+                    autocomplete="off">
+
+                <button type="button" class="btn" id="btn-enviar" onclick="enviarTexto()">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+
+                <button type="button" class="btn" id="btn-micro" style="background-color: #dc3545;"
+                    onmousedown="iniciarGrabacion()" onmouseup="detenerGrabacion()" ontouchstart="iniciarGrabacion()"
+                    ontouchend="detenerGrabacion()">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+            </div>
+
+            <audio id="audio-player" style="display:none;"></audio>
         </div>
 
         <div class="center-text" style="margin-top: 2rem;">
-            <p><strong>Nota:</strong> Este chat interactúa con datos en tiempo real de API climáticas (OpenWeather) y nuestra base de conocimientos.</p>
-            <!-- Integración futura: Llamada a OpenAI API / Gemini API -->
+            <p><strong>Nota:</strong> Este chat interactúa con datos en tiempo real de API climáticas y nuestra base de conocimientos agronómica.</p>
         </div>
     </div>
 </section>
+
+<script>
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
+
+    // 1. Detección de Enter para enviar sin recargar
+    document.getElementById("input-texto").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); 
+            enviarTexto();
+        }
+    });
+
+    // 2. Lógica de Grabación de Audio
+    async function iniciarGrabacion() {
+        if (!navigator.mediaDevices) { alert("Tu navegador no soporta audio."); return; }
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                enviarAudioAlServidor(audioBlob);
+            };
+            mediaRecorder.start();
+            isRecording = true;
+            document.getElementById('btn-micro').classList.add('pulse-animation');
+            document.getElementById('status-indicator').innerText = "Escuchando...";
+        } catch (err) {
+            console.error("Error microfono:", err);
+            alert("No se pudo acceder al micrófono.");
+        }
+    }
+
+    function detenerGrabacion() {
+        if (isRecording && mediaRecorder) {
+            mediaRecorder.stop();
+            isRecording = false;
+            document.getElementById('btn-micro').classList.remove('pulse-animation');
+            document.getElementById('status-indicator').innerText = "Procesando...";
+        }
+    }
+
+    // 3. Enviar Audio
+    async function enviarAudioAlServidor(blob) {
+        const formData = new FormData();
+        formData.append("audio_blob", blob, "audio.wav");
+        agregarMensaje("🎤 Audio enviado...", "user");
+
+        try {
+            // Asegúrate de que esta ruta coincida con tu ruta en app.py (ej: @app.route('/api/chat'))
+            const response = await fetch('/api/chat', { method: 'POST', body: formData });
+            if (!response.ok) throw new Error("Error en el servidor");
+            const data = await response.json();
+            procesarRespuesta(data);
+        } catch (error) {
+            console.error(error);
+            agregarMensaje("Error al conectar con el cerebro del bot.", "bot");
+            document.getElementById('status-indicator').innerText = "Error";
+        }
+    }
+
+    // 4. Enviar Texto
+    async function enviarTexto() {
+        const input = document.getElementById('input-texto');
+        const texto = input.value.trim();
+        if (!texto) return;
+
+        agregarMensaje(texto, "user");
+        input.value = "";
+        document.getElementById('status-indicator').innerText = "Escribiendo...";
+
+        const formData = new FormData();
+        formData.append("mensaje", texto);
+
+        try {
+            const response = await fetch('/api/chat', { method: 'POST', body: formData });
+            if (!response.ok) throw new Error("Error en el servidor");
+            const data = await response.json();
+            procesarRespuesta(data);
+        } catch (error) {
+            console.error(error);
+            agregarMensaje("Error: No pude obtener respuesta.", "bot");
+            document.getElementById('status-indicator').innerText = "Error";
+        }
+    }
+
+    // 5. Utilidades UI
+    function procesarRespuesta(data) {
+        document.getElementById('status-indicator').innerText = "En línea";
+        
+        if (data.error) {
+            agregarMensaje("Error: " + data.error, "bot");
+            return;
+        }
+
+        agregarMensaje(data.bot, "bot");
+        
+        if (data.audio_url) {
+            const player = document.getElementById('audio-player');
+            // Usamos la ruta relativa correcta para Flask
+            player.src = "{{ url_for('static', filename='') }}" + data.audio_url;
+            player.play().catch(e => console.log("Reproducción automática bloqueada por el navegador"));
+        }
+    }
+
+    function agregarMensaje(texto, sender) {
+        const chatBox = document.getElementById('chat-box');
+        const div = document.createElement('div');
+        div.className = `message msg-${sender}`;
+        div.innerText = texto;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+
+<style>
+    /* Estilo para la animación de grabación */
+    .pulse-animation {
+        animation: pulse-red 1s infinite;
+        background-color: red !important;
+    }
+
+    @keyframes pulse-red {
+        0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7);
+        }
+
+        70% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 10px rgba(255, 82, 82, 0);
+        }
+
+        100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
+        }
+    }
+</style>
 {% endblock %}

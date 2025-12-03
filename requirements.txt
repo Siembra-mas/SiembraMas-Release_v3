@@ -7,6 +7,12 @@ requests
 tensorflow
 pillow
 numpy
+edge-tts
+flask-cors
 sounddevice
-vosk
-gTTS
+soundfile
+gtts
+pyttsx3
+pyaudio
+groq
+python-dotenv
