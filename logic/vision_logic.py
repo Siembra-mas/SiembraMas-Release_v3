@@ -20,36 +20,21 @@ except ImportError:
 
 IMG_SIZE = 224
 CLASS_NAMES = clase
+RUTA_H5 = os.path.join(project_root, 'model', 'siembra_plus_doctor.h5')
 
-# ── Rutas de modelos ──────────────────────────────────────────────────────────
-RUTA_ONNX = os.path.join(project_root, 'model', 'siembra_plus_doctor.onnx')
-RUTA_H5   = os.path.join(project_root, 'model', 'siembra_plus_doctor.h5')
+_model_instance = None
 
-# ── Intentar cargar backend disponible ───────────────────────────────────────
-_onnx_session = None
-_tf_model     = None
-
-def _init_onnx():
-    global _onnx_session
-    if not os.path.exists(RUTA_ONNX):
-        return False
-    try:
-        import onnxruntime as ort
-        _onnx_session = ort.InferenceSession(RUTA_ONNX, providers=['CPUExecutionProvider'])
-        print("✅ Modelo ONNX cargado correctamente.")
-        return True
-    except Exception as e:
-        print(f"⚠️ No se pudo cargar ONNX: {e}")
-        return False
-
-def _init_tf():
-    global _tf_model
-    if not os.path.exists(RUTA_H5):
-        return False
+def _cargar_modelo():
+    global _model_instance
+    if _model_instance is not None:
+        return _model_instance
     try:
         import tensorflow as tf
         from tensorflow.keras.models import Sequential
-        from tensorflow.keras.layers import InputLayer, Dense, GlobalAveragePooling2D, RandomFlip, RandomRotation, Rescaling
+        from tensorflow.keras.layers import (
+            InputLayer, Dense, GlobalAveragePooling2D,
+            RandomFlip, RandomRotation, Rescaling
+        )
         from tensorflow.keras.applications import MobileNetV2
 
         IMG_SHAPE = (IMG_SIZE, IMG_SIZE, 3)
@@ -66,55 +51,41 @@ def _init_tf():
         ])
         model(tf.zeros([1, IMG_SIZE, IMG_SIZE, 3]))
         model.load_weights(RUTA_H5)
-        _tf_model = model
-        print("✅ Modelo TensorFlow (.h5) cargado correctamente.")
-        return True
+        _model_instance = model
+        print("✅ Modelo TensorFlow cargado.")
+        return _model_instance
     except Exception as e:
-        print(f"⚠️ No se pudo cargar TensorFlow: {e}")
-        return False
-
-# Inicializar al importar el módulo — ONNX tiene prioridad
-if not _init_onnx():
-    _init_tf()
-
-
-def _preprocess(img_pil):
-    img = img_pil.convert('RGB').resize((IMG_SIZE, IMG_SIZE))
-    arr = np.array(img, dtype=np.float32)
-    return arr[np.newaxis, ...]   # shape (1, 224, 224, 3)
+        print(f"❌ Error cargando modelo: {e}")
+        return None
 
 
 def procesar_prediccion(img_pil):
-    global _onnx_session, _tf_model
+    model = _cargar_modelo()
 
-    if _onnx_session is None and _tf_model is None:
+    if model is None:
         return {
-            "error": "Modelo no disponible. Sube model/siembra_plus_doctor.onnx al repositorio.",
+            "error": "Modelo no disponible.",
             "diagnostico": "Servicio no disponible",
-            "descripcion": "El modelo de IA no se encontró en el servidor.",
+            "descripcion": "No se pudo cargar el modelo de IA en este servidor.",
             "id": -1,
             "status": "unavailable"
         }
 
     try:
-        arr = _preprocess(img_pil)
+        import tensorflow as tf
+        img = img_pil.convert('RGB').resize((IMG_SIZE, IMG_SIZE))
+        arr = np.array(img, dtype=np.float32)
+        if arr.ndim == 2:
+            arr = np.stack([arr]*3, axis=-1)
+        tensor = tf.expand_dims(arr, 0)
 
-        if _onnx_session is not None:
-            import onnxruntime as ort
-            input_name = _onnx_session.get_inputs()[0].name
-            # ONNX espera valores normalizados [−1, 1] igual que el modelo original
-            arr_norm = arr / 127.5 - 1.0
-            preds = _onnx_session.run(None, {input_name: arr_norm})[0][0]
-        else:
-            import tensorflow as tf
-            preds = _tf_model.predict(tf.expand_dims(arr, 0), verbose=0)[0]
-
-        class_id = int(np.argmax(preds))
+        preds = model.predict(tensor, verbose=0)
+        class_id = int(np.argmax(preds[0]))
         class_name = CLASS_NAMES[class_id] if 0 <= class_id < len(CLASS_NAMES) else f"Desconocido (ID: {class_id})"
         descripcion = obtener_descripcion(class_name)
 
         return {"diagnostico": class_name, "descripcion": descripcion, "id": class_id, "status": "success"}
 
     except Exception as e:
-        print(f"❌ Error durante la predicción: {e}")
-        return {"diagnostico": "Error al analizar", "descripcion": "Error técnico al procesar la imagen.", "id": -1, "error": str(e), "status": "error"}
+        print(f"❌ Error en predicción: {e}")
+        return {"diagnostico": "Error al analizar", "descripcion": "Error técnico.", "id": -1, "error": str(e), "status": "error"}
