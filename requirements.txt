@@ -5,6 +5,7 @@ pandas
 numpy
 scikit-learn
 requests
+tensorflow-cpu
 pillow
 edge-tts
 gtts
