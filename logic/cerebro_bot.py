@@ -18,7 +18,8 @@ except ImportError:
     print("Advertencia: No se encontró logic/catalogos.py")
 
 # --- CONFIGURACIÓN ---
-os.environ["GROQ_API_KEY"] = ""
+# La API key se carga desde la variable de entorno GROQ_API_KEY
+# Configúrala en el panel de Render (Environment > Add Environment Variable)
 
 # --- CARGA DE DATOS (CSV) ---
 # 1. Calculamos la ruta absoluta basada en la ubicación de este archivo
@@ -159,19 +160,9 @@ def generar_audio_respuesta(texto, static_folder):
     audio_dir = os.path.join(static_folder, "audio")
     os.makedirs(audio_dir, exist_ok=True)
     filepath = os.path.join(audio_dir, filename)
-    
-    try:
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
 
-        if loop.is_running():
-            asyncio.run(_generar_edge_tts(texto, filepath))
-        else:
-            loop.run_until_complete(_generar_edge_tts(texto, filepath))
-            
+    try:
+        asyncio.run(_generar_edge_tts(texto, filepath))
         return f"audio/{filename}"
     except Exception as e:
         print(f"Fallo EdgeTTS: {e}. Usando Google TTS.")

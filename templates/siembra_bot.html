@@ -1,228 +1,418 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="hero-main hero-short"> 
-    <video autoplay muted loop playsinline class="hero-bg-video">
-        <source src="{{ url_for('static', filename='img/campo_1.mp4') }}" type="video/mp4">
-    </video>
+<style>
+  /* ── LAYOUT ─────────────────────────────────────── */
+  .sb-section { background: var(--cream); padding: 3rem 0 4rem; }
+  .sb-wrapper {
+    max-width: 780px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.10);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 640px;
+  }
 
-    <div class="hero-overlay"></div>
+  /* ── CHAT HEADER ────────────────────────────────── */
+  .sb-header {
+    background: var(--dark-green);
+    padding: .9rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    flex-shrink: 0;
+  }
+  .sb-avatar {
+    width: 40px; height: 40px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .sb-title { flex: 1; }
+  .sb-title strong { display: block; color: #fff; font-size: .95rem; font-family: 'Montserrat', sans-serif; }
+  .sb-status-row { display: flex; align-items: center; gap: 5px; }
+  .sb-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-green); flex-shrink: 0; }
+  .sb-status-text { font-size: .75rem; color: rgba(255,255,255,.7); font-family: 'Montserrat', sans-serif; }
+  .sb-loc-btn {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    color: rgba(255,255,255,.85);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: .75rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .sb-loc-btn:hover { background: rgba(255,255,255,.22); }
 
-    <div class="container hero-content hero-flex-center">
-        <img src="{{ url_for('static', filename='img/logo_bot.svg') }}" alt="Siembra Link Logo" class="hero-logo-large">
-        <p class="hero-desc-text">
-        Dialoga directamente con la inteligencia de tu campo. Recibe diagnósticos instantáneos, interpreta alertas complejas y obtén recomendaciones agronómicas personalizadas en una conversación sencilla para optimizar cada recurso.
-        </p>
-    </div>
+  /* ── MESSAGES AREA ──────────────────────────────── */
+  .sb-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+    scroll-behavior: smooth;
+  }
+  .sb-messages::-webkit-scrollbar { width: 4px; }
+  .sb-messages::-webkit-scrollbar-track { background: transparent; }
+  .sb-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
+  /* ── BUBBLES ────────────────────────────────────── */
+  .bubble-row { display: flex; align-items: flex-end; gap: .5rem; }
+  .bubble-row.user { flex-direction: row-reverse; }
+
+  .bubble-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+  }
+  .bubble-avatar.bot  { background: var(--accent-green); color: #fff; }
+  .bubble-avatar.user { background: var(--medium-green); color: #fff; }
+
+  .bubble {
+    max-width: 72%;
+    padding: .7rem 1rem;
+    border-radius: 16px;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    word-break: break-word;
+  }
+  .bubble.bot {
+    background: var(--cream);
+    color: var(--dark-green);
+    border-bottom-left-radius: 4px;
+  }
+  .bubble.user {
+    background: var(--medium-green);
+    color: var(--white);
+    border-bottom-right-radius: 4px;
+  }
+  .bubble-meta {
+    font-size: .68rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #bbb;
+    margin-top: 3px;
+    text-align: right;
+  }
+  .bubble-row.bot .bubble-meta { text-align: left; }
+
+  /* ── TYPING INDICATOR ───────────────────────────── */
+  .typing-bubble {
+    display: none;
+    align-items: flex-end;
+    gap: .5rem;
+  }
+  .typing-dots {
+    background: var(--cream);
+    border-radius: 16px;
+    border-bottom-left-radius: 4px;
+    padding: .7rem 1.1rem;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .typing-dots span {
+    width: 6px; height: 6px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    animation: bounce .9s infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: .15s; }
+  .typing-dots span:nth-child(3) { animation-delay: .30s; }
+  @keyframes bounce { 0%,80%,100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }
+
+  /* ── INPUT AREA ─────────────────────────────────── */
+  .sb-input-area {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .9rem 1.1rem;
+    border-top: 1px solid #eee;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .sb-input {
+    flex: 1;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 12px;
+    padding: .65rem .95rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    color: var(--dark-green);
+    background: var(--white);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .sb-input:focus { border-color: var(--accent-green); }
+
+  .sb-btn-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem;
+    border: none;
+    cursor: pointer;
+    transition: all .2s;
+    flex-shrink: 0;
+  }
+  .sb-btn-send { background: var(--accent-green); color: #fff; }
+  .sb-btn-send:hover { background: var(--medium-green); }
+  .sb-btn-mic  { background: var(--cream); color: var(--medium-green); border: 1.5px solid #ddd; }
+  .sb-btn-mic:hover { background: var(--medium-green); color: #fff; border-color: var(--medium-green); }
+  .sb-btn-mic.recording { background: #e53935; color: #fff; border-color: #e53935; animation: pulse-mic .8s infinite; }
+  @keyframes pulse-mic {
+    0%,100% { box-shadow: 0 0 0 0 rgba(229,57,53,.4); }
+    50%      { box-shadow: 0 0 0 8px rgba(229,57,53,0); }
+  }
+</style>
+
+<!-- HERO -->
+<div class="hero-main hero-short">
+  <video autoplay muted loop playsinline class="hero-bg-video">
+    <source src="{{ url_for('static', filename='img/campo_1.mp4') }}" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="container hero-content hero-flex-center">
+    <img src="{{ url_for('static', filename='img/logo_bot.svg') }}" alt="Siembra Bot" class="hero-logo-large">
+    <p class="hero-desc-text">
+      Dialoga directamente con la inteligencia de tu campo. Recibe diagnósticos
+      instantáneos y recomendaciones agronómicas personalizadas.
+    </p>
+  </div>
 </div>
 
-<section class="section-padding bg-dashboard no-lift"> 
-    <section class="summary-section">
-        <div class="container">
-            <div class="cards-grid">
-                <div class="feature-card">
-                    <div class="icon-wrapper">
-                        <i class="fa-solid fa-comments"></i> </div>
-                    <h3>Diagnóstico Conversacional</h3>
-                    <p>Describe lo que ves en el campo con tus propias palabras. El agente entiende lenguaje natural para identificar problemas al instante.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="icon-wrapper">
-                        <i class="fa-solid fa-satellite"></i> </div>
-                    <h3>Vigilancia Climática Activa</h3>
-                    <p>El bot monitorea 24/7 los pronósticos locales y te envía alertas proactivas antes de que una helada o sequía afecte tu lote.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="icon-wrapper">
-                        <i class="fa-solid fa-chart-line"></i> </div>
-                    <h3>Soporte de Decisiones</h3>
-                    <p>Pregunta "¿Cuándo es mejor sembrar?" y recibe una estrategia basada en el cruce de datos históricos y predictivos.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-</section>
-
-<section class="section-padding bg-cream no-lift">
+<!-- FEATURES -->
+<section class="section-padding bg-dashboard no-lift">
+  <section class="summary-section">
     <div class="container">
-        <div class="chat-wrapper">
-            <div class="chat-header"
-                style="background: var(--dark-green); color: white; padding: 1rem; display:flex; justify-content:space-between; align-items: center;">
-                <span><i class="fa-solid fa-robot"></i> SiembraBot</span>
-                <span id="status-indicator" style="font-size:0.8rem; opacity:0.8;">En línea</span>
-            </div>
-
-            <div class="chat-window" id="chat-box">
-                <div class="message msg-bot">
-                    Hola, soy SiembraBot. ¿En qué puedo ayudarte hoy?
-                </div>
-            </div>
-
-            <div class="chat-input-area" style="display: flex; gap: 10px; align-items: center;">
-                <input type="text" id="input-texto" class="chat-input" placeholder="Escribe o usa el micrófono..."
-                    autocomplete="off">
-
-                <button type="button" class="btn" id="btn-enviar" onclick="enviarTexto()">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
-
-                <button type="button" class="btn" id="btn-micro" style="background-color: #dc3545;"
-                    onmousedown="iniciarGrabacion()" onmouseup="detenerGrabacion()" ontouchstart="iniciarGrabacion()"
-                    ontouchend="detenerGrabacion()">
-                    <i class="fa-solid fa-microphone"></i>
-                </button>
-            </div>
-
-            <audio id="audio-player" style="display:none;"></audio>
+      <div class="cards-grid">
+        <div class="feature-card">
+          <div class="icon-wrapper"><i data-lucide="message-circle"></i></div>
+          <h3>Diagnóstico Conversacional</h3>
+          <p>Describe lo que ves en el campo con tus propias palabras. El agente entiende lenguaje natural para identificar problemas al instante.</p>
         </div>
-
-        <div class="center-text" style="margin-top: 2rem;">
-            <p><strong>Nota:</strong> Este chat interactúa con datos en tiempo real de API climáticas y nuestra base de conocimientos agronómica.</p>
+        <div class="feature-card">
+          <div class="icon-wrapper"><i data-lucide="satellite"></i></div>
+          <h3>Vigilancia Climática Activa</h3>
+          <p>El bot consulta pronósticos locales en tiempo real y cruza el clima con tu base de cultivos para darte estrategias exactas.</p>
         </div>
+        <div class="feature-card">
+          <div class="icon-wrapper"><i data-lucide="trending-up"></i></div>
+          <h3>Soporte de Decisiones</h3>
+          <p>Pregunta "¿Cuándo es mejor sembrar?" y recibe una estrategia basada en el cruce de datos históricos y predictivos.</p>
+        </div>
+      </div>
     </div>
+  </section>
 </section>
+
+<!-- CHAT -->
+<section class="sb-section">
+  <div class="container">
+    <div class="sb-wrapper">
+
+      <!-- Header -->
+      <div class="sb-header">
+        <div class="sb-avatar"><i data-lucide="leaf"></i></div>
+        <div class="sb-title">
+          <strong>SiembraBot</strong>
+          <div class="sb-status-row">
+            <div class="sb-dot" id="sb-dot"></div>
+            <span class="sb-status-text" id="sb-status">En línea · Asistente Agrícola</span>
+          </div>
+        </div>
+        <button class="sb-loc-btn" id="btn-location" onclick="compartirUbicacion()" title="Compartir ubicación para recomendaciones locales">
+          <i data-lucide="map-pin"></i> Ubicación
+        </button>
+      </div>
+
+      <!-- Messages -->
+      <div class="sb-messages" id="sb-messages">
+        <div class="bubble-row bot">
+          <div class="bubble-avatar bot"><i data-lucide="leaf"></i></div>
+          <div>
+            <div class="bubble bot">Hola, soy <strong>SiembraBot</strong>. Soy tu asistente agrícola inteligente. 🌱<br>Puedo analizar el clima de tu región y darte consejos de cultivo. ¿En qué te ayudo?</div>
+            <div class="bubble-meta">Ahora</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="typing-bubble" id="typing-bubble" style="padding: 0 1.4rem .6rem; display:none; align-items:flex-end; gap:.5rem;">
+        <div class="bubble-avatar bot"><i data-lucide="leaf"></i></div>
+        <div class="typing-dots">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="sb-input-area">
+        <button class="sb-btn-icon sb-btn-mic" id="btn-micro"
+                onmousedown="iniciarGrabacion()" onmouseup="detenerGrabacion()"
+                ontouchstart="iniciarGrabacion(event)" ontouchend="detenerGrabacion()"
+                title="Mantén presionado para hablar">
+          <i data-lucide="mic"></i>
+        </button>
+        <input type="text" class="sb-input" id="input-texto"
+               placeholder="Escribe tu duda agrícola..." autocomplete="off">
+        <button class="sb-btn-icon sb-btn-send" id="btn-enviar" onclick="enviarTexto()" title="Enviar">
+          <i data-lucide="send"></i>
+        </button>
+      </div>
+
+    </div><!-- /sb-wrapper -->
+
+    <p style="text-align:center; margin-top:1.2rem; font-size:.85rem; color:#999; font-family:'Montserrat',sans-serif;">
+      <i data-lucide="shield-check"></i>
+      SiembraBot responde exclusivamente sobre agricultura, cultivos y clima.
+    </p>
+  </div>
+</section>
+
+<audio id="audio-player" style="display:none;"></audio>
 
 <script>
-    let mediaRecorder;
-    let audioChunks = [];
-    let isRecording = false;
+  let mediaRecorder, audioChunks = [], isRecording = false;
+  let userLat = null, userLon = null;
 
-    // 1. Detección de Enter para enviar sin recargar
-    document.getElementById("input-texto").addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault(); 
-            enviarTexto();
-        }
-    });
+  /* ── UBICACIÓN ──────────────────────────────────── */
+  function compartirUbicacion() {
+    if (!navigator.geolocation) { showStatus('Geolocalización no soportada.'); return; }
+    navigator.geolocation.getCurrentPosition(pos => {
+      userLat = pos.coords.latitude;
+      userLon = pos.coords.longitude;
+      const btn = document.getElementById('btn-location');
+      btn.innerHTML = '<i data-lucide="check-circle"></i> Activa';
+      btn.style.background = 'rgba(116,183,74,.3)';
+      lucide.createIcons({ el: btn });
+      showStatus('Ubicación compartida ✓');
+    }, () => showStatus('No se pudo obtener ubicación.'));
+  }
 
-    // 2. Lógica de Grabación de Audio
-    async function iniciarGrabacion() {
-        if (!navigator.mediaDevices) { alert("Tu navegador no soporta audio."); return; }
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-            mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-            mediaRecorder.onstop = async () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                enviarAudioAlServidor(audioBlob);
-            };
-            mediaRecorder.start();
-            isRecording = true;
-            document.getElementById('btn-micro').classList.add('pulse-animation');
-            document.getElementById('status-indicator').innerText = "Escuchando...";
-        } catch (err) {
-            console.error("Error microfono:", err);
-            alert("No se pudo acceder al micrófono.");
-        }
+  /* ── ENTER ──────────────────────────────────────── */
+  document.getElementById('input-texto').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviarTexto(); }
+  });
+
+  /* ── GRABACIÓN ──────────────────────────────────── */
+  async function iniciarGrabacion(e) {
+    if (e) e.preventDefault();
+    if (!navigator.mediaDevices) { alert('Tu navegador no soporta audio.'); return; }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      mediaRecorder.ondataavailable = ev => audioChunks.push(ev.data);
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(audioChunks, { type: 'audio/wav' });
+        enviarAudio(blob);
+      };
+      mediaRecorder.start();
+      isRecording = true;
+      document.getElementById('btn-micro').classList.add('recording');
+      showStatus('Escuchando...');
+    } catch { alert('No se pudo acceder al micrófono.'); }
+  }
+
+  function detenerGrabacion(e) {
+    if (e) e.preventDefault();
+    if (!isRecording || !mediaRecorder) return;
+    mediaRecorder.stop();
+    mediaRecorder.stream?.getTracks().forEach(t => t.stop());
+    isRecording = false;
+    document.getElementById('btn-micro').classList.remove('recording');
+    showStatus('Procesando audio...');
+  }
+
+  /* ── ENVIAR AUDIO ───────────────────────────────── */
+  async function enviarAudio(blob) {
+    addBubble('🎤 Mensaje de voz enviado', 'user');
+    showTyping(true);
+    const fd = new FormData();
+    fd.append('audio_blob', blob, 'audio.wav');
+    if (userLat) { fd.append('lat', userLat); fd.append('lon', userLon); }
+    try {
+      const r = await fetch('/api/chat', { method: 'POST', body: fd });
+      if (!r.ok) throw new Error();
+      procesarRespuesta(await r.json());
+    } catch { showTyping(false); addBubble('Error al conectar con el servidor.', 'bot'); showStatus('Error'); }
+  }
+
+  /* ── ENVIAR TEXTO ───────────────────────────────── */
+  async function enviarTexto() {
+    const input = document.getElementById('input-texto');
+    const texto = input.value.trim();
+    if (!texto) return;
+    addBubble(texto, 'user');
+    input.value = '';
+    showTyping(true);
+    showStatus('Escribiendo...');
+    const fd = new FormData();
+    fd.append('mensaje', texto);
+    if (userLat) { fd.append('lat', userLat); fd.append('lon', userLon); }
+    try {
+      const r = await fetch('/api/chat', { method: 'POST', body: fd });
+      if (!r.ok) throw new Error();
+      procesarRespuesta(await r.json());
+    } catch { showTyping(false); addBubble('Error: no pude obtener respuesta.', 'bot'); showStatus('Error'); }
+  }
+
+  /* ── RESPUESTA ──────────────────────────────────── */
+  function procesarRespuesta(data) {
+    showTyping(false);
+    showStatus('En línea · Asistente Agrícola');
+    if (data.error) { addBubble('Error: ' + data.error, 'bot'); return; }
+    addBubble(data.bot, 'bot');
+    if (data.audio_url) {
+      const player = document.getElementById('audio-player');
+      player.src = "{{ url_for('static', filename='') }}" + data.audio_url;
+      player.play().catch(() => {});
     }
+  }
 
-    function detenerGrabacion() {
-        if (isRecording && mediaRecorder) {
-            mediaRecorder.stop();
-            isRecording = false;
-            document.getElementById('btn-micro').classList.remove('pulse-animation');
-            document.getElementById('status-indicator').innerText = "Procesando...";
-        }
-    }
+  /* ── HELPERS ────────────────────────────────────── */
+  function addBubble(text, sender) {
+    const container = document.getElementById('sb-messages');
+    const now = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+    const isBot = sender === 'bot';
+    const row = document.createElement('div');
+    row.className = `bubble-row ${sender}`;
+    row.innerHTML = `
+      ${isBot ? `<div class="bubble-avatar bot"><i data-lucide="leaf"></i></div>` : ''}
+      <div>
+        <div class="bubble ${sender}">${text}</div>
+        <div class="bubble-meta">${now}</div>
+      </div>
+      ${!isBot ? `<div class="bubble-avatar user"><i data-lucide="user"></i></div>` : ''}
+    `;
+    container.appendChild(row);
+    lucide.createIcons({ el: row });
+    container.scrollTop = container.scrollHeight;
+  }
 
-    // 3. Enviar Audio
-    async function enviarAudioAlServidor(blob) {
-        const formData = new FormData();
-        formData.append("audio_blob", blob, "audio.wav");
-        agregarMensaje("🎤 Audio enviado...", "user");
+  function showTyping(show) {
+    document.getElementById('typing-bubble').style.display = show ? 'flex' : 'none';
+    const c = document.getElementById('sb-messages');
+    if (show) c.scrollTop = c.scrollHeight;
+  }
 
-        try {
-            // Asegúrate de que esta ruta coincida con tu ruta en app.py (ej: @app.route('/api/chat'))
-            const response = await fetch('/api/chat', { method: 'POST', body: formData });
-            if (!response.ok) throw new Error("Error en el servidor");
-            const data = await response.json();
-            procesarRespuesta(data);
-        } catch (error) {
-            console.error(error);
-            agregarMensaje("Error al conectar con el cerebro del bot.", "bot");
-            document.getElementById('status-indicator').innerText = "Error";
-        }
-    }
-
-    // 4. Enviar Texto
-    async function enviarTexto() {
-        const input = document.getElementById('input-texto');
-        const texto = input.value.trim();
-        if (!texto) return;
-
-        agregarMensaje(texto, "user");
-        input.value = "";
-        document.getElementById('status-indicator').innerText = "Escribiendo...";
-
-        const formData = new FormData();
-        formData.append("mensaje", texto);
-
-        try {
-            const response = await fetch('/api/chat', { method: 'POST', body: formData });
-            if (!response.ok) throw new Error("Error en el servidor");
-            const data = await response.json();
-            procesarRespuesta(data);
-        } catch (error) {
-            console.error(error);
-            agregarMensaje("Error: No pude obtener respuesta.", "bot");
-            document.getElementById('status-indicator').innerText = "Error";
-        }
-    }
-
-    // 5. Utilidades UI
-    function procesarRespuesta(data) {
-        document.getElementById('status-indicator').innerText = "En línea";
-        
-        if (data.error) {
-            agregarMensaje("Error: " + data.error, "bot");
-            return;
-        }
-
-        agregarMensaje(data.bot, "bot");
-        
-        if (data.audio_url) {
-            const player = document.getElementById('audio-player');
-            // Usamos la ruta relativa correcta para Flask
-            player.src = "{{ url_for('static', filename='') }}" + data.audio_url;
-            player.play().catch(e => console.log("Reproducción automática bloqueada por el navegador"));
-        }
-    }
-
-    function agregarMensaje(texto, sender) {
-        const chatBox = document.getElementById('chat-box');
-        const div = document.createElement('div');
-        div.className = `message msg-${sender}`;
-        div.innerText = texto;
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
+  function showStatus(text) {
+    document.getElementById('sb-status').textContent = text;
+  }
 </script>
-
-<style>
-    /* Estilo para la animación de grabación */
-    .pulse-animation {
-        animation: pulse-red 1s infinite;
-        background-color: red !important;
-    }
-
-    @keyframes pulse-red {
-        0% {
-            transform: scale(0.95);
-            box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7);
-        }
-
-        70% {
-            transform: scale(1.05);
-            box-shadow: 0 0 0 10px rgba(255, 82, 82, 0);
-        }
-
-        100% {
-            transform: scale(0.95);
-            box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
-        }
-    }
-</style>
 {% endblock %}

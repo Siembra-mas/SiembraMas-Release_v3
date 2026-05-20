@@ -3,341 +3,890 @@
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="hero-main hero-short"> 
-    <video autoplay muted loop playsinline class="hero-bg-video">
-        <source src="{{ url_for('static', filename='img/campo_1.mp4') }}" type="video/mp4">
-    </video>
+<style>
+/* ────────────────────────────────────────────────────────
+   SIEMBRA LINK — estilos con prefijo "sl-" para evitar
+   conflictos con styles.css (form-row, btn-action,
+   boxplot-area, readings-grid, digital-soil, etc.)
+──────────────────────────────────────────────────────── */
 
-    <div class="hero-overlay"></div>
+/* ── VARIABLES ─────────────────────────────────────── */
+:root {
+  --sl-ok:       #2e7d32;  --sl-ok-bg:    #e8f5e9;
+  --sl-warn:     #e65100;  --sl-warn-bg:  #fff3e0;
+  --sl-err:      #b71c1c;  --sl-err-bg:   #ffebee;
+  --sl-border:   #e0ead6;
+  --sl-radius:   16px;
+  --sl-shadow:   0 4px 24px rgba(0,0,0,.08);
+}
 
-    <div class="container hero-content hero-flex-center">
-        
-        <img src="{{ url_for('static', filename='img/logo_link.svg') }}" alt="Siembra Link Logo" class="hero-logo-large">
-        
-        <p class="hero-desc-text">
-            Conecta tu cultivo físico con su <strong>Gemelo Digital</strong>. Visualiza datos en tiempo real, analiza el estado de salud de tus plantas y toma decisiones basadas en precisión para maximizar tu cosecha.
-        </p>
-    </div>
+/* ── SPINNER (reemplaza fa-spin para carga dinámica) ── */
+.sl-spin {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: sl-rotate .7s linear infinite;
+  vertical-align: -2px;
+}
+@keyframes sl-rotate { to { transform: rotate(360deg); } }
+
+/* ── LAYOUT DASHBOARD ──────────────────────────────── */
+.sl-dashboard {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+}
+@media (max-width: 900px) {
+  .sl-dashboard { grid-template-columns: 1fr; }
+}
+.sl-col { display: flex; flex-direction: column; gap: 1.2rem; }
+
+/* ── CARDS ────────────────────────────────────────── */
+.sl-card {
+  background: #fff;
+  border-radius: var(--sl-radius);
+  box-shadow: var(--sl-shadow);
+  overflow: hidden;
+}
+.sl-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .9rem 1.4rem;
+  border-bottom: 1px solid var(--sl-border);
+  background: var(--white);
+}
+.sl-card-header h3 {
+  font-size: .82rem;
+  letter-spacing: .07em;
+  color: var(--medium-green);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sl-card-body { padding: 1.4rem; }
+
+/* ── STATUS BADGE ─────────────────────────────────── */
+.sl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: .75rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  background: #f0f0f0;
+  color: #777;
+  transition: all .3s;
+}
+.sl-badge .dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.sl-badge.online  { background: var(--sl-ok-bg);   color: var(--sl-ok); }
+.sl-badge.warning { background: var(--sl-warn-bg);  color: var(--sl-warn); }
+.sl-badge.error   { background: var(--sl-err-bg);   color: var(--sl-err); }
+
+/* ── DEVICE DETECTOR ──────────────────────────────── */
+.sl-detector {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  background: var(--cream);
+  border: 1.5px solid var(--sl-border);
+  border-radius: 10px;
+  padding: .65rem 1rem;
+  margin-bottom: 1.2rem;
+  transition: border-color .3s;
+}
+.sl-detector.found { border-color: var(--accent-green); }
+.sl-port-name {
+  flex: 1;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--dark-green);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.sl-port-desc {
+  font-size: .75rem;
+  color: #777;
+  font-family: 'Crimson Pro', serif;
+  display: block;
+  margin-top: 1px;
+}
+.sl-btn-scan {
+  background: none;
+  border: 1.5px solid var(--medium-green);
+  color: var(--medium-green);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: .78rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.sl-btn-scan:hover { background: var(--medium-green); color: #fff; }
+
+/* ── FORM ROWS ────────────────────────────────────── */
+/* Renombrado de .form-row (conflicto: styles.css lo define como grid 2 cols) */
+.sl-form-row { margin-bottom: 1.1rem; }
+.sl-form-row label {
+  display: block;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--medium-green);
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: .4rem;
+  text-transform: uppercase;
+}
+.sl-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--white);
+  border: 1.5px solid var(--sl-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.sl-select-wrap:focus-within { border-color: var(--accent-green); }
+.sl-select-wrap svg.lucide {
+  /* icon prefix inside select */
+  margin: 0 .7rem;
+  color: var(--medium-green);
+  font-size: .95rem;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.sl-select-wrap select {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: .7rem .5rem;
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.05rem;
+  color: var(--dark-green);
+  cursor: pointer;
+  outline: none;
+}
+.sl-select-wrap .sl-arr {
+  padding: 0 .8rem;
+  color: #aaa;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.sl-select-wrap .sl-arr svg.lucide { width: .75rem; height: .75rem; margin: 0; }
+
+/* ── ACTION BUTTONS ───────────────────────────────── */
+/* Renombrado de .btn-action (conflicto: styles.css tiene padding 4px 8px) */
+.sl-btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: .75rem 1rem;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .88rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  border: none;
+  cursor: pointer;
+  transition: all .25s;
+  margin-top: .5rem;
+  text-decoration: none;
+}
+.sl-btn-start  { background: var(--accent-green); color: #fff; }
+.sl-btn-start:hover  { background: var(--medium-green); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(116,183,74,.3); }
+.sl-btn-stop   { background: #e53935; color: #fff; }
+.sl-btn-stop:hover   { background: #b71c1c; }
+.sl-btn-export {
+  background: transparent;
+  color: var(--medium-green);
+  border: 1.5px solid var(--sl-border);
+  margin-top: .4rem;
+}
+.sl-btn-export:hover { background: var(--cream); }
+
+/* ── READING CARDS ────────────────────────────────── */
+/* Renombrado de .readings-grid (conflicto: styles.css tiene 3 cols) */
+.sl-readings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .8rem;
+  margin-top: .8rem;
+}
+.sl-r-card {
+  background: var(--white);
+  border: 1.5px solid var(--sl-border);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+}
+.sl-r-icon {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sl-r-icon svg.lucide { width: 1.15rem; height: 1.15rem; }
+.sl-r-icon.temp  { background: #fff3e0; color: #e65100; }
+.sl-r-icon.hum   { background: #e3f2fd; color: #1565c0; }
+.sl-r-icon.soil  { background: #e8f5e9; color: #2e7d32; }
+.sl-r-icon.rain  { background: #f3e5f5; color: #6a1b9a; }
+.sl-r-label  { font-size: .7rem; font-family: 'Montserrat', sans-serif; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .05em; }
+.sl-r-value  { font-size: 1.3rem; font-weight: 800; color: var(--dark-green); line-height: 1.1; }
+.sl-r-status { font-size: .7rem; font-family: 'Montserrat', sans-serif; font-weight: 700; color: #bbb; }
+.sl-r-status.ok   { color: var(--sl-ok); }
+.sl-r-status.high { color: var(--sl-err); }
+.sl-r-status.low  { color: #e65100; }
+
+/* ── ALERT BANNER ─────────────────────────────────── */
+.sl-alert-banner {
+  display: none;
+  align-items: center;
+  gap: .6rem;
+  padding: .75rem 1.1rem;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .85rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.sl-alert-banner svg.lucide { width: 1.1rem; height: 1.1rem; flex-shrink: 0; }
+.sl-alert-banner.ok   { background: var(--sl-ok-bg);   color: var(--sl-ok); }
+.sl-alert-banner.warn { background: var(--sl-warn-bg);  color: var(--sl-warn); }
+
+/* ── GAUGES (tallos verticales) ───────────────────── */
+/* Renombrado de .boxplot-area (conflicto: styles.css lo define como flex align-items:flex-end) */
+.sl-gauges-area {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  padding: 1.4rem 1.4rem 0;
+}
+.sl-gauge-col { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+.sl-gauge-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: .68rem;
+  font-weight: 700;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sl-gauge-label svg.lucide { width: .85rem; height: .85rem; }
+
+/* Renombrado de .stem-track (conflicto: styles.css tiene width:40px height:200px y border) */
+.sl-stem-track {
+  width: 32px;
+  height: 160px;
+  background: var(--cream);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  /* Reset explícito de propiedades heredadas de styles.css */
+  border: none;
+}
+
+/* Renombrado de .stem-range-box (conflicto: styles.css agrega border-top/bottom) */
+.sl-stem-range {
+  position: absolute;
+  left: 0; right: 0;
+  background: rgba(116,183,74,.22);
+  transition: all .5s;
+  /* Reset borders que hereda de .stem-range-box en styles.css */
+  border: none;
+}
+
+/* Renombrado de .stem-avg-line (conflicto: styles.css tiene width:120%, left:-10%,
+   border-top dotted y un ::after con texto "Avg") */
+.sl-stem-avg {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: var(--accent-green);
+  transition: bottom .5s;
+  /* Reset total de propiedades heredadas de styles.css */
+  width: 100%;
+  border: none;
+}
+/* Eliminar el pseudo-elemento "Avg" que hereda de styles.css .stem-avg-line::after */
+.sl-stem-avg::after { content: none; display: none; }
+
+.sl-stem-fill {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  border-radius: 20px;
+  transition: height .5s ease;
+}
+.sl-stem-fill.temp-fill  { background: linear-gradient(to top, #ff7043, #ffd54f); }
+.sl-stem-fill.hum-fill   { background: linear-gradient(to top, #42a5f5, #80deea); }
+.sl-stem-fill.soil-fill  { background: linear-gradient(to top, #66bb6a, #a5d6a7); }
+.sl-gauge-val { font-size: .95rem; font-weight: 800; color: var(--dark-green); }
+
+/* ── PROGRESS BAR ─────────────────────────────────── */
+/* Renombrado de .progress-track / .progress-fill (conflicto: estilos heredados) */
+.sl-progress-section { padding: 1rem 1.4rem 1.4rem; }
+.sl-progress-header {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .75rem; font-weight: 700;
+  color: var(--medium-green);
+  margin-bottom: .4rem;
+}
+.sl-progress-track {
+  background: var(--cream);
+  border-radius: 10px;
+  height: 8px;
+  overflow: hidden;
+}
+.sl-progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--medium-green), var(--accent-green));
+  border-radius: 10px;
+  transition: width .6s ease;
+}
+
+/* ── SOIL BAR ─────────────────────────────────────── */
+/* Renombrado de .digital-soil (conflicto: styles.css lo hace position:absolute + ::after tierra) */
+.sl-soil-bar {
+  margin: .5rem 1.4rem 1.2rem;
+  height: 8px;
+  background: linear-gradient(to right, #8d6e63, #a5d6a7);
+  border-radius: 20px;
+  opacity: .4;
+  /* Reset de propiedades position heredadas */
+  position: static;
+  bottom: auto;
+  width: auto;
+}
+.sl-soil-bar::after { content: none; display: none; }
+
+/* ── CHARTS ───────────────────────────────────────── */
+.sl-charts-wrap { padding: 1.2rem; display: flex; flex-direction: column; gap: 1rem; }
+.sl-chart-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: .68rem; font-weight: 700;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: .3rem;
+}
+
+/* ── TOAST ────────────────────────────────────────── */
+#sl-toast-container {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  z-index: 9999;
+  display: flex; flex-direction: column; gap: .5rem;
+}
+.sl-toast {
+  min-width: 240px;
+  padding: .75rem 1.1rem;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .82rem; font-weight: 700;
+  box-shadow: 0 6px 20px rgba(0,0,0,.15);
+  animation: sl-slideIn .25s ease;
+  display: flex; align-items: center; gap: .5rem;
+}
+.sl-toast svg.lucide { width: 1rem; height: 1rem; flex-shrink: 0; }
+.sl-toast.success { background: var(--sl-ok-bg);  color: var(--sl-ok); }
+.sl-toast.error   { background: var(--sl-err-bg); color: var(--sl-err); }
+.sl-toast.info    { background: #e3f2fd;           color: #1565c0; }
+@keyframes sl-slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+</style>
+
+<!-- ─── HERO ─────────────────────────────────────── -->
+<div class="hero-main hero-short">
+  <video autoplay muted loop playsinline class="hero-bg-video">
+    <source src="{{ url_for('static', filename='img/campo_1.mp4') }}" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="container hero-content hero-flex-center">
+    <img src="{{ url_for('static', filename='img/logo_link.svg') }}" alt="Siembra Link" class="hero-logo-large">
+    <p class="hero-desc-text">
+      Conecta tu cultivo físico con su <strong>Gemelo Digital</strong>. Visualiza sensores en tiempo real
+      y toma decisiones de precisión para maximizar tu cosecha.
+    </p>
+  </div>
 </div>
 
-<section class="section-padding bg-dashboard"> 
-    
-    <div class="container">  
-        <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="color: var(--dark-green);">PANEL DE CONTROL</h2>
-            <div id="alerta-global" style="padding: 10px 20px; border-radius: 8px; font-weight: bold; display: none;"></div>
+<!-- ─── DASHBOARD ─────────────────────────────────── -->
+<section class="section-padding bg-dashboard">
+  <div class="container">
+
+    <!-- Alerta global -->
+    <div id="sl-alert" class="sl-alert-banner">
+      <i data-lucide="alert-circle"></i>
+      <span id="sl-alert-text">—</span>
+    </div>
+
+    <div class="sl-dashboard">
+
+      <!-- ── COL IZQUIERDA: gemelo + gráficas ── -->
+      <div class="sl-col">
+
+        <!-- Gemelo Digital -->
+        <div class="sl-card">
+          <div class="sl-card-header">
+            <h3><i data-lucide="cpu"></i>Gemelo Digital</h3>
+            <span id="sl-status-badge" class="sl-badge">
+              <span class="dot"></span>Offline
+            </span>
+          </div>
+
+          <!-- Gauges -->
+          <div class="sl-gauges-area">
+            <div class="sl-gauge-col">
+              <span class="sl-gauge-label"><i data-lucide="thermometer"></i>Temp</span>
+              <div class="sl-stem-track">
+                <div id="sl-box-temp"  class="sl-stem-range"></div>
+                <div id="sl-avg-temp"  class="sl-stem-avg"></div>
+                <div id="sl-fill-temp" class="sl-stem-fill temp-fill" style="height:0%"></div>
+              </div>
+              <span id="sl-vv-temp" class="sl-gauge-val">--</span>
+            </div>
+            <div class="sl-gauge-col">
+              <span class="sl-gauge-label"><i data-lucide="droplets"></i>H.Amb</span>
+              <div class="sl-stem-track">
+                <div id="sl-box-hum"  class="sl-stem-range"></div>
+                <div id="sl-avg-hum"  class="sl-stem-avg"></div>
+                <div id="sl-fill-hum" class="sl-stem-fill hum-fill" style="height:0%"></div>
+              </div>
+              <span id="sl-vv-hum" class="sl-gauge-val">--</span>
+            </div>
+            <div class="sl-gauge-col">
+              <span class="sl-gauge-label"><i data-lucide="layers"></i>H.Suelo</span>
+              <div class="sl-stem-track">
+                <div id="sl-box-suelo"  class="sl-stem-range"></div>
+                <div id="sl-avg-suelo"  class="sl-stem-avg"></div>
+                <div id="sl-fill-suelo" class="sl-stem-fill soil-fill" style="height:0%"></div>
+              </div>
+              <span id="sl-vv-suelo" class="sl-gauge-val">--</span>
+            </div>
+          </div>
+
+          <div class="sl-soil-bar"></div>
+
+          <!-- Progreso -->
+          <div class="sl-progress-section">
+            <div class="sl-progress-header">
+              <span>Progreso de Etapa</span>
+              <span id="sl-pct-etapa">--%</span>
+            </div>
+            <div class="sl-progress-track">
+              <div class="sl-progress-fill" id="sl-barra-prog" style="width:0%"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="gemelo-grid">
-            
-            <div class="left-column-wrapper">
-                
-                <div class="gemelo-card" style="min-height: auto;">
-                    
-                    <div class="gemelo-header">
-                        <h3>Gemelo Digital</h3>
-                        <span id="status-badge" class="status-pill" style="background: #ccc; color: #666;">
-                            <i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 5px;"></i> Offline
-                        </span>
-                    </div>
+        <!-- Gráficas historial -->
+        <div class="sl-card">
+          <div class="sl-card-header">
+            <h3><i data-lucide="trending-up"></i>Historial en Tiempo Real</h3>
+          </div>
+          <div class="sl-charts-wrap">
+            <div>
+              <div class="sl-chart-label">Temperatura (°C)</div>
+              <canvas id="chartTemperatura" style="max-height:180px;"></canvas>
+            </div>
+            <div>
+              <div class="sl-chart-label">Humedad de Suelo (%)</div>
+              <canvas id="chartHumedad" style="max-height:180px;"></canvas>
+            </div>
+          </div>
+        </div>
 
-                    <div class="plant-visual-area boxplot-area">
-                        <div class="stem-gauge-wrapper type-temp">
-                            <div class="stem-header"><i class="fa-solid fa-temperature-half"></i> Temp</div>
-                            <div class="stem-track">
-                                <div id="box-temp" class="stem-range-box"></div>
-                                <div id="avg-temp" class="stem-avg-line"></div>
-                                <div id="stem-temp" class="digital-stem-gauge">
-                                    <div class="gauge-leaf leaf-left"></div>
-                                    <div class="gauge-leaf leaf-right"></div>
-                                </div>
-                            </div>
-                            <div id="val-visual-temp" class="stem-value">--</div>
-                        </div>
+      </div><!-- /sl-col izquierda -->
 
-                        <div class="stem-gauge-wrapper type-hum">
-                            <div class="stem-header"><i class="fa-solid fa-droplet"></i> H. Amb</div>
-                            <div class="stem-track">
-                                <div id="box-hum" class="stem-range-box"></div>
-                                <div id="avg-hum" class="stem-avg-line"></div>
-                                <div id="stem-hum" class="digital-stem-gauge">
-                                    <div class="gauge-leaf leaf-left"></div>
-                                    <div class="gauge-leaf leaf-right"></div>
-                                </div>
-                            </div>
-                            <div id="val-visual-hum" class="stem-value">--</div>
-                        </div>
+      <!-- ── COL DERECHA: config + lecturas ── -->
+      <div class="sl-col">
 
-                        <div class="stem-gauge-wrapper type-soil">
-                            <div class="stem-header"><i class="fa-solid fa-layer-group"></i> H. Suelo</div>
-                            <div class="stem-track">
-                                <div id="box-suelo" class="stem-range-box"></div>
-                                <div id="avg-suelo" class="stem-avg-line"></div>
-                                <div id="stem-suelo" class="digital-stem-gauge">
-                                    <div class="gauge-leaf leaf-left"></div>
-                                    <div class="gauge-leaf leaf-right"></div>
-                                </div>
-                            </div>
-                            <div id="val-visual-suelo" class="stem-value">--</div>
-                        </div>
-                        
-                        <div class="digital-soil"></div>
-                    </div>
+        <!-- Configuración y control -->
+        <div class="sl-card">
+          <div class="sl-card-header">
+            <h3><i data-lucide="sliders-horizontal"></i>Configuración y Control</h3>
+          </div>
+          <div class="sl-card-body">
 
-                    <div style="padding: 1.5rem;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; font-weight: bold; color: var(--medium-green);">
-                            <span>Progreso de Etapa</span>
-                            <span id="porcentaje-etapa">--%</span>
-                        </div>
-                        <div class="progress-track">
-                            <div class="progress-fill" id="barra-progreso" style="width: 0%;"></div>
-                        </div>
-                    </div>
-                </div> 
+            <!-- Detector de dispositivo -->
+            <div class="sl-detector" id="sl-detector">
+              <i data-lucide="usb" style="color:var(--medium-green); font-size:1.15rem;"></i>
+              <div style="flex:1; min-width:0;">
+                <span class="sl-port-name" id="sl-port-name">Sin dispositivo</span>
+                <span class="sl-port-desc" id="sl-port-desc">Escanea para detectar Arduino</span>
+              </div>
+              <button class="sl-btn-scan" id="sl-btn-scan" onclick="slEscanear()">
+                <i data-lucide="refresh-cw"></i> Detectar
+              </button>
+            </div>
 
-                <div class="gemelo-card chart-mode" style="padding: 1.5rem;">
-                    <h4 class="section-label">Historial en Tiempo Real</h4>
-                    <canvas id="chartTemperatura" style="max-height: 200px; margin-bottom: 20px;"></canvas>
-                    <canvas id="chartHumedad" style="max-height: 200px;"></canvas>
+            <!-- Etapa de desarrollo -->
+            <div class="sl-form-row">
+              <label>Etapa de Desarrollo</label>
+              <div class="sl-select-wrap">
+                <i data-lucide="trending-up"></i>
+                <select id="etapa-select">
+                  <option value="1">1. Germinación</option>
+                  <option value="2">2. Floración</option>
+                  <option value="3">3. Maduración</option>
+                </select>
+                <span class="sl-arr"><i data-lucide="chevron-down"></i></span>
+              </div>
+            </div>
+
+            <!-- Cultivo -->
+            <div class="sl-form-row">
+              <label>Cultivo</label>
+              <div class="sl-select-wrap">
+                <i data-lucide="sprout"></i>
+                <select id="cultivo-select">
+                  <option value="" disabled selected>— Seleccionar —</option>
+                  {% for cultivo in lista_cultivos %}
+                    <option value="{{ cultivo }}">{{ cultivo }}</option>
+                  {% endfor %}
+                </select>
+                <span class="sl-arr"><i data-lucide="chevron-down"></i></span>
+              </div>
+            </div>
+
+            <!-- Botones de control -->
+            <button id="sl-btn-iniciar" class="sl-btn-action sl-btn-start" onclick="slIniciar()">
+              <i data-lucide="play"></i> Iniciar Monitoreo
+            </button>
+            <button id="sl-btn-detener" class="sl-btn-action sl-btn-stop" style="display:none;" onclick="slDetener()">
+              <i data-lucide="square"></i> Detener Monitoreo
+            </button>
+            <a href="/api/descargar_csv" id="sl-btn-csv" class="sl-btn-action sl-btn-export" style="display:none;">
+              <i data-lucide="download"></i> Descargar CSV
+            </a>
+          </div>
+        </div>
+
+        <!-- Lecturas actuales -->
+        <div class="sl-card">
+          <div class="sl-card-header">
+            <h3><i data-lucide="activity"></i>Lecturas Actuales</h3>
+          </div>
+          <div class="sl-card-body" style="padding-top:.8rem;">
+            <div class="sl-readings-grid">
+
+              <div class="sl-r-card">
+                <div class="sl-r-icon temp"><i data-lucide="thermometer"></i></div>
+                <div>
+                  <div class="sl-r-label">Temperatura</div>
+                  <div class="sl-r-value" id="sl-val-temp">--</div>
+                  <div class="sl-r-status" id="sl-st-temp">--</div>
                 </div>
+              </div>
 
-            </div> 
-
-            <div class="data-column">
-                
-                <div class="config-card">
-                    <h4 class="config-title">1. CONFIGURACIÓN Y CONTROL</h4>
-
-                    <div class="form-group-clean">
-                        <label>Etapa de Desarrollo</label>
-                        <div class="select-box">
-                            <i class="fa-solid fa-chart-line icon-input"></i>
-                            <select id="etapa-select" class="clean-select">
-                                <option value="1">1. Germinación</option>
-                                <option value="2">2. Floración</option>
-                                <option value="3">3. Maduración</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down icon-arrow"></i>
-                        </div>
-                    </div>
-
-                    <div class="form-group-clean">
-                        <label>Cultivo</label>
-                        <div class="select-box">
-                            <i class="fa-solid fa-seedling icon-input"></i>
-                            <select id="cultivo-select" class="clean-select">
-                                <option value="" disabled selected>-- Seleccionar --</option>
-                                {% for cultivo in lista_cultivos %}
-                                    <option value="{{ cultivo }}">{{ cultivo }}</option>
-                                {% endfor %}
-                            </select>
-                            <i class="fa-solid fa-chevron-down icon-arrow"></i>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 10px; margin-top: 1.5rem;">
-                        <button id="btn-iniciar" class="btn-pronostico" onclick="iniciarMonitoreo()">
-                            <span>▶ INICIAR</span>
-                        </button>
-                        <button id="btn-detener" class="btn-pronostico" style="background-color: #D9534F; display: none;" onclick="detenerMonitoreo()">
-                            <span>⏹ DETENER</span>
-                        </button>
-                    </div>
-                    
-                    <a href="/api/descargar_csv" id="btn-descargar" class="btn-outline-dark" style="display: block; text-align: center; margin-top: 10px; padding: 10px; border-radius: 50px; text-decoration: none; font-size: 0.9rem; display: none;">
-                        <i class="fa-solid fa-download"></i> Descargar Historial CSV
-                    </a>
+              <div class="sl-r-card">
+                <div class="sl-r-icon hum"><i data-lucide="droplets"></i></div>
+                <div>
+                  <div class="sl-r-label">Hum. Amb.</div>
+                  <div class="sl-r-value" id="sl-val-hum">--</div>
+                  <div class="sl-r-status" id="sl-st-hum">--</div>
                 </div>
+              </div>
 
-                <h4 class="section-label" style="margin-top: 2rem;">LECTURAS ACTUALES</h4>
-                
-                <div class="readings-grid">
-                    <div class="reading-card card-temp">
-                        <div class="reading-icon"><i class="fa-solid fa-temperature-half"></i></div>
-                        <div class="reading-info">
-                            <span class="reading-label">Temperatura</span>
-                            <span class="reading-value" id="val-temp">--</span>
-                            <small id="status-temp" style="font-weight: bold;">--</small>
-                        </div>
-                    </div>
-
-                    <div class="reading-card card-hum">
-                        <div class="reading-icon"><i class="fa-solid fa-droplet"></i></div>
-                        <div class="reading-info">
-                            <span class="reading-label">Humedad Amb.</span>
-                            <span class="reading-value" id="val-hum">--</span>
-                            <small id="status-hum" style="font-weight: bold;">--</small>
-                        </div>
-                    </div>
-
-                    <div class="reading-card card-soil">
-                        <div class="reading-icon"><i class="fa-solid fa-layer-group"></i></div>
-                        <div class="reading-info">
-                            <span class="reading-label">Humedad Suelo</span>
-                            <span class="reading-value" id="val-suelo">--</span>
-                            <small id="status-suelo" style="font-weight: bold;">--</small>
-                        </div>
-                    </div>
+              <div class="sl-r-card">
+                <div class="sl-r-icon soil"><i data-lucide="layers"></i></div>
+                <div>
+                  <div class="sl-r-label">Hum. Suelo</div>
+                  <div class="sl-r-value" id="sl-val-suelo">--</div>
+                  <div class="sl-r-status" id="sl-st-suelo">--</div>
                 </div>
-                
-                 <div class="reading-card" style="background: white; border: 1px solid #eee; margin-top: 10px;">
-                    <div class="reading-info">
-                        <span class="reading-label">Precipitación (Raw)</span>
-                        <span class="reading-value" id="val-lluvia">--</span>
-                    </div>
-                </div>
+              </div>
 
-            </div> 
-            </div> </div>
+              <div class="sl-r-card">
+                <div class="sl-r-icon rain"><i data-lucide="cloud-rain"></i></div>
+                <div>
+                  <div class="sl-r-label">Precipit. (raw)</div>
+                  <div class="sl-r-value" id="sl-val-lluvia">--</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /sl-col derecha -->
+
+    </div><!-- /sl-dashboard -->
+  </div>
 </section>
 
+<!-- Toast container -->
+<div id="sl-toast-container"></div>
+
 <script>
-    // ... (Mantén el script que te di en la respuesta anterior)
-    let intervaloCheck;
-    let chartT, chartH;
-    const ESCALA_MAX_TEMP = 50; 
-    const ESCALA_MAX_PCT = 100; 
+/* ── STATE ─────────────────────────────────────────── */
+let slIntervalo = null;
+let slPuerto    = null;
+let chartT, chartH;
+const SL_ESCALA_TEMP = 50;
+const SL_ESCALA_PCT  = 100;
 
-    document.addEventListener("DOMContentLoaded", function() {
-        const ctxT = document.getElementById('chartTemperatura').getContext('2d');
-        const ctxH = document.getElementById('chartHumedad').getContext('2d');
+/* ── HELPER: crear ícono Lucide dinámicamente ─────── */
+function slLucideEl(name) {
+  const el = document.createElement('i');
+  el.dataset.lucide = name;
+  lucide.createIcons({ el: el.parentElement || document.body });
+  return el;
+}
 
-        chartT = new Chart(ctxT, {
-            type: 'line',
-            data: { labels: [], datasets: [{ label: 'Temperatura (°C)', data: [], borderColor: '#e67e22', tension: 0.4 }] },
-            options: { responsive: true, scales: { y: { beginAtZero: false } } }
-        });
+/* ── INIT CHARTS ────────────────────────────────────*/
+document.addEventListener('DOMContentLoaded', () => {
+  const baseOpts = (yOpts) => ({
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { maxTicksLimit: 6, font: { size: 10 } }, grid: { display: false } },
+      y: yOpts
+    },
+    elements: { point: { radius: 2 } }
+  });
 
-        chartH = new Chart(ctxH, {
-            type: 'line',
-            data: { labels: [], datasets: [{ label: 'Hum. Suelo (%)', data: [], borderColor: '#2ecc71', tension: 0.4 }] },
-            options: { responsive: true, scales: { y: { min: 0, max: 100 } } }
-        });
+  chartT = new Chart(document.getElementById('chartTemperatura'), {
+    type: 'line',
+    data: { labels: [], datasets: [{
+      label: 'Temperatura (°C)', data: [],
+      borderColor: '#e65100',
+      backgroundColor: 'rgba(230,81,0,.08)',
+      fill: true, tension: .4
+    }]},
+    options: baseOpts({ beginAtZero: false })
+  });
+
+  chartH = new Chart(document.getElementById('chartHumedad'), {
+    type: 'line',
+    data: { labels: [], datasets: [{
+      label: 'Hum. Suelo (%)', data: [],
+      borderColor: '#2e7d32',
+      backgroundColor: 'rgba(46,125,50,.08)',
+      fill: true, tension: .4
+    }]},
+    options: baseOpts({ min: 0, max: 100 })
+  });
+
+  // Inicializar iconos Lucide de esta página y auto-escanear
+  lucide.createIcons();
+  slEscanear();
+});
+
+/* ── TOAST ──────────────────────────────────────────*/
+function slToast(msg, type, icon) {
+  const c = document.getElementById('sl-toast-container');
+  const t = document.createElement('div');
+  t.className = `sl-toast ${type}`;
+  t.innerHTML = `<i data-lucide="${icon}"></i> ${msg}`;
+  c.appendChild(t);
+  lucide.createIcons({ el: t });
+  setTimeout(() => t.remove(), 3500);
+}
+
+/* ── ESCANEAR PUERTOS ───────────────────────────────*/
+function slEscanear() {
+  const btn  = document.getElementById('sl-btn-scan');
+  btn.innerHTML = '<span class="sl-spin"></span> Buscando...';
+  btn.disabled  = true;
+
+  fetch('/api/escanear_puertos')
+    .then(r => r.json())
+    .then(data => {
+      if (data.arduino_detectado) {
+        slPuerto = data.arduino_detectado;
+        const info = data.puertos.find(p => p.puerto === slPuerto);
+        document.getElementById('sl-port-name').textContent = slPuerto;
+        document.getElementById('sl-port-desc').textContent = info ? info.descripcion : 'Dispositivo detectado';
+        document.getElementById('sl-detector').classList.add('found');
+        slToast(`Arduino detectado en ${slPuerto}`, 'success', 'check-circle');
+      } else {
+        slPuerto = null;
+        document.getElementById('sl-port-name').textContent = 'Sin dispositivo';
+        document.getElementById('sl-port-desc').textContent =
+          data.puertos.length
+            ? `${data.puertos.length} puerto(s) disponible(s) — sin Arduino identificado`
+            : 'No hay puertos serie disponibles';
+        document.getElementById('sl-detector').classList.remove('found');
+        slToast('No se encontró Arduino. Conecta el dispositivo e intenta de nuevo.', 'error', 'x-circle');
+      }
+    })
+    .catch(() => slToast('Error al escanear puertos.', 'error', 'x-circle'))
+    .finally(() => {
+      btn.innerHTML = '<i data-lucide="refresh-cw"></i> Detectar';
+      btn.disabled  = false;
+      lucide.createIcons({ el: btn });
     });
+}
 
-    function iniciarMonitoreo() {
-        const cultivo = document.getElementById('cultivo-select').value;
-        const etapa = document.getElementById('etapa-select').value;
+/* ── INICIAR MONITOREO ──────────────────────────────*/
+function slIniciar() {
+  const cultivo = document.getElementById('cultivo-select').value;
+  const etapa   = document.getElementById('etapa-select').value;
 
-        if (!cultivo) { alert("Por favor selecciona un cultivo."); return; }
-        
-        // Simular progreso visual
-        document.getElementById('porcentaje-etapa').innerText = "Iniciando...";
-        document.getElementById('barra-progreso').style.width = "10%";
+  if (!cultivo) {
+    slToast('Selecciona un cultivo antes de iniciar.', 'error', 'x-circle');
+    return;
+  }
 
-        fetch('/api/iniciar_monitoreo', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cultivo: cultivo, etapa: etapa })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'ok') {
-                document.getElementById('btn-iniciar').style.display = 'none';
-                document.getElementById('btn-detener').style.display = 'flex';
-                document.getElementById('btn-descargar').style.display = 'none';
-                
-                document.getElementById('status-badge').innerHTML = '<i class="fa-solid fa-circle" style="color: #4CAF50; font-size: 8px; margin-right: 5px;"></i> Recibiendo Datos';
-                document.getElementById('status-badge').style.background = '#e8f5e9';
-                document.getElementById('status-badge').style.color = '#2e7d32';
+  const btn = document.getElementById('sl-btn-iniciar');
+  btn.innerHTML = '<span class="sl-spin"></span> Conectando...';
+  btn.disabled  = true;
 
-                intervaloCheck = setInterval(actualizarDatos, 1500);
-            } else {
-                alert("Error: " + data.msg);
-            }
-        });
+  fetch('/api/iniciar_monitoreo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cultivo, etapa, puerto: slPuerto })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === 'ok') {
+      slSetBadge('online', `<span class="dot"></span>${data.puerto || 'Activo'}`);
+      btn.style.display    = 'none';
+      document.getElementById('sl-btn-detener').style.display = 'flex';
+      document.getElementById('sl-btn-csv').style.display     = 'none';
+      document.getElementById('sl-pct-etapa').textContent     = '0%';
+      slIntervalo = setInterval(slActualizar, 1500);
+      slToast(`Monitoreando ${cultivo} · ${data.puerto}`, 'success', 'check-circle');
+    } else {
+      slResetBtn();
+      slToast(data.msg, 'error', 'x-circle');
     }
+  })
+  .catch(() => { slResetBtn(); slToast('Error de conexión con el servidor.', 'error', 'x-circle'); });
+}
 
-    function detenerMonitoreo() {
-        fetch('/api/detener_monitoreo', { method: 'POST' })
-        .then(res => res.json())
-        .then(data => {
-            clearInterval(intervaloCheck);
-            document.getElementById('btn-iniciar').style.display = 'flex';
-            document.getElementById('btn-detener').style.display = 'none';
-            document.getElementById('btn-descargar').style.display = 'block';
-            
-            document.getElementById('status-badge').innerHTML = '<i class="fa-solid fa-circle" style="color: #999; font-size: 8px; margin-right: 5px;"></i> Detenido';
-        });
-    }
+function slResetBtn() {
+  const btn = document.getElementById('sl-btn-iniciar');
+  btn.innerHTML = '<i data-lucide="play"></i> Iniciar Monitoreo';
+  btn.disabled  = false;
+  btn.style.display = 'flex';
+  lucide.createIcons({ el: btn });
+}
 
-    function actualizarDatos() {
-        fetch('/api/obtener_datos')
-        .then(res => res.json())
-        .then(data => {
-            if (data.activo && data.actual) {
-                const lectura = data.actual;
-                const refs = data.referencias; 
+/* ── DETENER MONITOREO ──────────────────────────────*/
+function slDetener() {
+  fetch('/api/detener_monitoreo', { method: 'POST' })
+    .then(() => {
+      clearInterval(slIntervalo);
+      slIntervalo = null;
+      slSetBadge('', '<span class="dot"></span>Detenido');
+      slResetBtn();
+      document.getElementById('sl-btn-detener').style.display = 'none';
+      document.getElementById('sl-btn-csv').style.display     = 'flex';
+      slToast('Monitoreo detenido. Puedes descargar el historial.', 'info', 'info');
+    });
+}
 
-                document.getElementById('val-temp').innerText = lectura.temperatura + " °C";
-                document.getElementById('val-hum').innerText = lectura.humedad_ambiente + "%";
-                document.getElementById('val-suelo').innerText = lectura.humedad_suelo_pct + "%";
-                document.getElementById('val-lluvia').innerText = lectura.precipitacion_raw;
+/* ── ACTUALIZAR DATOS ───────────────────────────────*/
+function slActualizar() {
+  fetch('/api/obtener_datos')
+    .then(r => r.json())
+    .then(data => {
+      if (!data.activo || !data.actual) return;
+      const l    = data.actual;
+      const refs = data.referencias;
 
-                document.getElementById('val-visual-temp').innerText = lectura.temperatura + "°";
-                document.getElementById('val-visual-hum').innerText = lectura.humedad_ambiente + "%";
-                document.getElementById('val-visual-suelo').innerText = lectura.humedad_suelo_pct + "%";
+      // Lecturas textuales
+      document.getElementById('sl-val-temp').textContent  = `${l.temperatura} °C`;
+      document.getElementById('sl-val-hum').textContent   = `${l.humedad_ambiente}%`;
+      document.getElementById('sl-val-suelo').textContent = `${l.humedad_suelo_pct}%`;
+      document.getElementById('sl-val-lluvia').textContent = l.precipitacion_raw;
 
-                actualizarStatusColor('status-temp', lectura.status_temp);
-                actualizarStatusColor('status-hum', lectura.status_hum);
-                actualizarStatusColor('status-suelo', lectura.status_suelo);
+      // Valores en gauges
+      document.getElementById('sl-vv-temp').textContent  = `${l.temperatura}°`;
+      document.getElementById('sl-vv-hum').textContent   = `${l.humedad_ambiente}%`;
+      document.getElementById('sl-vv-suelo').textContent = `${l.humedad_suelo_pct}%`;
 
-                const alertaBox = document.getElementById('alerta-global');
-                alertaBox.style.display = 'block';
-                alertaBox.innerText = lectura.nivel_alerta;
-                if (lectura.nivel_alerta.includes("CONDICIONES ÓPTIMAS")) {
-                    alertaBox.style.backgroundColor = "#d4edda"; alertaBox.style.color = "#155724";
-                } else {
-                    alertaBox.style.backgroundColor = "#f8d7da"; alertaBox.style.color = "#721c24";
-                }
+      // Status colors
+      slStatus('sl-st-temp',  l.status_temp);
+      slStatus('sl-st-hum',   l.status_hum);
+      slStatus('sl-st-suelo', l.status_suelo);
 
-                const calcPct = (val, maxScale) => Math.max(0, Math.min(100, (val / maxScale) * 100));
+      // Alerta global
+      const banner = document.getElementById('sl-alert');
+      const isOk   = l.nivel_alerta.includes('ÓPTIMAS');
+      banner.className = `sl-alert-banner ${isOk ? 'ok' : 'warn'}`;
+      banner.style.display = 'flex';
+      document.getElementById('sl-alert-text').textContent = l.nivel_alerta;
 
-                if(refs) {
-                    if(refs.temp) {
-                        document.getElementById('stem-temp').style.height = `${calcPct(lectura.temperatura, ESCALA_MAX_TEMP)}%`;
-                        let minPct = calcPct(refs.temp.min, ESCALA_MAX_TEMP);
-                        let maxPct = calcPct(refs.temp.max, ESCALA_MAX_TEMP);
-                        document.getElementById('box-temp').style.bottom = `${minPct}%`;
-                        document.getElementById('box-temp').style.height = `${maxPct - minPct}%`;
-                        document.getElementById('avg-temp').style.bottom = `${calcPct(refs.temp.avg, ESCALA_MAX_TEMP)}%`;
-                    }
-                    if(refs.hum_amb) {
-                        document.getElementById('stem-hum').style.height = `${calcPct(lectura.humedad_ambiente, ESCALA_MAX_PCT)}%`;
-                        let minPct = calcPct(refs.hum_amb.min, ESCALA_MAX_PCT);
-                        let maxPct = calcPct(refs.hum_amb.max, ESCALA_MAX_PCT);
-                        document.getElementById('box-hum').style.bottom = `${minPct}%`;
-                        document.getElementById('box-hum').style.height = `${maxPct - minPct}%`;
-                        document.getElementById('avg-hum').style.bottom = `${calcPct(refs.hum_amb.avg, ESCALA_MAX_PCT)}%`;
-                    }
-                    if(refs.hum_suelo) {
-                        document.getElementById('stem-suelo').style.height = `${calcPct(lectura.humedad_suelo_pct, ESCALA_MAX_PCT)}%`;
-                        let minPct = calcPct(refs.hum_suelo.min, ESCALA_MAX_PCT);
-                        let maxPct = calcPct(refs.hum_suelo.max, ESCALA_MAX_PCT);
-                        document.getElementById('box-suelo').style.bottom = `${minPct}%`;
-                        document.getElementById('box-suelo').style.height = `${maxPct - minPct}%`;
-                        document.getElementById('avg-suelo').style.bottom = `${calcPct(refs.hum_suelo.avg, ESCALA_MAX_PCT)}%`;
-                    }
-                }
+      // Gauges visuales
+      if (refs) {
+        slGauge('sl-fill-temp',  'sl-box-temp',  'sl-avg-temp',  l.temperatura,       refs.temp,      SL_ESCALA_TEMP);
+        slGauge('sl-fill-hum',   'sl-box-hum',   'sl-avg-hum',   l.humedad_ambiente,  refs.hum_amb,   SL_ESCALA_PCT);
+        slGauge('sl-fill-suelo', 'sl-box-suelo', 'sl-avg-suelo', l.humedad_suelo_pct, refs.hum_suelo, SL_ESCALA_PCT);
+      }
 
-                if (data.historial.length > 0) {
-                    const labels = data.historial.map(d => d.timestamp);
-                    chartT.data.labels = labels;
-                    chartT.data.datasets[0].data = data.historial.map(d => d.temperatura);
-                    chartT.update();
-                    chartH.data.labels = labels;
-                    chartH.data.datasets[0].data = data.historial.map(d => d.humedad_suelo_pct);
-                    chartH.update();
-                }
-            }
-        });
-    }
+      // Barra progreso (basada en historial acumulado)
+      const p = Math.min(99, data.historial.length);
+      document.getElementById('sl-barra-prog').style.width = p + '%';
+      document.getElementById('sl-pct-etapa').textContent  = p + '%';
 
-    function actualizarStatusColor(elementId, status) {
-        const el = document.getElementById(elementId);
-        el.innerText = status;
-        if (status === "OK") el.style.color = "green";
-        else el.style.color = "red";
-    }
+      // Gráficas
+      if (data.historial.length > 0) {
+        const labels = data.historial.map(d => d.timestamp);
+        chartT.data.labels = chartH.data.labels = labels;
+        chartT.data.datasets[0].data = data.historial.map(d => d.temperatura);
+        chartH.data.datasets[0].data = data.historial.map(d => d.humedad_suelo_pct);
+        chartT.update('none');
+        chartH.update('none');
+      }
+    });
+}
+
+/* ── HELPERS ────────────────────────────────────────*/
+const slPct = (v, max) => Math.max(0, Math.min(100, (v / max) * 100));
+
+function slGauge(fillId, boxId, avgId, val, refs, scale) {
+  document.getElementById(fillId).style.height = slPct(val, scale) + '%';
+  if (!refs) return;
+  const mn = slPct(refs.min, scale), mx = slPct(refs.max, scale), av = slPct(refs.avg, scale);
+  const box = document.getElementById(boxId);
+  box.style.bottom = mn + '%';
+  box.style.height = (mx - mn) + '%';
+  document.getElementById(avgId).style.bottom = av + '%';
+}
+
+function slStatus(id, status) {
+  const el = document.getElementById(id);
+  const map = { OK: ['OK', 'ok'], ALTA: ['ALTA', 'high'], BAJA: ['BAJA', 'low'] };
+  const [text, cls] = map[status] || [status, ''];
+  el.textContent = text;
+  el.className   = 'sl-r-status ' + cls;
+}
+
+function slSetBadge(cls, html) {
+  const b = document.getElementById('sl-status-badge');
+  b.className = 'sl-badge ' + cls;
+  b.innerHTML = html;
+}
 </script>
 {% endblock %}

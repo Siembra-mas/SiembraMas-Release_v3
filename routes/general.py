@@ -177,17 +177,21 @@ def _pred_cache(ruta: str, lugar: str, mes_solicitado: int):
 # ================================== Rutas ====================================
 
 @general_bp.route('/')
-def index():
+def landing():
+    return render_template('landing.html', title="Inicio")
+
+@general_bp.route('/siembra-mas')
+def siembra_mas():
     context = {
-        "title": "Inicio",
-        "mes_sel": mes_actual_nombre(), 
-        "anio_sel": ANIOS[0], 
+        "title": "Siembra Más",
+        "mes_sel": mes_actual_nombre(),
+        "anio_sel": ANIOS[0],
         "recomendaciones": [],
-        "estados": estados, 
-        "municipios": municipios, 
-        "meses": MESES, 
+        "estados": estados,
+        "municipios": municipios,
+        "meses": MESES,
         "anios": ANIOS,
-        "coordenadas": coordenadas, 
+        "coordenadas": coordenadas,
         "coordenadas_municipios": coordenadas_municipios,
         "temp_max": None, "temp_min": None, "temp_media": None,
         "precipitacion": None, "humedad": None, "nombre_mes": None,
@@ -320,10 +324,6 @@ def generar_analisis():
 @general_bp.route('/precios')
 def precios():
     return render_template('precios.html', title="Planes y Precios")
-
-@general_bp.route('/nosotros')
-def about():
-    return render_template('about.html', title="Sobre Nosotros")
 
 @general_bp.route('/privacidad')
 def privacidad():

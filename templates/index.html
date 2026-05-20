@@ -99,7 +99,7 @@
                     </div>
 
                     <div class="action-buttons-grid">
-                        <button type="button" class="btn btn-full" onclick="ubicarUsuario()">Ubicarme <i class="fa-solid fa-location-arrow"></i></button>
+                        <button type="button" class="btn btn-full" onclick="ubicarUsuario()">Ubicarme <i data-lucide="navigation"></i></button>
                         <div class="btn btn-outline btn-full" style="color: var(--dark-green); border-color: var(--medium-green); text-align:center; cursor:default;">
                             {% if nombre_mes %}Predicción: {{ nombre_mes }}{% else %}Mes Actual{% endif %}
                         </div>
@@ -128,7 +128,7 @@
                         </iframe>
                     {% else %}
                         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#666;">
-                            <i class="fa-solid fa-map-location-dot" style="font-size:3rem; margin-bottom:15px; color: var(--medium-green);"></i>
+                            <div style="font-size:3rem; margin-bottom:15px; color: var(--medium-green); line-height:1;"><i data-lucide="map-pin"></i></div>
                             <p>Selecciona una ubicación para ver el mapa</p>
                         </div>
                     {% endif %}
@@ -139,28 +139,28 @@
         <div class="weather-section-container" style="margin-top: 3rem;">
             <div class="weather-grid-custom">
                 <div class="w-card-light w-span-3">
-                    <i class="fa-solid fa-cloud-rain"></i>
+                    <i data-lucide="cloud-rain"></i>
                     <div class="w-value">{% if precipitacion is not none %}{{ precipitacion }} mm{% else %}--{% endif %}</div>
                     <div class="w-label">Precipitación</div>
                 </div>
                 <div class="w-card-light w-span-3">
-                    <i class="fa-solid fa-droplet"></i>
+                    <i data-lucide="droplets"></i>
                     <div class="w-value">{% if humedad is not none %}{{ humedad }} %{% else %}--{% endif %}</div>
                     <div class="w-label">Humedad relativa</div>
                 </div>
 
                 <div class="w-card-light w-span-2">
-                    <i class="fa-solid fa-temperature-arrow-up"></i>
+                    <i data-lucide="thermometer"></i>
                     <div class="w-value">{% if temp_max is not none %}{{ temp_max }} °C{% else %}--{% endif %}</div>
                     <div class="w-label">Temperatura máxima</div>
                 </div>
                 <div class="w-card-light w-span-2">
-                    <i class="fa-regular fa-sun"></i>
+                    <i data-lucide="sun"></i>
                     <div class="w-value">{% if temp_media is not none %}{{ temp_media }} °C{% else %}--{% endif %}</div>
                     <div class="w-label">Temperatura media</div>
                 </div>
                 <div class="w-card-light w-span-2">
-                    <i class="fa-solid fa-temperature-arrow-down"></i>
+                    <i data-lucide="thermometer-snowflake"></i>
                     <div class="w-value">{% if temp_min is not none %}{{ temp_min }} °C{% else %}--{% endif %}</div>
                     <div class="w-label">Temperatura mínima</div>
                 </div>

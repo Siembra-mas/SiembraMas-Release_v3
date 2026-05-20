@@ -1,0 +1,460 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* ── LAYOUT ─────────────────────────────────── */
+  .sn-section { background: var(--cream); padding: 3.5rem 0 5rem; }
+  .sn-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  @media (max-width: 820px) { .sn-grid { grid-template-columns: 1fr; } }
+
+  /* ── HEADER BAR ─────────────────────────────── */
+  .sn-user-bar {
+    background: var(--dark-green);
+    padding: .75rem 0;
+  }
+  .sn-user-bar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .sn-user-info {
+    display: flex; align-items: center; gap: .6rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    color: rgba(255,255,255,.85);
+  }
+  .sn-user-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    flex-shrink: 0;
+  }
+  .sn-badge-admin {
+    background: var(--accent-green);
+    color: #fff;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .05em;
+  }
+  .sn-bar-actions { display: flex; gap: .6rem; }
+  .sn-bar-btn {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2);
+    color: rgba(255,255,255,.85);
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 5px;
+    transition: background .2s;
+  }
+  .sn-bar-btn:hover { background: rgba(255,255,255,.22); color: #fff; }
+  .sn-bar-btn.danger:hover { background: rgba(217,83,79,.6); }
+
+  /* ── CARDS ──────────────────────────────────── */
+  .sn-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    overflow: hidden;
+  }
+  .sn-card-header {
+    padding: .9rem 1.4rem;
+    border-bottom: 1px solid #e0ead6;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .sn-card-header h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: .82rem;
+    letter-spacing: .07em;
+    color: var(--medium-green);
+    margin: 0;
+    text-transform: uppercase;
+  }
+  .sn-card-body { padding: 1.4rem; }
+
+  /* ── SELECTS ────────────────────────────────── */
+  .sn-field { margin-bottom: 1.1rem; }
+  .sn-field label {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--medium-green);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: .35rem;
+  }
+  .sn-field select {
+    width: 100%;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    padding: .65rem .95rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    color: var(--dark-green);
+    background: var(--white);
+    outline: none;
+    transition: border-color .2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2374B74A' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .9rem center;
+    padding-right: 2.5rem;
+  }
+  .sn-field select:focus { border-color: var(--accent-green); }
+
+  /* ── DROP ZONE ──────────────────────────────── */
+  .sn-drop-zone {
+    border: 2px dashed #ccddb5;
+    border-radius: 14px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all .25s;
+    background: var(--white);
+    position: relative;
+  }
+  .sn-drop-zone:hover, .sn-drop-zone.dragover {
+    border-color: var(--accent-green);
+    background: #f6fef0;
+  }
+  .sn-drop-zone .sn-dz-icon {
+    font-size: 2.8rem;
+    color: var(--accent-green);
+    margin-bottom: .7rem;
+  }
+  .sn-drop-zone .sn-dz-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--dark-green);
+    margin-bottom: .3rem;
+  }
+  .sn-drop-zone .sn-dz-sub { font-size: .85rem; color: #999; font-family: 'Crimson Pro', serif; }
+  .sn-drop-zone .sn-dz-types {
+    margin-top: .6rem;
+    font-size: .72rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #bbb;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .sn-drop-zone input[type=file] {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    opacity: 0; cursor: pointer;
+  }
+
+  /* ── PROGRESS ───────────────────────────────── */
+  .sn-progress { display: none; margin-top: 1rem; }
+  .sn-progress-track {
+    height: 8px;
+    background: #e0ead6;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .sn-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent-green);
+    border-radius: 4px;
+    transition: width .2s;
+  }
+  .sn-progress-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--medium-green);
+    margin-top: .4rem;
+    text-align: right;
+  }
+
+  /* ── SUBMIT ─────────────────────────────────── */
+  .sn-btn-submit {
+    width: 100%;
+    margin-top: 1rem;
+    padding: .85rem;
+    background: var(--accent-green);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .9rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background .2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .sn-btn-submit:hover:not(:disabled) { background: var(--medium-green); }
+  .sn-btn-submit:disabled { opacity: .65; cursor: default; }
+
+  /* ── INFO SIDE ──────────────────────────────── */
+  .sn-info-list { list-style: none; padding: 0; margin: 0; }
+  .sn-info-list li {
+    display: flex; gap: .75rem; align-items: flex-start;
+    padding: .75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    color: #555;
+    line-height: 1.45;
+  }
+  .sn-info-list li:last-child { border-bottom: none; }
+  .sn-info-list .sn-icon-wrap {
+    width: 32px; height: 32px;
+    background: var(--cream);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-green);
+    flex-shrink: 0;
+    margin-top: .1rem;
+  }
+  .sn-stat-bar {
+    background: var(--dark-green);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 1.2rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .sn-stat-bar i { color: var(--accent-green); font-size: 1.4rem; }
+  .sn-stat-bar strong {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .78rem;
+    font-weight: 800;
+    color: rgba(255,255,255,.6);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .sn-stat-bar span {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    color: var(--white);
+  }
+
+  /* ── ALERTS ─────────────────────────────────── */
+  .sn-alert { padding: .75rem 1rem; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: .82rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
+  .sn-alert.error { background: #fdecea; color: #c62828; border-left: 3px solid #e53935; }
+  .sn-alert.ok    { background: #e8f5e9; color: #2e7d32; border-left: 3px solid var(--accent-green); }
+</style>
+
+<!-- USER BAR -->
+<div class="sn-user-bar">
+  <div class="container">
+    <div class="sn-user-info">
+      <div class="sn-user-dot"></div>
+      <i data-lucide="leaf"></i>
+      {{ snap_user }}
+      {% if snap_is_admin %}<span class="sn-badge-admin">Admin</span>{% endif %}
+    </div>
+    <div class="sn-bar-actions">
+      <a href="{{ url_for('siembra_snap.gallery') }}" class="sn-bar-btn">
+        <i data-lucide="images"></i> Mi Galería
+      </a>
+      <a href="{{ url_for('auth_snap.logout') }}" class="sn-bar-btn danger">
+        <i data-lucide="log-out"></i> Salir
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero-main hero-short">
+  <video autoplay muted loop playsinline class="hero-bg-video">
+    <source src="{{ url_for('static', filename='img/campo_1.mp4') }}" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="container hero-content hero-flex-center">
+    <img src="{{ url_for('static', filename='img/logo_vision.svg') }}" alt="SiembraSnap" class="hero-logo-large">
+    <p class="hero-desc-text">
+      Contribuye con imágenes de tus cultivos para mejorar el modelo de visión artificial de SiembraMás.
+    </p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<section class="sn-section">
+  <div class="container">
+
+    {% with messages = get_flashed_messages(category_filter=['snap_error']) %}
+      {% for msg in messages %}
+        <div class="sn-alert error"><i data-lucide="alert-circle"></i> {{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% with messages = get_flashed_messages(category_filter=['snap_ok']) %}
+      {% for msg in messages %}
+        <div class="sn-alert ok"><i data-lucide="check-circle"></i> {{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <div class="sn-grid">
+
+      <!-- ── IZQUIERDA: formulario ── -->
+      <div class="sn-card">
+        <div class="sn-card-header">
+          <i data-lucide="upload-cloud"></i>
+          <h3>Subir Imágenes al Dataset</h3>
+        </div>
+        <div class="sn-card-body">
+          <form id="sn-form" action="{{ url_for('siembra_snap.upload') }}" method="post" enctype="multipart/form-data">
+
+            <div class="sn-field">
+              <label for="cultivo">Tipo de Cultivo</label>
+              <select name="cultivo" id="cultivo" required>
+                <option value="" disabled selected>Selecciona un cultivo</option>
+                {% for c in cultivos %}
+                  <option value="{{ c }}">{{ c.capitalize() }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="sn-field">
+              <label for="estado">Estado Observado</label>
+              <select name="estado" id="estado" required>
+                <option value="" disabled selected>¿Qué observas en la planta?</option>
+                <option value="sano">Planta Sana</option>
+                <option value="enfermo">Indicios de Enfermedad</option>
+                <option value="plaga">Presencia de Plagas</option>
+                <option value="deficiencia">Deficiencia Nutricional</option>
+              </select>
+            </div>
+
+            <div class="sn-drop-zone" id="sn-drop-zone">
+              <div class="sn-dz-icon"><i data-lucide="cloud-upload"></i></div>
+              <div class="sn-dz-title" id="sn-file-info">Arrastra imágenes aquí o haz clic</div>
+              <div class="sn-dz-sub">Selección múltiple permitida</div>
+              <div class="sn-dz-types">JPG · PNG · WEBP · GIF</div>
+              <input type="file" name="file" id="sn-file-input" accept="image/*" multiple required>
+            </div>
+
+            <div class="sn-progress" id="sn-progress">
+              <div class="sn-progress-track">
+                <div class="sn-progress-fill" id="sn-progress-fill"></div>
+              </div>
+              <div class="sn-progress-text" id="sn-progress-text">Subiendo: 0%</div>
+            </div>
+
+            <button type="submit" id="sn-submit" class="sn-btn-submit">
+              <i data-lucide="send"></i> Enviar al Dataset
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ── DERECHA: información ── -->
+      <div class="sn-card">
+        <div class="sn-card-header">
+          <i data-lucide="info"></i>
+          <h3>¿Por qué Contribuir?</h3>
+        </div>
+        <div class="sn-card-body">
+          <ul class="sn-info-list">
+            <li>
+              <div class="sn-icon-wrap"><i data-lucide="brain"></i></div>
+              <div>Tus imágenes son etiquetadas automáticamente y usadas para re-entrenar el modelo de detección de plagas y enfermedades.</div>
+            </li>
+            <li>
+              <div class="sn-icon-wrap"><i data-lucide="shield-check"></i></div>
+              <div>Las imágenes se almacenan de forma segura en <strong>AWS S3</strong> con acceso restringido solo para administradores del sistema.</div>
+            </li>
+            <li>
+              <div class="sn-icon-wrap"><i data-lucide="trending-up"></i></div>
+              <div>Cada imagen etiquetada mejora la precisión del diagnóstico para todos los agricultores de la red.</div>
+            </li>
+            <li>
+              <div class="sn-icon-wrap"><i data-lucide="camera"></i></div>
+              <div>Fotografía de cerca la hoja o la zona afectada. Luz natural y enfoque nítido mejoran la calidad del dato.</div>
+            </li>
+          </ul>
+
+          <div class="sn-stat-bar">
+            <i data-lucide="database"></i>
+            <div>
+              <strong>Dataset SiembraSnap</strong>
+              <span>Imágenes de cultivos mexicanos etiquetadas en campo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  const fileInput  = document.getElementById('sn-file-input');
+  const fileInfo   = document.getElementById('sn-file-info');
+  const form       = document.getElementById('sn-form');
+  const progress   = document.getElementById('sn-progress');
+  const progressFill = document.getElementById('sn-progress-fill');
+  const progressTxt  = document.getElementById('sn-progress-text');
+  const submitBtn  = document.getElementById('sn-submit');
+  const dropZone   = document.getElementById('sn-drop-zone');
+
+  fileInput.addEventListener('change', () => {
+    const n = fileInput.files.length;
+    fileInfo.textContent = n === 1
+      ? `Seleccionada: ${fileInput.files[0].name}`
+      : n > 1
+        ? `${n} imágenes seleccionadas`
+        : 'Arrastra imágenes aquí o haz clic';
+  });
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    fileInput.files = e.dataTransfer.files;
+    fileInput.dispatchEvent(new Event('change'));
+  });
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!fileInput.files.length) { alert('Selecciona al menos una imagen.'); return; }
+
+    const fd = new FormData(this);
+    const xhr = new XMLHttpRequest();
+
+    progress.style.display = 'block';
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="lucide-spin" style="display:inline-block;width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:lucide-rotate .7s linear infinite;"></span> Procesando...';
+
+    xhr.upload.addEventListener('progress', e => {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded / e.total) * 100);
+        progressFill.style.width = pct + '%';
+        progressTxt.textContent = `Subiendo: ${pct}%`;
+      }
+    });
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        window.location.href = "{{ url_for('siembra_snap.gallery') }}";
+      } else {
+        alert('Error al subir. Verifica el tamaño y formato de los archivos.');
+        progress.style.display = 'none';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-lucide="send"></i> Enviar al Dataset';
+        lucide.createIcons({ el: submitBtn });
+      }
+    };
+
+    xhr.open('POST', this.action, true);
+    xhr.send(fd);
+  });
+</script>
+{% endblock %}

@@ -26,13 +26,22 @@
     box-shadow: 0 12px 30px rgba(116, 183, 74, 0.6);
 }
 
-.floating-bot i {
-    font-size: 1.8rem;
+/* Se oculta cuando el chat está abierto */
+.floating-bot.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.7);
+    transition: all 0.25s ease;
+}
+
+.floating-bot svg.lucide {
+    width: 1.8rem;
+    height: 1.8rem;
     color: var(--white, #F0F6EA);
     transition: transform 0.3s;
 }
 
-.floating-bot:hover i {
+.floating-bot:hover svg.lucide {
     transform: rotate(15deg);
 }
 
@@ -118,32 +127,48 @@
     scroll-behavior: smooth;
 }
 
-/* Burbujas de mensaje */
-.message {
-    padding: 12px 16px;
+/* ── Bubble rows (igual que SiembraBot) ── */
+.bubble-row {
+    display: flex;
+    align-items: flex-end;
+    gap: .45rem;
+}
+.bubble-row.user { flex-direction: row-reverse; }
+
+.bubble-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .7rem;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+}
+.bubble-avatar.bot  { background: var(--accent-green, #74B74A); color: #fff; }
+.bubble-avatar.user { background: var(--medium-green, #32523A); color: #fff; }
+
+.bubble {
+    max-width: 78%;
+    padding: .65rem .95rem;
     border-radius: 15px;
-    font-size: 1rem;
-    max-width: 85%;
-    line-height: 1.5;
     font-family: 'Crimson Pro', serif;
-    position: relative;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    font-size: 1.02rem;
+    line-height: 1.5;
+    word-break: break-word;
 }
+.bubble.bot  { background: var(--white, #F0F6EA); color: var(--dark-green, #19291D); border: 1px solid #dcdcdc; border-bottom-left-radius: 3px; }
+.bubble.user { background: var(--medium-green, #32523A); color: #fff; border-bottom-right-radius: 3px; }
 
-.msg-bot {
-    background-color: var(--white, #F0F6EA);
-    color: var(--dark-green, #19291D);
-    border: 1px solid #dcdcdc;
-    align-self: flex-start; /* Alineado a la izquierda */
-    border-bottom-left-radius: 2px;
+.bubble-meta {
+    font-size: .65rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #bbb;
+    margin-top: 3px;
 }
+.bubble-row.user .bubble-meta { text-align: right; }
 
-.msg-user {
-    background-color: var(--medium-green, #32523A);
-    color: var(--white, #F0F6EA);
-    align-self: flex-end; /* Alineado a la derecha */
-    border-bottom-right-radius: 2px;
-}
+/* Compatibilidad con clases antiguas (por si existen en el HTML estático) */
+.msg-bot  { background-color: var(--white, #F0F6EA); color: var(--dark-green); border: 1px solid #dcdcdc; align-self: flex-start; border-bottom-left-radius: 2px; }
+.msg-user { background-color: var(--medium-green, #32523A); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
 
 /* --- 5. ÁREA DE INPUT --- */
 .chat-input-area {
@@ -251,13 +276,43 @@
     40% { transform: scale(1); }
 }
 
-/* --- 8. RESPONSIVE (Móviles) --- */
+/* --- 8. RESPONSIVE --- */
+
+/* Tablet (768px) */
+@media (max-width: 768px) {
+    .chat-widget {
+        width: calc(100vw - 2rem);
+        right: 1rem;
+        left: 1rem;
+        bottom: 90px;
+        height: 60vh;
+        max-height: 520px;
+        border-radius: 16px;
+    }
+    .floating-bot {
+        bottom: 18px;
+        right: 18px;
+        width: 56px;
+        height: 56px;
+    }
+    .floating-bot svg.lucide { width: 1.5rem; height: 1.5rem; }
+}
+
+/* Móvil pequeño (480px) */
 @media (max-width: 480px) {
     .chat-widget {
-        width: 90%; /* Ocupa casi todo el ancho */
-        right: 5%;
-        left: 5%;
-        bottom: 100px;
-        height: 65vh; /* Altura más cómoda en móvil */
+        width: 100vw;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        height: 85vh;
+        max-height: 100dvh;
+        border-radius: 20px 20px 0 0;
+        border-bottom: none;
     }
+    .chat-header { padding: 14px 16px; }
+    .chat-messages { padding: 14px; }
+    .chat-input-area { padding: 10px 12px; padding-bottom: env(safe-area-inset-bottom, 10px); }
+    #chatInput { font-size: 16px; } /* Evita zoom en iOS */
+    .floating-bot { bottom: 14px; right: 14px; width: 52px; height: 52px; }
 }

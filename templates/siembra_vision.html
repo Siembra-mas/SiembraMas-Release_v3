@@ -1,219 +1,513 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="hero-main hero-short"> 
-    <video autoplay muted loop playsinline class="hero-bg-video">
-        <source src="{{ url_for('static', filename='img/campo_1.mp4') }}" type="video/mp4">
-    </video>
+<style>
+  /* ── LAYOUT ─────────────────────────────────────── */
+  .sv-section { background: var(--cream); padding: 3.5rem 0 5rem; }
+  .sv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  @media (max-width: 800px) { .sv-grid { grid-template-columns: 1fr; } }
 
-    <div class="hero-overlay"></div>
+  /* ── CARDS ──────────────────────────────────────── */
+  .sv-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    overflow: hidden;
+  }
+  .sv-card-header {
+    padding: .9rem 1.4rem;
+    border-bottom: 1px solid #e0ead6;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  .sv-card-header h3 { font-size: .82rem; letter-spacing: .07em; color: var(--medium-green); margin: 0; }
+  .sv-card-body { padding: 1.4rem; }
 
-    <div class="container hero-content hero-flex-center">
-        
-        <img src="{{ url_for('static', filename='img/logo_vision.svg') }}" alt="Siembra Link Logo" class="hero-logo-large">
-        
-        <p class="hero-desc-text">
-           Dota a tu campo de visión artificial experta. Identifica plagas y enfermedades en etapas tempranas, monitorea la evolución visual del cultivo y ejecuta tratamientos localizados para reducir pérdidas y costos.
-        </p>
-    </div>
+  /* ── TAB SWITCH ─────────────────────────────────── */
+  .sv-tabs {
+    display: flex;
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 1.2rem;
+  }
+  .sv-tab {
+    flex: 1;
+    padding: .55rem;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    color: #888;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .sv-tab.active { background: #fff; color: var(--dark-green); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+
+  /* ── DROP ZONE ──────────────────────────────────── */
+  .drop-zone {
+    border: 2px dashed #ccddb5;
+    border-radius: 14px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all .25s;
+    background: var(--white);
+  }
+  .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent-green); background: #f6fef0; }
+  .drop-zone .dz-icon { font-size: 2.8rem; color: var(--accent-green); margin-bottom: .7rem; }
+  .drop-zone .dz-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: .9rem; color: var(--dark-green); margin-bottom: .3rem; }
+  .drop-zone .dz-sub   { font-size: .85rem; color: #999; font-family: 'Crimson Pro', serif; }
+  .drop-zone .dz-types { margin-top: .6rem; font-size: .72rem; font-family: 'Montserrat', sans-serif; color: #bbb; text-transform: uppercase; letter-spacing: .06em; }
+
+  /* ── CAMERA PANEL ───────────────────────────────── */
+  .camera-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    position: relative;
+    aspect-ratio: 4/3;
+  }
+  #video-stream { width: 100%; height: 100%; object-fit: cover; }
+  .camera-btn {
+    display: block;
+    width: 100%;
+    margin-top: .9rem;
+    padding: .75rem;
+    background: var(--accent-green);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .88rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background .2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .camera-btn:hover { background: var(--medium-green); }
+
+  /* ── PREVIEW ────────────────────────────────────── */
+  .preview-wrap {
+    position: relative;
+    display: none;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--cream);
+    aspect-ratio: 4/3;
+  }
+  .preview-wrap img { width: 100%; height: 100%; object-fit: cover; }
+  .preview-badge {
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(0,0,0,.55); color: #fff;
+    font-size: .72rem; font-family: 'Montserrat', sans-serif; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .btn-reselect {
+    display: block;
+    width: 100%;
+    margin-top: .7rem;
+    padding: .6rem;
+    background: transparent;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    color: #888;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .btn-reselect:hover { border-color: var(--medium-green); color: var(--medium-green); }
+
+  /* ── RESULTS ────────────────────────────────────── */
+  .sv-results { display: none; }
+  .result-diag {
+    background: var(--dark-green);
+    color: #fff;
+    border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: .9rem;
+  }
+  .result-diag .rd-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: .72rem;
+    letter-spacing: .08em;
+    color: rgba(255,255,255,.6);
+    text-transform: uppercase;
+    margin-bottom: .4rem;
+  }
+  .result-diag .rd-name {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--accent-green);
+    line-height: 1.2;
+  }
+  .result-desc {
+    background: #fff;
+    border: 1.5px solid #e0ead6;
+    border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+  }
+  .result-desc .desc-header {
+    display: flex; align-items: center; gap: .5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--medium-green);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: .7rem;
+  }
+  .result-desc p {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #444;
+    margin: 0;
+  }
+
+  /* ── LOADING ────────────────────────────────────── */
+  .sv-loading {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    text-align: center;
+  }
+  .sv-loading .spinner {
+    width: 48px; height: 48px;
+    border: 4px solid var(--cream);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sv-loading p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: .85rem;
+    color: #888;
+    font-weight: 700;
+  }
+
+  /* ── EMPTY STATE ────────────────────────────────── */
+  .sv-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .7rem;
+    padding: 2.5rem 1.4rem;
+    text-align: center;
+    color: #ccc;
+  }
+  .sv-empty svg.lucide { width: 2.5rem; height: 2.5rem; }
+  .sv-empty p { font-family: 'Montserrat', sans-serif; font-size: .82rem; font-weight: 700; }
+</style>
+
+<!-- HERO -->
+<div class="hero-main hero-short">
+  <video autoplay muted loop playsinline class="hero-bg-video">
+    <source src="{{ url_for('static', filename='img/campo_1.mp4') }}" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="container hero-content hero-flex-center">
+    <img src="{{ url_for('static', filename='img/logo_vision.svg') }}" alt="Siembra Visión" class="hero-logo-large">
+    <p class="hero-desc-text">
+      Dota a tu campo de visión artificial experta. Identifica plagas y enfermedades
+      en etapas tempranas para reducir pérdidas y costos.
+    </p>
+  </div>
 </div>
 
-<section class="section-padding bg-dashboard no-lift "> 
-
-<section class="summary-section">
+<!-- FEATURES -->
+<section class="section-padding bg-dashboard no-lift">
+  <section class="summary-section">
     <div class="container">
-        <div class="cards-grid">
-            
-            <div class="feature-card">
-                <div class="icon-wrapper">
-                    <i class="fa-solid fa-camera"></i>
-                </div>
-                <h3>Diagnóstico por Imagen</h3>
-                <p>Convierte tu smartphone en un laboratorio portátil. Captura una foto de la hoja y obtén un análisis de salud instantáneo.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon-wrapper">
-                    <i class="fa-solid fa-bug"></i>
-                </div>
-                <h3>Identificación de Plagas</h3>
-                <p>Algoritmos de visión entrenados para distinguir entre cientos de tipos de insectos, hongos y deficiencias nutricionales.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon-wrapper">
-                    <i class="fa-solid fa-file-medical"></i>
-                </div>
-                <h3>Historial Fitosanitario</h3>
-                <p>Guarda un registro visual de cada lote para monitorear la evolución de la enfermedad y validar la efectividad del tratamiento.</p>
-            </div>
-
+      <div class="cards-grid">
+        <div class="feature-card">
+          <div class="icon-wrapper"><i data-lucide="camera"></i></div>
+          <h3>Diagnóstico por Imagen</h3>
+          <p>Convierte tu smartphone en un laboratorio portátil. Captura una foto de la hoja y obtén un análisis de salud instantáneo.</p>
         </div>
+        <div class="feature-card">
+          <div class="icon-wrapper"><i data-lucide="bug"></i></div>
+          <h3>Identificación de Plagas</h3>
+          <p>Algoritmos de visión entrenados para distinguir entre cientos de tipos de insectos, hongos y deficiencias nutricionales.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon-wrapper"><i data-lucide="file-text"></i></div>
+          <h3>Historial Fitosanitario</h3>
+          <p>Guarda un registro visual de cada lote para monitorear la evolución de la enfermedad y validar la efectividad del tratamiento.</p>
+        </div>
+      </div>
     </div>
+  </section>
 </section>
 
-<section class="section-padding no-lift">
-    <div class="container">
-        
-        <div class="vision-options" style="margin-bottom: 20px;">
-            <button id="btn-camara" class="btn" onclick="activarCamara()"><i class="fa-solid fa-camera"></i> Usar Cámara</button>
-            <button id="btn-upload" class="btn btn-outline" onclick="activarUpload()" style="color: var(--dark-green); border-color: var(--dark-green);">
-                <i class="fa-solid fa-upload"></i> Subir Foto
+<!-- ANALYZER -->
+<section class="sv-section">
+  <div class="container">
+
+    <div class="sv-grid">
+
+      <!-- ── IZQUIERDA: input ── -->
+      <div class="sv-card">
+        <div class="sv-card-header">
+          <h3><i data-lucide="image"></i>&nbsp;Fuente de Imagen</h3>
+        </div>
+        <div class="sv-card-body">
+
+          <!-- Tabs -->
+          <div class="sv-tabs">
+            <button class="sv-tab active" id="tab-upload" onclick="setTab('upload')">
+              <i data-lucide="upload"></i> Subir Foto
             </button>
-        </div>
+            <button class="sv-tab" id="tab-camara" onclick="setTab('camara')">
+              <i data-lucide="camera"></i> Usar Cámara
+            </button>
+          </div>
 
-        <div id="panel-camara" class="vision-panel" style="display:none;">
-            <div style="background: #000; position: relative; border-radius: 12px; overflow: hidden; max-width: 500px; margin: 0 auto;">
-                <video id="video-stream" autoplay playsinline style="width: 100%; height: auto;"></video>
-                <canvas id="canvas-capture" style="display:none;"></canvas>
+          <!-- Panel: Subir -->
+          <div id="panel-upload">
+            <!-- Drop zone (oculto cuando hay preview) -->
+            <div class="drop-zone" id="drop-zone"
+                 onclick="document.getElementById('input-file').click()"
+                 ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+              <div class="dz-icon"><i data-lucide="cloud-upload"></i></div>
+              <div class="dz-title">Arrastra o haz clic para seleccionar</div>
+              <div class="dz-sub">La imagen debe ser clara y enfocada en la hoja</div>
+              <div class="dz-types">JPG · PNG · WEBP</div>
             </div>
-            <div style="text-align: center; margin-top: 1rem;">
-                <button class="btn" onclick="tomarFoto()">Capturar y Analizar</button>
+            <input type="file" id="input-file" accept="image/*" style="display:none;" onchange="manejarArchivo(this.files[0])">
+
+            <!-- Preview -->
+            <div class="preview-wrap" id="preview-wrap">
+              <img id="img-preview" src="" alt="Vista previa">
+              <div class="preview-badge"><i data-lucide="image"></i> Vista previa</div>
             </div>
-        </div>
+            <button class="btn-reselect" id="btn-reselect" style="display:none;" onclick="resetUpload()">
+              <i data-lucide="rotate-ccw"></i> Seleccionar otra imagen
+            </button>
+          </div>
 
-        <div id="panel-upload" class="vision-panel">
-            <div class="upload-area" style="border: 2px dashed #ccc; padding: 2rem; text-align: center; cursor: pointer;" onclick="document.getElementById('input-file').click()">
-                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: var(--medium-green);"></i>
-                <p>Haz clic para seleccionar o arrastra una imagen.</p>
-                <input type="file" id="input-file" accept="image/*" style="display: none;" onchange="manejarArchivo(this.files[0])">
+          <!-- Panel: Cámara -->
+          <div id="panel-camara" style="display:none;">
+            <div class="camera-wrap">
+              <video id="video-stream" autoplay playsinline></video>
+              <canvas id="canvas-capture" style="display:none;"></canvas>
             </div>
-        </div>
+            <button class="camera-btn" onclick="tomarFoto()">
+              <i data-lucide="camera"></i> Capturar y Analizar
+            </button>
+          </div>
 
-        <div id="loading" style="display:none; text-align: center; margin-top: 2rem;">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--accent-green);"></i>
-            <p>Analizando hoja con IA...</p>
         </div>
+      </div>
 
-        <div id="resultados-container" style="display: none; margin-top: 3rem; border-top: 1px solid #ddd; padding-top: 2rem;">
-            <h3>Resultados de Análisis:</h3>
-            
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
-                <div style="flex: 1; max-width: 300px;">
-                    <img id="img-preview" src="" style="width: 100%; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                </div>
-                
-                <div style="flex: 2;">
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="background: var(--white); padding: 1.5rem; margin-bottom: 1rem; border-left: 6px solid var(--accent-green); border-radius: 0 8px 8px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                            <strong style="display: block; font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; text-transform: uppercase;">Diagnóstico Detectado:</strong>
-                            <span id="res-diagnostico" style="font-size: 1.8rem; font-weight: 800; color: var(--dark-green);">--</span>
-                        </li>
-                        
-                        <li style="background: #fff; padding: 1.5rem; border: 1px solid #eee; border-radius: 8px;">
-                            <strong style="display: block; font-size: 1.1rem; color: var(--medium-green); margin-bottom: 0.5rem;">
-                                <i class="fa-solid fa-circle-info"></i> Información y Recomendación:
-                            </strong>
-                            <p id="res-descripcion" style="font-size: 1.1rem; line-height: 1.6; color: #444; margin: 0;">
-                                --
-                            </p>
-                        </li>
-                    </ul>
-                </div>
+      <!-- ── DERECHA: resultados ── -->
+      <div class="sv-card">
+        <div class="sv-card-header">
+          <h3><i data-lucide="scan-search"></i>&nbsp;Resultados del Análisis</h3>
+        </div>
+        <div class="sv-card-body">
+
+          <!-- Empty state -->
+          <div class="sv-empty" id="sv-empty">
+            <i data-lucide="leaf"></i>
+            <p>Sube o captura una imagen para ver el diagnóstico</p>
+          </div>
+
+          <!-- Loading -->
+          <div class="sv-loading" id="sv-loading">
+            <div class="spinner"></div>
+            <p>Analizando imagen con IA...</p>
+          </div>
+
+          <!-- Resultados -->
+          <div class="sv-results" id="sv-results">
+            <div class="result-diag">
+              <div class="rd-label"><i data-lucide="stethoscope"></i>&nbsp;Diagnóstico Detectado</div>
+              <div class="rd-name" id="res-diagnostico">—</div>
             </div>
-        </div>
+            <div class="result-desc">
+              <div class="desc-header">
+                <i data-lucide="info"></i> Información y Recomendación
+              </div>
+              <p id="res-descripcion">—</p>
+            </div>
+          </div>
 
-    </div>
+        </div>
+      </div>
+
+    </div><!-- /sv-grid -->
+  </div>
 </section>
 
 <script>
-    let streamActual = null;
+  let streamActual = null;
 
-    function activarUpload() {
-        detenerCamara();
-        document.getElementById('panel-camara').style.display = 'none';
-        document.getElementById('panel-upload').style.display = 'block';
+  /* ── TABS ───────────────────────────────────────── */
+  function setTab(tab) {
+    document.getElementById('tab-upload').classList.toggle('active', tab === 'upload');
+    document.getElementById('tab-camara').classList.toggle('active', tab === 'camara');
+    document.getElementById('panel-upload').style.display = tab === 'upload' ? 'block' : 'none';
+    document.getElementById('panel-camara').style.display = tab === 'camara' ? 'block' : 'none';
+    if (tab === 'camara') iniciarCamara();
+    else detenerCamara();
+  }
+
+  /* ── UPLOAD ─────────────────────────────────────── */
+  function onDragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('dragover'); }
+  function onDragLeave()  { document.getElementById('drop-zone').classList.remove('dragover'); }
+  function onDrop(e) {
+    e.preventDefault();
+    document.getElementById('drop-zone').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) manejarArchivo(file);
+  }
+
+  function manejarArchivo(file) {
+    if (!file || !file.type.startsWith('image/')) {
+      alert('Por favor selecciona un archivo de imagen válido (JPG, PNG, WEBP).');
+      return;
     }
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('img-preview').src = e.target.result;
+      document.getElementById('drop-zone').style.display = 'none';
+      document.getElementById('preview-wrap').style.display = 'block';
+      document.getElementById('btn-reselect').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+    enviarAlServidor(file);
+  }
 
-    function activarCamara() {
-        document.getElementById('panel-upload').style.display = 'none';
-        document.getElementById('panel-camara').style.display = 'block';
-        
-        const video = document.getElementById('video-stream');
-        
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-                .then(function(stream) {
-                    streamActual = stream;
-                    video.srcObject = stream;
-                    video.play();
-                })
-                .catch(function(err) {
-                    alert("Error al acceder a la cámara: " + err);
-                });
+  function resetUpload() {
+    document.getElementById('drop-zone').style.display = 'block';
+    document.getElementById('preview-wrap').style.display = 'none';
+    document.getElementById('btn-reselect').style.display = 'none';
+    document.getElementById('input-file').value = '';
+    setResultState('empty');
+  }
+
+  /* ── CÁMARA ─────────────────────────────────────── */
+  function iniciarCamara() {
+    if (!navigator.mediaDevices?.getUserMedia) { alert('Cámara no soportada en este dispositivo.'); return; }
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(stream => { streamActual = stream; document.getElementById('video-stream').srcObject = stream; })
+      .catch(err => alert('Error al acceder a la cámara: ' + err.message));
+  }
+
+  function detenerCamara() {
+    streamActual?.getTracks().forEach(t => t.stop());
+    streamActual = null;
+  }
+
+  function tomarFoto() {
+    const video  = document.getElementById('video-stream');
+    const canvas = document.getElementById('canvas-capture');
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      document.getElementById('img-preview').src = url;
+      enviarAlServidor(blob);
+    }, 'image/jpeg', .95);
+  }
+
+  /* ── ENVIAR AL SERVIDOR ─────────────────────────── */
+  function enviarAlServidor(fileBlob) {
+    setResultState('loading');
+    const fd = new FormData();
+    fd.append('file', fileBlob, 'imagen.jpg');
+    fetch('/siembra-vision/analizar', { method: 'POST', body: fd })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('res-diagnostico').textContent = data.data.diagnostico;
+          document.getElementById('res-descripcion').textContent = data.data.descripcion;
+          setResultState('results');
+        } else {
+          alert('Error en el análisis: ' + (data.error || 'Desconocido'));
+          setResultState('empty');
         }
-    }
+      })
+      .catch(() => { alert('Error de conexión con el servidor.'); setResultState('empty'); });
+  }
 
-    function detenerCamara() {
-        if (streamActual) {
-            streamActual.getTracks().forEach(track => track.stop());
-            streamActual = null;
-        }
-    }
-
-    function tomarFoto() {
-        const video = document.getElementById('video-stream');
-        const canvas = document.getElementById('canvas-capture');
-        const context = canvas.getContext('2d');
-
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        canvas.toBlob(function(blob) {
-            const urlPreview = URL.createObjectURL(blob);
-            document.getElementById('img-preview').src = urlPreview;
-            
-            enviarAlServidor(blob);
-        }, 'image/jpeg', 0.95);
-    }
-
-    function manejarArchivo(file) {
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('img-preview').src = e.target.result;
-            }
-            reader.readAsDataURL(file);
-            
-            enviarAlServidor(file);
-        }
-    }
-
-    function enviarAlServidor(fileBlob) {
-        const formData = new FormData();
-        formData.append('file', fileBlob, 'imagen.jpg');
-
-        // UI Updates: Mostrar loading, ocultar resultados anteriores
-        document.getElementById('loading').style.display = 'block';
-        document.getElementById('resultados-container').style.display = 'none';
-
-        fetch('/siembra-vision/analizar', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('loading').style.display = 'none';
-            if (data.success) {
-                document.getElementById('resultados-container').style.display = 'block';
-                
-                // Mostrar Diagnóstico
-                document.getElementById('res-diagnostico').textContent = data.data.diagnostico;
-                
-                // Mostrar Descripción (Nueva funcionalidad)
-                document.getElementById('res-descripcion').textContent = data.data.descripcion;
-                
-            } else {
-                alert('Error: ' + (data.error || 'Desconocido'));
-            }
-        })
-        .catch(error => {
-            document.getElementById('loading').style.display = 'none';
-            alert('Error de conexión con el servidor.');
-            console.error(error);
-        });
-    }
+  /* ── STATE MACHINE ──────────────────────────────── */
+  function setResultState(state) {
+    document.getElementById('sv-empty').style.display   = state === 'empty'   ? 'flex'  : 'none';
+    document.getElementById('sv-loading').style.display = state === 'loading' ? 'flex'  : 'none';
+    document.getElementById('sv-results').style.display = state === 'results' ? 'block' : 'none';
+  }
 </script>
+
+<!-- ── CONTRIBUIR AL DATASET ──────────────────────────────────── -->
+<section style="background: var(--dark-green); padding: 3rem 0;">
+  <div class="container">
+    <div style="display:flex; align-items:center; gap:2rem; flex-wrap:wrap; justify-content:space-between;">
+
+      <div style="display:flex; align-items:flex-start; gap:1.2rem; flex:1; min-width:260px;">
+        <div style="width:52px; height:52px; background:var(--accent-green); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.4rem; color:#fff;">
+          <i data-lucide="upload-cloud"></i>
+        </div>
+        <div>
+          <h3 style="font-family:'Montserrat',sans-serif; font-size:1.1rem; font-weight:800; color:#fff; text-transform:uppercase; letter-spacing:.5px; margin-bottom:.4rem;">
+            Contribuir al Dataset
+          </h3>
+          <p style="font-family:'Crimson Pro',serif; font-size:1.05rem; color:rgba(255,255,255,.75); line-height:1.5; margin:0; max-width:520px;">
+            Sube fotos de tus cultivos — sanos o con problemas — para mejorar el modelo de IA. Cada imagen etiquetada fortalece la detección de toda la red.
+          </p>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:.75rem; flex-wrap:wrap; align-items:center;">
+        {% if session.get('snap_user') %}
+          <a href="{{ url_for('siembra_snap.upload') }}"
+             style="display:inline-flex; align-items:center; gap:8px; background:var(--accent-green); color:#fff; border:none; border-radius:10px; padding:.75rem 1.5rem; font-family:'Montserrat',sans-serif; font-size:.85rem; font-weight:800; text-decoration:none; transition:background .2s;"
+             onmouseover="this.style.background='#5a9a38'" onmouseout="this.style.background='var(--accent-green)'">
+            <i data-lucide="upload-cloud"></i> Subir Imágenes
+          </a>
+          <a href="{{ url_for('siembra_snap.gallery') }}"
+             style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.1); color:rgba(255,255,255,.85); border:1px solid rgba(255,255,255,.25); border-radius:10px; padding:.75rem 1.5rem; font-family:'Montserrat',sans-serif; font-size:.85rem; font-weight:800; text-decoration:none; transition:background .2s;"
+             onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">
+            <i data-lucide="images"></i> Mi Galería
+          </a>
+          <a href="{{ url_for('auth_snap.logout') }}"
+             style="display:inline-flex; align-items:center; gap:6px; color:rgba(255,255,255,.5); font-family:'Montserrat',sans-serif; font-size:.75rem; font-weight:700; text-decoration:none; padding:.5rem .75rem;"
+             onmouseover="this.style.color='rgba(217,83,79,.9)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">
+            <i data-lucide="log-out"></i> Cerrar sesión ({{ session.get('snap_user').split('@')[0] }})
+          </a>
+        {% else %}
+          <a href="{{ url_for('auth_snap.login') }}"
+             style="display:inline-flex; align-items:center; gap:8px; background:var(--accent-green); color:#fff; border:none; border-radius:10px; padding:.75rem 1.6rem; font-family:'Montserrat',sans-serif; font-size:.9rem; font-weight:800; text-decoration:none; transition:background .2s;"
+             onmouseover="this.style.background='#5a9a38'" onmouseout="this.style.background='var(--accent-green)'">
+            <i data-lucide="log-in"></i> Iniciar Sesión para Contribuir
+          </a>
+          <a href="{{ url_for('auth_snap.signup') }}"
+             style="display:inline-flex; align-items:center; gap:6px; color:rgba(255,255,255,.6); font-family:'Montserrat',sans-serif; font-size:.8rem; font-weight:700; text-decoration:none; padding:.5rem .75rem; border-radius:8px; border:1px solid rgba(255,255,255,.2);"
+             onmouseover="this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.background='transparent'">
+            <i data-lucide="user-plus"></i> Crear cuenta
+          </a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</section>
 {% endblock %}

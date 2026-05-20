@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .sn-auth-section { min-height: calc(100vh - 280px); background: var(--cream); display: flex; align-items: center; padding: 4rem 0; }
+  .sn-auth-card { background: #fff; border-radius: 20px; box-shadow: 0 8px 40px rgba(0,0,0,.10); padding: 2.5rem 2rem; max-width: 420px; width: 100%; margin: 0 auto; }
+  .sn-auth-icon { width: 54px; height: 54px; background: var(--accent-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem; font-size: 1.5rem; color: #fff; }
+  .sn-auth-card h2 { font-family: 'Montserrat', sans-serif; font-size: 1.35rem; text-align: center; color: var(--dark-green); margin-bottom: .3rem; text-transform: uppercase; letter-spacing: .5px; }
+  .sn-auth-card .sn-subtitle { text-align: center; font-family: 'Crimson Pro', serif; font-size: 1rem; color: #888; margin-bottom: 1.6rem; }
+  .sn-field { margin-bottom: 1.1rem; }
+  .sn-field label { display: block; font-family: 'Montserrat', sans-serif; font-size: .75rem; font-weight: 700; color: var(--medium-green); text-transform: uppercase; letter-spacing: .05em; margin-bottom: .35rem; }
+  .sn-field input { width: 100%; border: 1.5px solid #e0e0e0; border-radius: 10px; padding: .7rem .95rem; font-family: 'Crimson Pro', serif; font-size: 1.05rem; color: var(--dark-green); background: var(--white); outline: none; transition: border-color .2s; }
+  .sn-field input:focus { border-color: var(--accent-green); }
+  .sn-code-input { text-align: center; letter-spacing: 8px; font-size: 1.6rem !important; font-weight: 800; }
+  .sn-submit { width: 100%; padding: .85rem; background: var(--accent-green); color: #fff; border: none; border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: .9rem; font-weight: 800; cursor: pointer; transition: background .2s; margin-top: .5rem; }
+  .sn-submit:hover { background: var(--medium-green); }
+  .sn-alert { padding: .75rem 1rem; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: .82rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
+  .sn-alert.error { background: #fdecea; color: #c62828; border-left: 3px solid #e53935; }
+  .sn-alert.ok    { background: #e8f5e9; color: #2e7d32; border-left: 3px solid var(--accent-green); }
+  .sn-links { text-align: center; margin-top: 1.3rem; font-family: 'Crimson Pro', serif; font-size: 1rem; color: #888; }
+  .sn-links a { color: var(--accent-green); font-weight: 700; }
+  .sn-back { display: inline-flex; align-items: center; gap: .4rem; font-family: 'Montserrat', sans-serif; font-size: .78rem; font-weight: 700; color: var(--medium-green); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2rem; }
+  .sn-back:hover { color: var(--accent-green); }
+  .sn-info-box { background: #e3f2fd; border-left: 3px solid #1976d2; border-radius: 8px; padding: .8rem 1rem; margin-bottom: 1.2rem; font-family: 'Crimson Pro', serif; font-size: 1rem; color: #1565c0; display: flex; gap: .5rem; align-items: flex-start; }
+</style>
+
+<section class="sn-auth-section">
+  <div class="container">
+    <a href="{{ url_for('auth_snap.signup') }}" class="sn-back">
+      <i data-lucide="arrow-left"></i> Volver al registro
+    </a>
+
+    <div class="sn-auth-card">
+      <div class="sn-auth-icon"><i data-lucide="mail-check"></i></div>
+      <h2>Verificar Cuenta</h2>
+      <p class="sn-subtitle">Ingresa el código que llegó a tu correo electrónico</p>
+
+      {% with messages = get_flashed_messages(category_filter=['snap_error']) %}
+        {% for msg in messages %}
+          <div class="sn-alert error"><i data-lucide="alert-circle"></i> {{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+      {% with messages = get_flashed_messages(category_filter=['snap_ok']) %}
+        {% for msg in messages %}
+          <div class="sn-alert ok"><i data-lucide="check-circle"></i> {{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <div class="sn-info-box">
+        <i data-lucide="info"></i>
+        Revisa tu bandeja de entrada y carpeta de spam. El código expira en 24 horas.
+      </div>
+
+      <form method="post" action="{{ url_for('auth_snap.confirm') }}">
+        <div class="sn-field">
+          <label for="email">Correo Electrónico</label>
+          <input type="email" id="email" name="email" placeholder="tu@correo.com" required autocomplete="email">
+        </div>
+        <div class="sn-field">
+          <label for="code">Código de Verificación</label>
+          <input type="text" id="code" name="code" placeholder="123456"
+                 class="sn-code-input" maxlength="8" required autocomplete="one-time-code">
+        </div>
+        <button type="submit" class="sn-submit">Activar Cuenta</button>
+      </form>
+
+      <div class="sn-links">
+        <a href="{{ url_for('auth_snap.signup') }}">¿No llegó el código? Regístrate de nuevo</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

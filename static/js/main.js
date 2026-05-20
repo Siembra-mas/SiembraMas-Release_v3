@@ -10,26 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 2. SIEMBRA BOT (OVERLAY) ---
-    const floatBot = document.querySelector('.floating-bot');
-    const botOverlay = document.getElementById('bot-overlay');
-    
-    if(floatBot && botOverlay) {
-        floatBot.addEventListener('click', () => {
-            botOverlay.classList.add('active');
-            
-            // Simular espera de 3 segundos y cerrar
-            setTimeout(() => {
-                botOverlay.classList.remove('active');
-                alert("Simulación: Comando recibido. Redirigiendo a resultados...");
-            }, 3000);
-        });
-        
-        // Cerrar al hacer click fuera (en el fondo)
-        botOverlay.addEventListener('click', (e) => {
-            if(e.target === botOverlay) botOverlay.classList.remove('active');
-        });
-    }
+    // --- 2. SIEMBRA BOT (Widget) ---
+    // La lógica del chat widget está en chat.js
 
     // --- 3. SIEMBRA VISIÓN (TABS) ---
     const btnCam = document.getElementById('btn-camara');
@@ -72,14 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if(resultsToggle && resultsSection) {
         resultsToggle.addEventListener('click', () => {
             resultsSection.classList.toggle('hidden');
-            const icon = resultsToggle.querySelector('i');
-            if(resultsSection.classList.contains('hidden')) {
-                icon.classList.remove('fa-chevron-up');
-                icon.classList.add('fa-chevron-down');
-            } else {
-                icon.classList.remove('fa-chevron-down');
-                icon.classList.add('fa-chevron-up');
-            }
+            const iconEl = resultsToggle.querySelector('i[data-lucide], svg.lucide');
+            const newI = document.createElement('i');
+            newI.setAttribute('data-lucide', resultsSection.classList.contains('hidden') ? 'chevron-down' : 'chevron-up');
+            if (iconEl) iconEl.replaceWith(newI); else resultsToggle.appendChild(newI);
+            lucide.createIcons({ el: resultsToggle });
         });
     }
 });
@@ -101,8 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Referencias a los elementos UI (SVG y Tooltips)
     const ui = {
         titulo: document.getElementById('titulo-resumen'),
-        icono: document.getElementById('icono-etapa'),
-        
+        icono: document.getElementById('icono-etapa'), // may be replaced dynamically by actualizarInterfaz
+
         // TEMPERATURA
         valTemp: document.getElementById('val-temp'),      
         recTemp: document.getElementById('rec-temp'),      
@@ -122,7 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FUNCIÓN FETCH API ---
     async function fetchDatosTablero() {
         try {
-            if(btnActualizar) btnActualizar.innerHTML = '<span>Cargando...</span><i class="fa-solid fa-spinner fa-spin"></i>';
+            if(btnActualizar) {
+                btnActualizar.innerHTML = '<span>Cargando...</span><i data-lucide="loader-2" class="lucide-spin"></i>';
+                lucide.createIcons({ el: btnActualizar });
+            }
 
             const response = await fetch('/api/datos-tablero');
             
@@ -142,7 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching data:', error);
             if(ui.titulo) ui.titulo.innerText = "Error conexión";
         } finally {
-            if(btnActualizar) btnActualizar.innerHTML = '<span>Actualizar Análisis</span><i class="fa-solid fa-rotate"></i>';
+            if(btnActualizar) {
+                btnActualizar.innerHTML = '<span>Actualizar Análisis</span><i data-lucide="refresh-cw"></i>';
+                lucide.createIcons({ el: btnActualizar });
+            }
         }
     }
 
@@ -169,9 +154,16 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.titulo.innerText = `${cultivo}`;
         
         // Icono según etapa
-        if(etapa == "1") ui.icono.className = "fa-solid fa-seedling";
-        else if(etapa == "2") ui.icono.className = "fa-solid fa-tree";
-        else ui.icono.className = "fa-solid fa-wheat-awn";
+        const iconMap = { "1": "sprout", "2": "tree-pine", "3": "wheat" };
+        const currentIconEl = document.getElementById('icono-etapa');
+        if (currentIconEl) {
+            const newI = document.createElement('i');
+            newI.id = 'icono-etapa';
+            newI.setAttribute('data-lucide', iconMap[etapa] || 'sprout');
+            currentIconEl.replaceWith(newI);
+            ui.icono = newI;
+            lucide.createIcons({ el: newI.parentElement });
+        }
 
         // Escalas (Valores máximos visuales)
         const ESCALA_TEMP = 60;     // 60°C = planta llena

@@ -1,0 +1,623 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- ══════════════════════════════════════════════════════
+     HERO SECTION — Video de fondo, headline, CTA
+     ══════════════════════════════════════════════════════ -->
+<header class="hero-main hero-landing">
+    <video id="heroVideoLanding" autoplay muted playsinline class="hero-bg-video">
+        Tu navegador no soporta videos HTML5.
+    </video>
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-content-landing fade-in">
+        <div class="hero-text">
+            <span class="badge">Expociencias Nacional 2025</span>
+            <h1>El Futuro del <br><span class="text-accent">Campo Mexicano</span></h1>
+            <p>
+                Un ecosistema tecnológico integral que monitorea, analiza y asiste al agricultor
+                para maximizar sus cosechas frente al cambio climático.
+            </p>
+            <div class="cta-group">
+                <a href="#modulos" class="btn">Explorar el Sistema</a>
+                <a href="{{ url_for('general.siembra_mas') }}" class="btn btn-outline">Ver Recomendaciones</a>
+            </div>
+        </div>
+
+        <div class="hero-stats-grid">
+            <div class="hero-stat-card">
+                <i data-lucide="activity"></i>
+                <div>
+                    <p class="stat-title">IoT + IA + Visión</p>
+                    <p class="stat-desc">Tres tecnologías unificadas en un solo ecosistema.</p>
+                </div>
+            </div>
+            <div class="hero-stat-card">
+                <i data-lucide="bot"></i>
+                <div>
+                    <p class="stat-title">Asistente Agrícola</p>
+                    <p class="stat-desc">Decisiones basadas en datos hiperlocales en tiempo real.</p>
+                </div>
+            </div>
+            <div class="hero-stat-card">
+                <i data-lucide="users"></i>
+                <div>
+                    <p class="stat-title">Acceso Universal</p>
+                    <p class="stat-desc">Diseñado para productores de 1 a 5 hectáreas.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-scroll-hint">
+        <i data-lucide="chevron-down"></i>
+    </div>
+</header>
+
+<!-- Script de rotación de videos -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const vid = document.getElementById('heroVideoLanding');
+    const lista = [
+        "{{ url_for('static', filename='img/campo_1.mp4') }}",
+        "{{ url_for('static', filename='img/campo_2.mp4') }}",
+        "{{ url_for('static', filename='img/campo_3.mp4') }}"
+    ];
+    let idx = Math.floor(Math.random() * lista.length);
+    function cargar() {
+        vid.src = lista[idx];
+        vid.play().catch(() => {});
+    }
+    vid.addEventListener('ended', function () {
+        vid.classList.add('video-hidden');
+        setTimeout(() => {
+            idx = (idx + 1) % lista.length;
+            vid.src = lista[idx];
+            vid.play().then(() => setTimeout(() => vid.classList.remove('video-hidden'), 50)).catch(() => vid.classList.remove('video-hidden'));
+        }, 900);
+    });
+    cargar();
+});
+</script>
+
+
+<!-- ══════════════════════════════════════════════════════
+     ABOUT SECTION — ¿Qué es Siembra +?
+     ══════════════════════════════════════════════════════ -->
+<section class="section-padding bg-white" id="nosotros">
+    <div class="container">
+        <div class="landing-about-grid fade-in">
+
+            <div class="about-text-col">
+                <span class="section-eyebrow">Sobre el Proyecto</span>
+                <h2>¿Qué es <span class="text-accent">Siembra +</span>?</h2>
+                <p>
+                    <strong>Siembra +</strong> no es solo una aplicación; es un
+                    <strong>ecosistema tecnológico integral</strong> diseñado para democratizar
+                    la agricultura de precisión en México.
+                </p>
+                <p>
+                    Nacimos como respuesta a la vulnerabilidad climática que enfrentan los pequeños
+                    productores. Fusionamos IoT con Inteligencia Artificial generativa para crear
+                    un puente entre los datos científicos complejos y las manos que trabajan la tierra.
+                </p>
+                <ul class="about-highlight-list">
+                    <li>
+                        <span class="highlight-icon"><i data-lucide="layers"></i></span>
+                        <div>
+                            <strong>Solución Todo en Uno</strong>
+                            <p>Hardware de monitoreo, Software de análisis e IA en una sola plataforma.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="highlight-icon"><i data-lucide="globe"></i></span>
+                        <div>
+                            <strong>Accesibilidad Total</strong>
+                            <p>Diseñado para interacción en lenguaje natural, sin conocimientos técnicos.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="highlight-icon"><i data-lucide="banknote"></i></span>
+                        <div>
+                            <strong>Bajo Costo</strong>
+                            <p>Alternativa económica a los sistemas industriales para parcelas de 1–5 ha.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="about-logo-col">
+                <div class="about-video-card">
+                    <video id="aboutVideo" autoplay muted playsinline class="about-vid">
+                        Tu navegador no soporta videos HTML5.
+                    </video>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- Script video About -->
+<script>
+(function () {
+    var videos = [
+        "{{ url_for('static', filename='img/campo_1.mp4') }}",
+        "{{ url_for('static', filename='img/campo_2.mp4') }}",
+        "{{ url_for('static', filename='img/campo_3.mp4') }}"
+    ];
+    var idx = Math.floor(Math.random() * videos.length);
+    var vid;
+
+    function iniciar() {
+        vid = document.getElementById('aboutVideo');
+        if (!vid) return;
+        vid.src = videos[idx];
+        vid.play().catch(function () {});
+        vid.addEventListener('ended', function () {
+            vid.classList.add('video-hidden');
+            setTimeout(function () {
+                idx = (idx + 1) % videos.length;
+                vid.src = videos[idx];
+                vid.play()
+                    .then(function () { setTimeout(function () { vid.classList.remove('video-hidden'); }, 50); })
+                    .catch(function () { vid.classList.remove('video-hidden'); });
+            }, 800);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', iniciar);
+    } else {
+        iniciar();
+    }
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════════════
+     MODULES SECTION — Los 3 módulos del ecosistema
+     ══════════════════════════════════════════════════════ -->
+<section class="section-padding bg-cream" id="modulos">
+    <div class="container">
+
+        <!-- Banner de Validación UV -->
+        <div class="validation-banner fade-in">
+            <div class="validation-icon icon-stack">
+                <i data-lucide="shield" class="base-icon"></i>
+                <i data-lucide="check" class="check-icon"></i>
+            </div>
+            <div class="validation-text">
+                <h4>Respaldo Técnico y Agronómico</h4>
+                <p>Solución desarrollada bajo estricta supervisión técnica y alineada con las necesidades reales del campo, avalada por la <strong>Facultad de Ciencias Biológicas y Agropecuarias de la Universidad Veracruzana</strong>.</p>
+            </div>
+            <div class="validation-logo-container">
+                <img src="{{ url_for('static', filename='img/logo_uv_agronomia.svg') }}" alt="Logo Facultad Agronomía" class="partner-logo square-logo">
+            </div>
+        </div>
+
+        <div class="center-text fade-in">
+            <span class="section-eyebrow">El Ecosistema</span>
+            <h2 class="section-title">Tres Módulos, <span class="text-accent">Una Solución</span></h2>
+            <p class="section-subtitle">
+                Integramos tres pilares tecnológicos para cubrir todo el ciclo agrícola:
+                Hardware robusto, IA generativa y Visión por Computadora.
+            </p>
+        </div>
+
+        <div class="modules-grid fade-in">
+
+            <!-- ── Siembra Link ── -->
+            <div class="module-card">
+                <div class="module-card-header header-link">
+                    <img src="{{ url_for('static', filename='img/logo_link.svg') }}" alt="Siembra Link" class="card-logo-svg">
+                </div>
+                <div class="module-card-body">
+                    <h3>Siembra Link</h3>
+                    <p class="module-subtitle">Estación de Monitoreo</p>
+                    <p class="module-desc">
+                        Nuestros "ojos" en el campo. Una red de dispositivos físicos que miden
+                        humedad y temperatura en tiempo real, operando 24/7 directamente en tu parcela.
+                    </p>
+                    <ul class="module-features">
+                        <li><i data-lucide="check-circle"></i> Monitoreo de sensores en tiempo real</li>
+                        <li><i data-lucide="check-circle"></i> Sensores de alta durabilidad</li>
+                        <li><i data-lucide="check-circle"></i> Bajo consumo energético</li>
+                        <li><i data-lucide="check-circle"></i> Exportación de historial en CSV</li>
+                    </ul>
+                    <a href="{{ url_for('siembra_link.index') }}" class="btn-module">
+                        Abrir Dashboard <i data-lucide="arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ── SiembraBot (Featured) ── -->
+            <div class="module-card module-card-featured">
+                <div class="module-card-header header-bot">
+                    <img src="{{ url_for('static', filename='img/logo_bot.svg') }}" alt="SiembraBot" class="card-logo-svg">
+                </div>
+                <div class="module-card-body">
+                    <h3>SiembraBot</h3>
+                    <p class="module-subtitle">Tu Agrónomo de Bolsillo</p>
+                    <p class="module-desc">
+                        La interfaz que conecta al humano con los datos. Un asistente basado en
+                        IA que responde preguntas por voz y texto en lenguaje natural.
+                    </p>
+                    <ul class="module-features">
+                        <li><i data-lucide="check-circle"></i> Interacción por voz y texto</li>
+                        <li><i data-lucide="check-circle"></i> Recomendaciones instantáneas</li>
+                        <li><i data-lucide="check-circle"></i> Respuestas con audio</li>
+                        <li><i data-lucide="check-circle"></i> Contexto agrícola especializado</li>
+                    </ul>
+                    <a href="{{ url_for('siembra_bot.index') }}" class="btn-module">
+                        Chatear Ahora <i data-lucide="arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ── Siembra Visión ── -->
+            <div class="module-card">
+                <div class="module-card-header header-vision">
+                    <img src="{{ url_for('static', filename='img/logo_vision.svg') }}" alt="Siembra Visión" class="card-logo-svg">
+                </div>
+                <div class="module-card-body">
+                    <h3>Siembra Visión</h3>
+                    <p class="module-subtitle">Diagnóstico Visual</p>
+                    <p class="module-desc">
+                        Detecta lo invisible a simple vista. Mediante análisis de imágenes,
+                        identificamos signos tempranos de enfermedades y estrés en tus cultivos.
+                    </p>
+                    <ul class="module-features">
+                        <li><i data-lucide="check-circle"></i> Detección temprana de enfermedades</li>
+                        <li><i data-lucide="check-circle"></i> Clasificación automática de plagas</li>
+                        <li><i data-lucide="check-circle"></i> Análisis por cámara o imagen</li>
+                        <li><i data-lucide="check-circle"></i> Recomendaciones de tratamiento</li>
+                    </ul>
+                    <a href="{{ url_for('siembra_vision.index') }}" class="btn-module">
+                        Analizar Planta <i data-lucide="arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <!-- ── De la Tierra a la Nube: Carrusel + Timeline ── -->
+        <div class="tech-layout fade-in" style="margin-top: 5rem;">
+
+            <div class="media-container">
+                <div class="collage-carousel" id="landingCarousel">
+                    <img src="{{ url_for('static', filename='img/carrusel/foto1.jpg') }}"  class="carousel-img active" alt="Evidencia de campo 1">
+                    <img src="{{ url_for('static', filename='img/carrusel/foto2.jpg') }}"  class="carousel-img" alt="Evidencia de campo 2">
+                    <img src="{{ url_for('static', filename='img/carrusel/foto3.jpg') }}"  class="carousel-img" alt="Evidencia de campo 3">
+                    <img src="{{ url_for('static', filename='img/carrusel/foto4.jpg') }}"  class="carousel-img" alt="Evidencia de campo 4">
+                    <img src="{{ url_for('static', filename='img/carrusel/foto5.jpg') }}"  class="carousel-img" alt="Evidencia de campo 5">
+                    <img src="{{ url_for('static', filename='img/carrusel/foto6.jpg') }}"  class="carousel-img" alt="Evidencia de campo 6">
+                    <img src="{{ url_for('static', filename='img/carrusel/foto7.jpg') }}"  class="carousel-img" alt="Evidencia de campo 7">
+                    <img src="{{ url_for('static', filename='img/carrusel/foto8.jpg') }}"  class="carousel-img" alt="Evidencia de campo 8">
+                    <img src="{{ url_for('static', filename='img/carrusel/foto9.jpg') }}"  class="carousel-img" alt="Evidencia de campo 9">
+                    <img src="{{ url_for('static', filename='img/carrusel/foto10.jpg') }}" class="carousel-img" alt="Evidencia de campo 10">
+                </div>
+                <div class="collage-overlay">
+                    <i data-lucide="camera"></i> Facultad de Ciencias Biológicas y Agropecuarias
+                </div>
+            </div>
+
+            <div class="process-text fade-in">
+                <h3>De la Tierra a la Nube</h3>
+                <p>
+                    Transformamos la incertidumbre en certeza. Nuestro sistema crea un flujo
+                    continuo de información que empodera al productor en cada etapa del ciclo agrícola.
+                </p>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i data-lucide="radio"></i></div>
+                        <div class="timeline-content">
+                            <h4>1. Recolección</h4>
+                            <p>Siembra Link captura las constantes vitales del cultivo directamente desde el suelo.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i data-lucide="cpu"></i></div>
+                        <div class="timeline-content">
+                            <h4>2. Procesamiento Inteligente</h4>
+                            <p>Nuestros algoritmos cruzan datos históricos y actuales para detectar anomalías.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i data-lucide="smartphone"></i></div>
+                        <div class="timeline-content">
+                            <h4>3. Acción</h4>
+                            <p>Siembra Bot notifica al usuario con una instrucción clara para proteger su cosecha.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SIEMBRA MÁS SHOWCASE — Panel de recomendación
+     ══════════════════════════════════════════════════════ -->
+<section class="section-padding bg-white">
+    <div class="container">
+        <div class="siembra-mas-showcase fade-in">
+
+            <div class="showcase-text">
+                <span class="section-eyebrow">Panel de Recomendación</span>
+                <h2>Siembra <span class="text-accent">Más</span></h2>
+                <p>
+                    Nuestro motor de recomendación basado en Machine Learning analiza el clima
+                    histórico y las condiciones de tu municipio para identificar los cultivos
+                    más viables para esta temporada.
+                </p>
+                <ul class="module-features" style="margin: 1.8rem 0;">
+                    <li><i data-lucide="check-circle"></i> Predicción climática con modelos de ML</li>
+                    <li><i data-lucide="check-circle"></i> Datos meteorológicos actualizados</li>
+                    <li><i data-lucide="check-circle"></i> Recomendaciones por estado y municipio</li>
+                    <li><i data-lucide="check-circle"></i> Viabilidad porcentual por cultivo</li>
+                </ul>
+                <a href="{{ url_for('general.siembra_mas') }}" class="btn">
+                    Ir a Siembra Más <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="showcase-visual">
+                <div class="showcase-mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="mockup-title">Panel de Recomendación Inteligente</span>
+                    </div>
+                    <div class="mockup-body">
+                        <div class="mockup-control-row">
+                            <div class="mockup-select">
+                                <i data-lucide="map-pin"></i> Veracruz
+                            </div>
+                            <div class="mockup-select">
+                                <i data-lucide="building-2"></i> Xalapa
+                            </div>
+                        </div>
+                        <div class="mockup-weather-row">
+                            <div class="mockup-weather-card">
+                                <i data-lucide="cloud-rain"></i>
+                                <span class="mwv">42 mm</span>
+                                <span class="mwl">Precipitación</span>
+                            </div>
+                            <div class="mockup-weather-card">
+                                <i data-lucide="droplets"></i>
+                                <span class="mwv">68 %</span>
+                                <span class="mwl">Humedad</span>
+                            </div>
+                            <div class="mockup-weather-card">
+                                <i data-lucide="thermometer"></i>
+                                <span class="mwv">26 °C</span>
+                                <span class="mwl">Temperatura</span>
+                            </div>
+                        </div>
+                        <div class="mockup-crops-row">
+                            <div class="mockup-crop green">
+                                <span>Maíz</span>
+                                <span class="mcv green-v">87%</span>
+                            </div>
+                            <div class="mockup-crop yellow">
+                                <span>Frijol</span>
+                                <span class="mcv yellow-v">61%</span>
+                            </div>
+                            <div class="mockup-crop red">
+                                <span>Trigo</span>
+                                <span class="mcv red-v">32%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     HOW IT WORKS — Flujo del sistema
+     ══════════════════════════════════════════════════════ -->
+<section class="section-padding bg-darker">
+    <div class="container">
+        <div class="center-text fade-in" style="color: var(--cream);">
+            <span class="section-eyebrow eyebrow-light">Flujo del Sistema</span>
+            <h2 class="section-title" style="color: var(--cream);">
+                De la Tierra a la <span class="text-accent">Decisión</span>
+            </h2>
+            <p style="color: rgba(225,237,213,0.85); font-family: 'Crimson Pro', serif; font-size: 1.15rem;">
+                Transformamos la incertidumbre en certeza. Un flujo continuo de información
+                que empodera al productor en cada etapa del ciclo agrícola.
+            </p>
+        </div>
+
+        <div class="how-it-works-flow fade-in">
+
+            <div class="flow-step">
+                <div class="flow-icon-wrap">
+                    <i data-lucide="radio"></i>
+                </div>
+                <h4>1. Recolección</h4>
+                <p>Siembra Link captura las constantes vitales del cultivo directamente desde el suelo.</p>
+                <span class="flow-tag">Siembra Link</span>
+            </div>
+
+            <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+
+            <div class="flow-step">
+                <div class="flow-icon-wrap">
+                    <i data-lucide="cpu"></i>
+                </div>
+                <h4>2. Procesamiento</h4>
+                <p>Nuestros algoritmos de ML cruzan datos históricos y actuales para detectar anomalías.</p>
+                <span class="flow-tag">Motor IA</span>
+            </div>
+
+            <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+
+            <div class="flow-step">
+                <div class="flow-icon-wrap">
+                    <i data-lucide="scan-eye"></i>
+                </div>
+                <h4>3. Diagnóstico</h4>
+                <p>Siembra Visión analiza imágenes para detectar enfermedades y plagas de forma temprana.</p>
+                <span class="flow-tag">Siembra Visión</span>
+            </div>
+
+            <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+
+            <div class="flow-step">
+                <div class="flow-icon-wrap flow-icon-accent">
+                    <i data-lucide="message-circle"></i>
+                </div>
+                <h4>4. Acción</h4>
+                <p>SiembraBot notifica al usuario con instrucciones claras para proteger su cosecha.</p>
+                <span class="flow-tag">SiembraBot</span>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     TRAJECTORY SECTION — Trayectoria y validación
+     ══════════════════════════════════════════════════════ -->
+<section class="section-padding bg-cream">
+    <div class="container">
+        <div class="center-text fade-in">
+            <span class="section-eyebrow">Trayectoria</span>
+            <h2 class="section-title">Respaldo <span class="text-accent">Validado</span></h2>
+            <p class="section-subtitle">
+                Avalados por la comunidad científica y reconocidos en competencias de impacto nacional.
+            </p>
+        </div>
+
+        <!-- Fila 1: 3 tarjetas -->
+        <div class="trajectory-grid trajectory-grid-3 fade-in">
+
+            <div class="trajectory-card">
+                <div class="event-header">
+                    <img src="{{ url_for('static', filename='img/logos/logo_cordoba.png') }}" alt="ExpoCiencias Córdoba" class="traj-expo-logo">
+                    <span class="traj-badge traj-badge-done">Fase Local</span>
+                </div>
+                <div class="event-body">
+                    <h3>ExpoCiencias Regional Córdoba</h3>
+                    <p>Debut del prototipo funcional. La viabilidad técnica y el impacto social del proyecto nos otorgaron la acreditación directa, consolidando nuestra propuesta.</p>
+                    <div class="traj-status"><i data-lucide="check-circle"></i> Acreditados</div>
+                    <div class="traj-photo">
+                        <img src="{{ url_for('static', filename='img/acreditacion_1.jpg') }}" alt="Equipo en Córdoba">
+                    </div>
+                </div>
+            </div>
+
+            <div class="traj-connector"><i data-lucide="arrow-right"></i></div>
+
+            <div class="trajectory-card">
+                <div class="event-header">
+                    <img src="{{ url_for('static', filename='img/logos/logo_xalapa.png') }}" alt="ExpoCiencias Xalapa" class="traj-expo-logo">
+                    <span class="traj-badge traj-badge-done">Fase Estatal</span>
+                </div>
+                <div class="event-body">
+                    <h3>ExpoCiencias Estatal Xalapa</h3>
+                    <p>Competencia de alto nivel. Siembra + destacó por su modelo de negocio y arquitectura de software, logrando el pase a la <strong>Etapa Nacional</strong>.</p>
+                    <div class="traj-status"><i data-lucide="check-circle"></i> Acreditados</div>
+                    <div class="traj-photo">
+                        <img src="{{ url_for('static', filename='img/acreditacion_2.jpg') }}" alt="Equipo en Xalapa">
+                    </div>
+                </div>
+            </div>
+
+            <div class="traj-connector"><i data-lucide="arrow-right"></i></div>
+
+            <div class="trajectory-card trajectory-card-future">
+                <div class="event-header">
+                    <img src="{{ url_for('static', filename='img/logos/logo_taumalipas.png') }}" alt="ExpoCiencias Nacional Tamaulipas" class="traj-expo-logo traj-expo-logo-dark">
+                    <span class="traj-badge traj-badge-done">Fase Nacional</span>
+                </div>
+                <div class="event-body">
+                    <h3>ExpoCiencias Nacional Tamaulipas 2025</h3>
+                    <p>Siembra + representó a Veracruz a nivel nacional, consolidando su propuesta tecnológica ante proyectos de todo el país.</p>
+                    <div class="traj-status"><i data-lucide="check-circle"></i> Acreditados</div>
+                    <div class="traj-photo">
+                        <img src="{{ url_for('static', filename='img/acreditacion_3.jpg') }}" alt="Equipo en Tamaulipas">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Flecha de continuación entre filas -->
+        <div class="traj-row-connector fade-in">
+            <i data-lucide="arrow-down"></i>
+        </div>
+
+        <!-- Fila 2: tarjeta internacional expandida -->
+        <div class="trajectory-grid-full fade-in">
+
+            <div class="trajectory-card trajectory-card-wide trajectory-card-colombia">
+                <div class="colombia-logo-header">
+                    <img src="{{ url_for('static', filename='img/logos/logo_colombia.png') }}" alt="ExpoCiencias Latinoamérica MILSET Colombia 2026" class="colombia-logo-img">
+                    <span class="traj-badge traj-badge-intl">Internacional · 2026</span>
+                </div>
+                <div class="event-body">
+                    <h3>ExpoCiencias Latinoamérica MILSET Colombia 2026</h3>
+                    <p>La meta continental. Llevar la solución agrícola mexicana a la máxima vitrina de ciencia juvenil de América Latina.</p>
+                    <div class="traj-status traj-status-future"><i data-lucide="clock"></i> Próximamente</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="validation-note fade-in">
+            <i data-lucide="shield-check"></i>
+            <p>
+                Solución desarrollada bajo estricta supervisión técnica y alineada con las necesidades
+                reales del campo, avalada por la
+                <strong>Facultad de Ciencias Biológicas y Agropecuarias de la Universidad Veracruzana.</strong>
+            </p>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     CTA SECTION — Llamada a la acción final
+     ══════════════════════════════════════════════════════ -->
+<section class="cta-final-section">
+    <div class="container">
+        <div class="cta-final-inner fade-in">
+            <h2>¿Listo para transformar<br>tu campo con tecnología?</h2>
+            <p>Accede al sistema completo de Siembra + y comienza hoy mismo.</p>
+            <div class="cta-buttons-group">
+                <a href="{{ url_for('general.siembra_mas') }}" class="btn">Comenzar con Recomendaciones</a>
+                <a href="{{ url_for('siembra_bot.index') }}" class="btn btn-outline-cream">Hablar con SiembraBot</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Script del carrusel de fotos -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const imgs = document.querySelectorAll('#landingCarousel .carousel-img');
+    if (imgs.length === 0) return;
+    let current = 0;
+    setInterval(function () {
+        imgs[current].classList.remove('active');
+        current = (current + 1) % imgs.length;
+        imgs[current].classList.add('active');
+    }, 3200);
+});
+</script>
+
+{% endblock %}

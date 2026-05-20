@@ -1,26 +1,58 @@
 # logic/monitor_logic.py
 import serial
+import serial.tools.list_ports
 import pandas as pd
 import time
 import threading
 from datetime import datetime
 import os
 
+# VIDs de chips USB-Serial usados frecuentemente en Arduino y clones
+_ARDUINO_VIDS = {0x2341, 0x1A86, 0x0403, 0x10C4, 0x2A03, 0x0483, 0x1EAF}
+_ARDUINO_KEYWORDS = ('arduino', 'ch340', 'ch341', 'ftdi', 'cp210', 'usb serial', 'usb-serial')
+
+def listar_puertos_seriales():
+    """Devuelve lista de dicts con info de cada puerto disponible."""
+    result = []
+    for p in serial.tools.list_ports.comports():
+        result.append({
+            "puerto": p.device,
+            "descripcion": p.description or "Puerto Serie",
+            "es_arduino": (
+                (p.vid in _ARDUINO_VIDS if p.vid else False) or
+                any(kw in (p.description or '').lower() for kw in _ARDUINO_KEYWORDS)
+            )
+        })
+    return result
+
+def detectar_arduino():
+    """Retorna el puerto más probable para un Arduino, o None si no hay ninguno."""
+    puertos = listar_puertos_seriales()
+    # Prioridad 1: coincidencia explícita de VID/descripción
+    for p in puertos:
+        if p["es_arduino"]:
+            return p["puerto"]
+    # Prioridad 2: cualquier puerto disponible
+    if puertos:
+        return puertos[0]["puerto"]
+    return None
+
+
 class MonitorSiembra:
     def __init__(self):
-        self.puerto_com = "COM11"
         self.baud_rate = 9600
         self.ser = None
         self.running = False
         self.hilo = None
         self.datos_historial = []
         self.ultima_lectura = {}
-        
+        self.puerto_detectado = None
+
         # Cargar referencias
         self.dict_fases = self.cargar_datos_referencia()
-        
+
         # Configuración actual del cultivo seleccionado
-        self.config_cultivo_actual = None 
+        self.config_cultivo_actual = None
         self.referencias_visuales = {}
 
     def cargar_datos_referencia(self):
@@ -35,7 +67,7 @@ class MonitorSiembra:
             "3": "Maduracion_procesado.csv"
         }
         
-        base_dir = os.path.join("data", "fase_cultivo") 
+        base_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "fase_cultivo")
 
         for k, archivo in archivos.items():
             try:
@@ -102,20 +134,28 @@ class MonitorSiembra:
         print(f"⚠️ No se encontró configuración para {nombre_cultivo} en etapa {etapa_id}")
         return False
 
-    def conectar(self):
+    def conectar(self, puerto=None):
         if self.ser and self.ser.is_open:
             return True
+
+        puerto_objetivo = puerto or detectar_arduino()
+        if not puerto_objetivo:
+            print("❌ No se encontró ningún dispositivo serial conectado.")
+            return False
+
         try:
-            self.ser = serial.Serial(self.puerto_com, self.baud_rate, timeout=2)
+            self.ser = serial.Serial(puerto_objetivo, self.baud_rate, timeout=2)
+            self.puerto_detectado = puerto_objetivo
             time.sleep(2)
             self.running = True
             self.datos_historial = []
             self.hilo = threading.Thread(target=self._leer_datos_loop, daemon=True)
             self.hilo.start()
-            print(f"✅ Conectado a {self.puerto_com}")
+            print(f"✅ Conectado a {puerto_objetivo}")
             return True
         except serial.SerialException as e:
-            print(f"❌ Error conexión serial: {e}")
+            print(f"❌ Error conexión serial en {puerto_objetivo}: {e}")
+            self.puerto_detectado = None
             return False
 
     def desconectar(self):

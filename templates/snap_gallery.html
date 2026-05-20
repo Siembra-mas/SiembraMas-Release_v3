@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* ── USER BAR ───────────────────────────────── */
+  .sn-user-bar { background: var(--dark-green); padding: .75rem 0; }
+  .sn-user-bar .container { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .sn-user-info { display: flex; align-items: center; gap: .6rem; font-family: 'Montserrat', sans-serif; font-size: .8rem; font-weight: 700; color: rgba(255,255,255,.85); }
+  .sn-user-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green); flex-shrink: 0; }
+  .sn-badge-admin { background: var(--accent-green); color: #fff; border-radius: 20px; padding: 2px 10px; font-size: .7rem; font-weight: 800; }
+  .sn-bar-actions { display: flex; gap: .6rem; }
+  .sn-bar-btn { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.85); border-radius: 8px; padding: 5px 12px; font-family: 'Montserrat', sans-serif; font-size: .75rem; font-weight: 700; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: background .2s; }
+  .sn-bar-btn:hover { background: rgba(255,255,255,.22); color: #fff; }
+  .sn-bar-btn.danger:hover { background: rgba(217,83,79,.6); }
+
+  /* ── SECTION ────────────────────────────────── */
+  .sn-gallery-section { background: var(--cream); padding: 3rem 0 5rem; }
+  .sn-gallery-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #d4e6c3;
+  }
+  .sn-gallery-header h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--dark-green);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin: 0;
+  }
+  .sn-count-badge {
+    background: var(--accent-green);
+    color: #fff;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75rem;
+    font-weight: 800;
+  }
+
+  /* ── ALERTS ─────────────────────────────────── */
+  .sn-alert { padding: .75rem 1rem; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: .82rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
+  .sn-alert.error { background: #fdecea; color: #c62828; border-left: 3px solid #e53935; }
+  .sn-alert.ok    { background: #e8f5e9; color: #2e7d32; border-left: 3px solid var(--accent-green); }
+
+  /* ── IMAGE GRID ─────────────────────────────── */
+  .sn-img-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.2rem;
+  }
+  .sn-img-card {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,.07);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .sn-img-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  }
+  .sn-img-card a img {
+    width: 100%; height: 160px; object-fit: cover; display: block;
+  }
+  .sn-img-card-info {
+    padding: .6rem .8rem;
+    border-top: 1px solid #f0f0f0;
+  }
+  .sn-img-card-key {
+    font-family: 'Montserrat', sans-serif;
+    font-size: .68rem;
+    font-weight: 700;
+    color: var(--medium-green);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sn-img-card-date {
+    font-family: 'Crimson Pro', serif;
+    font-size: .85rem;
+    color: #aaa;
+    margin-top: .15rem;
+  }
+
+  /* ── EMPTY STATE ────────────────────────────── */
+  .sn-empty {
+    text-align: center;
+    padding: 4rem 1.5rem;
+    color: #ccc;
+  }
+  .sn-empty svg.lucide { width: 3rem; height: 3rem; margin-bottom: 1rem; }
+  .sn-empty p { font-family: 'Montserrat', sans-serif; font-size: .85rem; font-weight: 700; }
+
+  /* ── ADMIN ACCORDION ────────────────────────── */
+  .sn-accordion { display: flex; flex-direction: column; gap: 1rem; }
+  .sn-acc-item { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 3px 12px rgba(0,0,0,.07); }
+  .sn-acc-btn {
+    width: 100%;
+    background: var(--dark-green);
+    color: #fff;
+    border: none;
+    padding: 1rem 1.4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .sn-acc-btn:hover { background: var(--medium-green); }
+  .sn-acc-btn .sn-acc-count {
+    background: rgba(255,255,255,.15);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: .72rem;
+  }
+  .sn-acc-body {
+    display: none;
+    padding: 1.2rem;
+    background: #fafafa;
+  }
+  .sn-acc-body.open { display: block; }
+</style>
+
+<!-- USER BAR -->
+<div class="sn-user-bar">
+  <div class="container">
+    <div class="sn-user-info">
+      <div class="sn-user-dot"></div>
+      <i data-lucide="leaf"></i>
+      {{ snap_user }}
+      {% if admin %}<span class="sn-badge-admin">Admin</span>{% endif %}
+    </div>
+    <div class="sn-bar-actions">
+      <a href="{{ url_for('siembra_snap.upload') }}" class="sn-bar-btn">
+        <i data-lucide="upload-cloud"></i> Subir Más
+      </a>
+      <a href="{{ url_for('auth_snap.logout') }}" class="sn-bar-btn danger">
+        <i data-lucide="log-out"></i> Salir
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section class="sn-gallery-section">
+  <div class="container">
+
+    {% with messages = get_flashed_messages(category_filter=['snap_error']) %}
+      {% for msg in messages %}
+        <div class="sn-alert error"><i data-lucide="alert-circle"></i> {{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% with messages = get_flashed_messages(category_filter=['snap_ok']) %}
+      {% for msg in messages %}
+        <div class="sn-alert ok"><i data-lucide="check-circle"></i> {{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <div class="sn-gallery-header">
+      <h2>
+        {% if admin %}Dataset Completo{% else %}Mis Contribuciones{% endif %}
+      </h2>
+      <span class="sn-count-badge">{{ total }} imagen{% if total != 1 %}es{% endif %}</span>
+    </div>
+
+    {% if admin %}
+
+      {# ── ADMIN: acordeón por usuario ── #}
+      {% if imagenes_agrupadas %}
+        <div class="sn-accordion">
+          {% for usuario, fotos in imagenes_agrupadas.items() %}
+            <div class="sn-acc-item">
+              <button class="sn-acc-btn" onclick="toggleAcc(this)">
+                <span><i data-lucide="user"></i>&nbsp; USUARIO: {{ usuario | upper }}</span>
+                <span class="sn-acc-count">{{ fotos | length }} foto{% if fotos | length != 1 %}s{% endif %}</span>
+              </button>
+              <div class="sn-acc-body">
+                <div class="sn-img-grid">
+                  {% for img in fotos %}
+                    <div class="sn-img-card">
+                      <a href="{{ img.url }}" target="_blank" rel="noopener">
+                        <img src="{{ img.url }}" alt="Captura" loading="lazy">
+                      </a>
+                      <div class="sn-img-card-info">
+                        <div class="sn-img-card-key">{{ img.key.split('/')[-1] }}</div>
+                        <div class="sn-img-card-date">{{ img.fecha.strftime('%d/%m/%Y · %H:%M') }}</div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="sn-empty">
+          <i data-lucide="image-off"></i>
+          <p>No hay imágenes en el dataset todavía.</p>
+        </div>
+      {% endif %}
+
+    {% else %}
+
+      {# ── USUARIO: grid personal ── #}
+      {% if imagenes %}
+        <div class="sn-img-grid">
+          {% for img in imagenes %}
+            <div class="sn-img-card">
+              <a href="{{ img.url }}" target="_blank" rel="noopener">
+                <img src="{{ img.url }}" alt="Mi Siembra" loading="lazy">
+              </a>
+              <div class="sn-img-card-info">
+                <div class="sn-img-card-key">{{ img.key.split('/')[-1] | replace('.jpg', '') }}</div>
+                <div class="sn-img-card-date">{{ img.fecha.strftime('%d/%m/%Y · %H:%M') }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="sn-empty">
+          <i data-lucide="leaf"></i>
+          <p>Aún no has subido ninguna imagen.</p>
+          <a href="{{ url_for('siembra_snap.upload') }}" class="btn" style="margin-top:1rem;">Subir primera imagen</a>
+        </div>
+      {% endif %}
+
+    {% endif %}
+
+  </div>
+</section>
+
+<script>
+  function toggleAcc(btn) {
+    const body = btn.nextElementSibling;
+    body.classList.toggle('open');
+    const icon = btn.querySelector('[data-lucide], svg.lucide');
+    if (icon) {
+      const newI = document.createElement('i');
+      newI.setAttribute('data-lucide', body.classList.contains('open') ? 'chevron-up' : 'chevron-down');
+      icon.replaceWith(newI);
+      lucide.createIcons({ el: btn });
+    }
+  }
+</script>
+{% endblock %}

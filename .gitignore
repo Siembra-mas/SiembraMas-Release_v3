@@ -1,6 +1,9 @@
 
+# Variables de entorno (contienen API keys - NO subir)
+.env
+
 # Entornos Virtuales
-vision/ 
+vision/
 .venv/
 venv/
 env/
@@ -9,6 +12,7 @@ env/
 
 # Archivos de Python Compilados
 __pycache__/
+**/__pycache__/
 *.pyc
 *.pyd
 *.so
@@ -25,3 +29,16 @@ key.pem
 # Archivos Temporales del Sistema
 *.DS_Store
 *~
+
+# Caché de audio generado (TTS — se regenera en producción)
+static/audio/
+
+# Archivos temporales de subidas
+static/temp/
+uploads/
+
+# Carpetas y archivos locales (no van al repo)
+.claude/
+Siembra-mas.github.io-main/
+*.pdf
+generate_report.py
