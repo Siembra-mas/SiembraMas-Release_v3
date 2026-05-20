@@ -1,15 +1,21 @@
 # Ubicación: logic/vision_logic.py
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import (
-    InputLayer, Dense, GlobalAveragePooling2D,
-    RandomFlip, RandomRotation, Rescaling
-)
-from tensorflow.keras.applications import MobileNetV2
-import numpy as np
-from PIL import Image
 import os
 import sys
+import numpy as np
+from PIL import Image
+
+try:
+    import tensorflow as tf
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import (
+        InputLayer, Dense, GlobalAveragePooling2D,
+        RandomFlip, RandomRotation, Rescaling
+    )
+    from tensorflow.keras.applications import MobileNetV2
+    TF_AVAILABLE = True
+except ImportError:
+    TF_AVAILABLE = False
+    print("⚠️ TensorFlow no disponible — SiembraVision en modo sin IA.")
 
 # --- 1. CONFIGURACIÓN DE RUTAS E IMPORTACIONES ---
 
@@ -44,6 +50,8 @@ _model_instance = None
 # --- 2. DEFINICIÓN DEL MODELO ---
 def construir_model():
     """Reconstruye la arquitectura del modelo MobileNetV2."""
+    if not TF_AVAILABLE:
+        return None
     IMG_SHAPE = (IMG_SIZE, IMG_SIZE, 3)
     base_model = MobileNetV2(
         input_shape=IMG_SHAPE, include_top=False, weights=None
@@ -97,6 +105,14 @@ def procesar_prediccion(img_pil):
     """
     Recibe una imagen PIL, la procesa y devuelve un diccionario JSON-safe con diagnóstico y descripción.
     """
+    if not TF_AVAILABLE:
+        return {
+            "error": "El análisis de imágenes no está disponible en esta instancia.",
+            "diagnostico": "Servicio no disponible",
+            "descripcion": "SiembraVision requiere TensorFlow. Contacta al administrador.",
+            "id": -1,
+            "status": "unavailable"
+        }
     try:
         model = obtener_model()
         

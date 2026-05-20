@@ -5,7 +5,11 @@ import io
 
 # Importamos la función de lógica que creamos arriba
 # Ajusta la importación según tu estructura de carpetas
-from logic.vision_logic import procesar_prediccion
+try:
+    from logic.vision_logic import procesar_prediccion
+except ImportError:
+    def procesar_prediccion(img_pil):
+        return {"error": "Módulo de visión no disponible.", "diagnostico": "No disponible", "descripcion": "", "id": -1, "status": "unavailable"}
 
 siembra_vision_bp = Blueprint('siembra_vision', __name__)
 
