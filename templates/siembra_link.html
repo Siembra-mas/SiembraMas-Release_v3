@@ -421,6 +421,152 @@
   from { opacity: 0; transform: translateX(20px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+
+/* ── MODAL FIN DE ETAPA ───────────────────────────── */
+.sl-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: slFadeIn 0.3s ease;
+}
+.sl-modal-card {
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 480px;
+  width: 100%;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+  text-align: center;
+  animation: slScaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes slFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slScaleUp { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ── SECCIÓN DATOS/UBICACIÓN (nuevo) ──────────────── */
+.sl-mt { margin-top: 1.5rem; }
+.sl-badge.muted { background: #f0f0f0; color: #999; }
+.sl-badge.loc-ok { background: #e3f2fd; color: #1565c0; }
+
+.sl-mode-switch {
+  display: flex;
+  background: var(--cream);
+  border-radius: 50px;
+  padding: 3px;
+  gap: 3px;
+}
+.sl-mode-switch button {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .72rem;
+  font-weight: 700;
+  color: #888;
+  cursor: pointer;
+  transition: all .2s;
+}
+.sl-mode-switch button.active {
+  background: var(--accent-green);
+  color: #fff;
+}
+
+.sl-loc-selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: .8rem;
+  margin-bottom: 1.2rem;
+}
+.sl-loc-selector .sl-form-row { flex: 1; min-width: 160px; margin-bottom: 0; }
+.sl-loc-selector .sl-btn-scan { padding: .68rem 1rem; }
+
+.sl-table-wrap { overflow-x: auto; margin-bottom: 1.6rem; border: 1.5px solid var(--sl-border); border-radius: 12px; }
+.sl-table { width: 100%; border-collapse: collapse; font-family: 'Crimson Pro', serif; font-size: .92rem; }
+.sl-table th {
+  background: var(--cream);
+  font-family: 'Montserrat', sans-serif;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--medium-green);
+  text-align: left;
+  padding: .6rem .8rem;
+  white-space: nowrap;
+}
+.sl-table td { padding: .55rem .8rem; border-top: 1px solid var(--sl-border); color: var(--dark-green); white-space: nowrap; }
+.sl-table-empty { text-align: center !important; color: #999; padding: 1.5rem !important; white-space: normal !important; }
+.sl-table-actions { display: flex; gap: .4rem; }
+.sl-table-actions button {
+  border: none; background: none; cursor: pointer; color: #999; padding: 3px;
+  display: flex; align-items: center;
+}
+.sl-table-actions button:hover { color: var(--medium-green); }
+.sl-table-actions button.danger:hover { color: var(--sl-err); }
+
+.sl-crud-form {
+  display: none;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: .7rem;
+  background: var(--cream);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.sl-crud-form.open { display: grid; }
+.sl-crud-form label { font-size: .68rem; font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--medium-green); text-transform: uppercase; display: block; margin-bottom: .25rem; }
+.sl-crud-form input, .sl-crud-form select {
+  width: 100%; padding: .5rem .6rem; border: 1.5px solid var(--sl-border); border-radius: 8px;
+  font-family: 'Crimson Pro', serif; font-size: .95rem; background: #fff;
+}
+.sl-crud-form .sl-crud-actions { grid-column: 1 / -1; display: flex; gap: .6rem; }
+.sl-crud-form .sl-crud-actions button {
+  border: none; border-radius: 8px; padding: .55rem 1.1rem; font-family: 'Montserrat', sans-serif;
+  font-size: .78rem; font-weight: 700; cursor: pointer;
+}
+.sl-crud-save { background: var(--accent-green); color: #fff; }
+.sl-crud-cancel { background: #eee; color: #555; }
+
+.sl-coverage-header {
+  display: flex; justify-content: space-between; align-items: center; gap: .8rem;
+  margin-bottom: .8rem; flex-wrap: wrap;
+}
+.sl-coverage-header h4 {
+  margin: 0; font-size: .8rem; letter-spacing: .05em; color: var(--medium-green);
+  display: flex; align-items: center; gap: 6px;
+}
+.sl-coverage-header input {
+  padding: .5rem .8rem; border: 1.5px solid var(--sl-border); border-radius: 50px;
+  font-family: 'Crimson Pro', serif; font-size: .9rem; min-width: 220px;
+}
+.sl-coverage-list { max-height: 420px; overflow-y: auto; border: 1.5px solid var(--sl-border); border-radius: 12px; }
+.sl-coverage-loading { padding: 1.2rem; text-align: center; color: #999; font-family: 'Crimson Pro', serif; }
+.sl-cov-estado {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .6rem .9rem; cursor: pointer; border-bottom: 1px solid var(--sl-border);
+  font-family: 'Montserrat', sans-serif; font-size: .82rem; font-weight: 700; color: var(--dark-green);
+}
+.sl-cov-estado:hover { background: var(--cream); }
+.sl-cov-estado .sl-cov-dot { width: 9px; height: 9px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
+.sl-cov-estado.tiene-datos .sl-cov-dot { background: var(--sl-ok); }
+.sl-cov-estado .sl-cov-conteo { margin-left: auto; font-size: .72rem; color: #999; font-weight: 600; }
+.sl-cov-estado .sl-cov-chevron { transition: transform .2s; color: #bbb; }
+.sl-cov-estado.expanded .sl-cov-chevron { transform: rotate(90deg); }
+.sl-cov-municipios { display: none; padding: .3rem 0 .3rem 2.1rem; background: #fafcf7; }
+.sl-cov-municipios.open { display: block; }
+.sl-cov-municipio {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .3rem 0; font-family: 'Crimson Pro', serif; font-size: .85rem; color: #666;
+}
+.sl-cov-municipio .sl-cov-dot { width: 7px; height: 7px; }
+.sl-cov-municipio.tiene-datos { color: var(--dark-green); font-weight: 600; }
 </style>
 
 <!-- ─── HERO ─────────────────────────────────────── -->
@@ -457,9 +603,14 @@
         <div class="sl-card">
           <div class="sl-card-header">
             <h3><i data-lucide="cpu"></i>Gemelo Digital</h3>
-            <span id="sl-status-badge" class="sl-badge">
-              <span class="dot"></span>Offline
-            </span>
+            <div style="display:flex; gap:.4rem; align-items:center;">
+              <span id="sl-loc-badge" class="sl-badge" title="Ubicación detectada automáticamente al iniciar monitoreo">
+                <i data-lucide="map-pin" style="width:.85rem;height:.85rem;"></i>Sin ubicación
+              </span>
+              <span id="sl-status-badge" class="sl-badge">
+                <span class="dot"></span>Offline
+              </span>
+            </div>
           </div>
 
           <!-- Gauges -->
@@ -495,14 +646,29 @@
 
           <div class="sl-soil-bar"></div>
 
-          <!-- Progreso -->
+          <!-- Progreso de Etapa con Cuenta Regresiva -->
           <div class="sl-progress-section">
-            <div class="sl-progress-header">
-              <span>Progreso de Etapa</span>
-              <span id="sl-pct-etapa">--%</span>
+            <div class="sl-progress-header" style="display:flex; justify-content:space-between; align-items:flex-end;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="font-weight:700; color:var(--dark-green);">Progreso de Etapa</span>
+                <span id="sl-duracion-badge" class="sl-badge" style="padding:2px 8px; font-size:0.68rem; background:#e8f5e9; color:#2e7d32; font-weight:700;">5 min</span>
+              </div>
+              <div style="text-align:right;">
+                <span id="sl-pct-etapa" style="font-weight:700; color:var(--accent-green); font-size:0.95rem;">0%</span>
+              </div>
             </div>
-            <div class="sl-progress-track">
-              <div class="sl-progress-fill" id="sl-barra-prog" style="width:0%"></div>
+
+            <div class="sl-progress-track" style="margin: 0.45rem 0 0.55rem 0; height: 10px; background: #e0ead6; border-radius: 10px; overflow: hidden; position: relative;">
+              <div class="sl-progress-fill" id="sl-barra-prog" style="width:0%; height:100%; background: linear-gradient(90deg, var(--medium-green), var(--accent-green)); transition: width 0.4s ease; border-radius: 10px;"></div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; font-family:'Montserrat',sans-serif; color:#555;">
+              <span id="sl-tiempo-transcurrido" style="display:flex; align-items:center; gap:4px;">
+                <i data-lucide="play-circle" style="width:0.85rem;height:0.85rem;"></i> Transcurrido: 00:00
+              </span>
+              <span id="sl-cuenta-regresiva" style="font-weight:700; color:var(--dark-green); display:flex; align-items:center; gap:4px;">
+                <i data-lucide="timer" style="width:0.85rem;height:0.85rem;"></i> Restante: 05:00
+              </span>
             </div>
           </div>
         </div>
@@ -548,6 +714,40 @@
               </button>
             </div>
 
+            <!-- Ubicación Inicial Requerida -->
+            <div style="background: var(--cream); border: 1.5px solid var(--sl-border); border-radius: 12px; padding: 0.9rem; margin-bottom: 1.1rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                <label style="font-family:'Montserrat',sans-serif; font-size:0.75rem; font-weight:700; color:var(--dark-green); text-transform:uppercase; margin:0; display:flex; align-items:center; gap:5px;">
+                  <i data-lucide="map-pin" style="width:0.85rem;height:0.85rem;"></i> Ubicación de Cultivo
+                </label>
+                <button type="button" class="sl-btn-scan" style="padding: 3px 8px; font-size:0.72rem; gap:4px;" onclick="slAutoDetectarUbicacionGPS()" title="Detectar Estado y Municipio vía GPS / Navegador">
+                  <i data-lucide="navigation"></i> GPS / Auto
+                </button>
+              </div>
+              
+              <!-- Estado -->
+              <div class="sl-form-row" style="margin-bottom: 0.5rem;">
+                <div class="sl-select-wrap">
+                  <i data-lucide="map"></i>
+                  <select id="sl-ctrl-estado" onchange="slOnControlEstadoChange()">
+                    <option value="" disabled selected>— Seleccionar Estado —</option>
+                  </select>
+                  <span class="sl-arr"><i data-lucide="chevron-down"></i></span>
+                </div>
+              </div>
+
+              <!-- Municipio -->
+              <div class="sl-form-row" style="margin-bottom: 0;">
+                <div class="sl-select-wrap">
+                  <i data-lucide="map-pin"></i>
+                  <select id="sl-ctrl-municipio" disabled>
+                    <option value="">— Seleccionar Municipio —</option>
+                  </select>
+                  <span class="sl-arr"><i data-lucide="chevron-down"></i></span>
+                </div>
+              </div>
+            </div>
+
             <!-- Etapa de desarrollo -->
             <div class="sl-form-row">
               <label>Etapa de Desarrollo</label>
@@ -572,6 +772,47 @@
                   {% for cultivo in lista_cultivos %}
                     <option value="{{ cultivo }}">{{ cultivo }}</option>
                   {% endfor %}
+                </select>
+                <span class="sl-arr"><i data-lucide="chevron-down"></i></span>
+              </div>
+            </div>
+
+            <!-- Frecuencia de muestreo histórico (ML Training) -->
+            <div class="sl-form-row">
+              <label style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Intervalo Guardado ML</span>
+                <span style="font-size:0.68rem; color:#888; text-transform:none;">(Histórico persistente)</span>
+              </label>
+              <div class="sl-select-wrap">
+                <i data-lucide="clock"></i>
+                <select id="sl-ctrl-intervalo">
+                  <option value="60">Cada 1 minuto (Pruebas rápidas)</option>
+                  <option value="300" selected>Cada 5 minutos (Recomendado ML)</option>
+                  <option value="600">Cada 10 minutos (Monitoreo estándar)</option>
+                  <option value="1800">Cada 30 minutos (Baja frecuencia)</option>
+                </select>
+                <span class="sl-arr"><i data-lucide="chevron-down"></i></span>
+              </div>
+            </div>
+
+            <!-- Duración de la Etapa / Cuenta Regresiva -->
+            <div class="sl-form-row">
+              <label style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Duración de la Etapa</span>
+                <span style="font-size:0.68rem; color:#888; text-transform:none;">(Cuenta regresiva)</span>
+              </label>
+              <div class="sl-select-wrap">
+                <i data-lucide="timer"></i>
+                <select id="sl-ctrl-duracion" onchange="slOnDuracionChange()">
+                  <option value="1">1 Minuto (Prueba ultrarrápida)</option>
+                  <option value="5" selected>5 Minutos (Estándar de prueba)</option>
+                  <option value="15">15 Minutos</option>
+                  <option value="30">30 Minutos</option>
+                  <option value="60">1 Hora (60 min)</option>
+                  <option value="120">2 Horas (120 min)</option>
+                  <option value="360">6 Horas</option>
+                  <option value="720">12 Horas</option>
+                  <option value="1440">24 Horas (1 Día)</option>
                 </select>
                 <span class="sl-arr"><i data-lucide="chevron-down"></i></span>
               </div>
@@ -640,8 +881,132 @@
       </div><!-- /sl-col derecha -->
 
     </div><!-- /sl-dashboard -->
+
+    <!-- ── FUENTE DE DATOS, UBICACIÓN Y ADMINISTRACIÓN (MongoDB) ── -->
+    <div class="sl-card sl-mt">
+      <div class="sl-card-header">
+        <h3><i data-lucide="database"></i>Datos Guardados y Ubicación</h3>
+        <div class="sl-mode-switch" id="sl-mode-switch">
+          <button type="button" class="active" data-modo="tiempo_real" onclick="slToggleModo('tiempo_real')">Tiempo Real</button>
+          <button type="button" data-modo="guardado" onclick="slToggleModo('guardado')">Guardado (MongoDB)</button>
+        </div>
+      </div>
+      <div class="sl-card-body">
+
+        <div id="sl-modo-guardado-panel" style="display:none;">
+          <div class="sl-loc-selector">
+            <div class="sl-form-row">
+              <label>Estado</label>
+              <div class="sl-select-wrap">
+                <i data-lucide="map"></i>
+                <select id="sl-sel-estado" onchange="slOnEstadoChange()">
+                  <option value="">— Seleccionar —</option>
+                </select>
+                <span class="sl-arr"><i data-lucide="chevron-down"></i></span>
+              </div>
+            </div>
+            <div class="sl-form-row">
+              <label>Municipio</label>
+              <div class="sl-select-wrap">
+                <i data-lucide="map-pin"></i>
+                <select id="sl-sel-municipio" disabled>
+                  <option value="">— Todos —</option>
+                </select>
+                <span class="sl-arr"><i data-lucide="chevron-down"></i></span>
+              </div>
+            </div>
+            <button type="button" class="sl-btn-scan" onclick="slConsultarUbicacion()">
+              <i data-lucide="search"></i> Consultar
+            </button>
+            <button type="button" class="sl-btn-scan" onclick="slAbrirFormLectura()">
+              <i data-lucide="plus"></i> Agregar registro
+            </button>
+          </div>
+
+          <form class="sl-crud-form" id="sl-crud-form" onsubmit="return slGuardarLectura(event)">
+            <input type="hidden" id="sl-crud-id">
+            <div><label>Fecha</label><input type="date" id="sl-crud-fecha" required></div>
+            <div><label>Hora</label><input type="time" id="sl-crud-hora"></div>
+            <div>
+              <label>Estado</label>
+              <select id="sl-crud-estado" required></select>
+            </div>
+            <div>
+              <label>Municipio</label>
+              <select id="sl-crud-municipio"></select>
+            </div>
+            <div><label>Cultivo</label><input type="text" id="sl-crud-cultivo"></div>
+            <div><label>Temp (°C)</label><input type="number" step="0.1" id="sl-crud-temp"></div>
+            <div><label>H. Ambiente (%)</label><input type="number" step="0.1" id="sl-crud-hum"></div>
+            <div><label>H. Suelo (%)</label><input type="number" step="0.1" id="sl-crud-suelo"></div>
+            <div class="sl-crud-actions">
+              <button type="submit" class="sl-crud-save">Guardar</button>
+              <button type="button" class="sl-crud-cancel" onclick="slCerrarFormLectura()">Cancelar</button>
+            </div>
+          </form>
+
+          <div class="sl-table-wrap">
+            <table class="sl-table" id="sl-tabla-lecturas">
+              <thead>
+                <tr>
+                  <th>Fecha</th><th>Estado</th><th>Municipio</th><th>Cultivo</th>
+                  <th>Temp (°C)</th><th>H. Amb (%)</th><th>H. Suelo (%)</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="sl-tabla-body">
+                <tr><td colspan="8" class="sl-table-empty">Selecciona una ubicación y presiona "Consultar".</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Cobertura Nacional (siempre visible, informativa) -->
+        <div class="sl-coverage-header">
+          <h4><i data-lucide="map"></i> Cobertura Nacional (32 estados)</h4>
+          <input type="text" id="sl-coverage-search" placeholder="Buscar estado o municipio..." oninput="slFiltrarCobertura(this.value)">
+        </div>
+        <div id="sl-coverage-list" class="sl-coverage-list">
+          <div class="sl-coverage-loading">Cargando cobertura nacional…</div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </section>
+
+<!-- ── MODAL FINALIZACIÓN DE ETAPA ── -->
+<div id="sl-modal-fin-etapa" class="sl-modal-overlay" style="display:none;">
+  <div class="sl-modal-card">
+    <div style="width:65px; height:65px; background:var(--sl-ok-bg); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.2rem auto; color:var(--sl-ok);">
+      <i data-lucide="check-circle-2" style="width:36px; height:36px;"></i>
+    </div>
+    <h3 style="font-family:'Montserrat',sans-serif; color:var(--dark-green); margin:0 0 0.5rem 0; font-size:1.25rem;">¡Etapa de Monitoreo Completada!</h3>
+    <p id="sl-modal-msg" style="color:#555; font-size:0.9rem; line-height:1.5; margin-bottom:1.2rem;">
+      Se ha cumplido el tiempo programado de monitoreo. Todas las lecturas capturadas por los sensores han sido procesadas y guardadas para entrenamiento de Machine Learning.
+    </p>
+
+    <div style="background:var(--cream); border:1.5px solid var(--sl-border); border-radius:12px; padding:1rem; margin-bottom:1.3rem; text-align:left; font-size:0.85rem; display:flex; flex-direction:column; gap:0.45rem;">
+      <div><strong style="color:var(--dark-green);">Cultivo:</strong> <span id="sl-modal-cultivo">--</span></div>
+      <div><strong style="color:var(--dark-green);">Etapa:</strong> <span id="sl-modal-etapa">--</span></div>
+      <div><strong style="color:var(--dark-green);">Ubicación:</strong> <span id="sl-modal-ubicacion">--</span></div>
+      <div><strong style="color:var(--dark-green);">Tiempo Programado:</strong> <span id="sl-modal-tiempo">--</span></div>
+      <div><strong style="color:var(--dark-green);">Lecturas Registradas:</strong> <span id="sl-modal-lecturas">--</span></div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:0.6rem;">
+      <a href="/api/descargar_csv" id="sl-modal-btn-csv" class="sl-btn-action" style="justify-content:center; background:var(--accent-green); color:#fff; text-decoration:none; padding:0.75rem 1rem;">
+        <i data-lucide="download"></i> Descargar Datos de la Sesión (CSV)
+      </a>
+      <a href="/#recomendaciones" class="sl-btn-action" style="justify-content:center; background:#fff; border:1.5px solid var(--medium-green); color:var(--dark-green); text-decoration:none; padding:0.75rem 1rem;">
+        <i data-lucide="sprout"></i> Ver Recomendaciones en Siembra+
+      </a>
+      <button type="button" class="sl-btn-scan" style="justify-content:center; padding:0.6rem;" onclick="slCerrarModalFinEtapa()">
+        Continuar Monitoreo
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- Toast container -->
 <div id="sl-toast-container"></div>
@@ -653,6 +1018,19 @@ let slPuerto    = null;
 let chartT, chartH;
 const SL_ESCALA_TEMP = 50;
 const SL_ESCALA_PCT  = 100;
+
+// Estado de Duración de Etapa y Cuenta Regresiva
+let slDuracionSegundos = 300;
+let slInicioTimestamp = null;
+let slTimerCuentaRegresiva = null;
+let slEtapaFinalizadaAvisada = false;
+let slLecturasAcumuladasTotal = 0;
+
+/* ── ESTADO: ubicación / MongoDB ─────────────────────*/
+let slModoActual     = 'tiempo_real';
+let slCoberturaCache = null;   // datos completos tal cual los devolvió el servidor
+let slCoberturaVista = null;   // subconjunto actualmente renderizado (respeta el filtro de búsqueda)
+let slLecturaEnEdicion = null;
 
 /* ── HELPER: crear ícono Lucide dinámicamente ─────── */
 function slLucideEl(name) {
@@ -699,6 +1077,28 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializar iconos Lucide de esta página y auto-escanear
   lucide.createIcons();
   slEscanear();
+
+  // Ubicación/cobertura/CRUD (MongoDB) y selector de control
+  slPoblarSelectEstados(document.getElementById('sl-ctrl-estado'));
+  slPoblarSelectEstados(document.getElementById('sl-sel-estado'));
+  slPoblarSelectEstados(document.getElementById('sl-crud-estado'));
+  document.getElementById('sl-crud-estado').addEventListener('change', (e) => {
+    slPoblarSelectMunicipios(document.getElementById('sl-crud-municipio'), e.target.value);
+  });
+
+  // Inicializar duración y cuenta regresiva
+  slOnDuracionChange();
+
+  // Carga perezosa de la cobertura nacional: solo cuando el panel entra en pantalla
+  const coverageEl = document.getElementById('sl-coverage-list');
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) { slCargarCobertura(); obs.disconnect(); }
+    }, { threshold: 0.1 });
+    obs.observe(coverageEl);
+  } else {
+    slCargarCobertura();
+  }
 });
 
 /* ── TOAST ──────────────────────────────────────────*/
@@ -747,13 +1147,201 @@ function slEscanear() {
     });
 }
 
+let slLat = null;
+let slLon = null;
+
+/* ── GEOLOCALIZACIÓN Y UBICACIÓN INICIAL ───────────────────*/
+function slPedirGeolocalizacion() {
+  return new Promise((resolve) => {
+    if (!('geolocation' in navigator)) { resolve(null); return; }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+      () => resolve(null),          // permiso denegado / error -> continuar sin ubicación
+      { timeout: 8000, maximumAge: 300000 }
+    );
+  });
+}
+
+function slSetLocBadge(cls, texto) {
+  const b = document.getElementById('sl-loc-badge');
+  if (!b) return;
+  b.className = 'sl-badge ' + cls;
+  b.innerHTML = `<i data-lucide="map-pin" style="width:.85rem;height:.85rem;"></i>${texto}`;
+  lucide.createIcons({ el: b });
+}
+
+function slOnControlEstadoChange() {
+  const selEstado = document.getElementById('sl-ctrl-estado');
+  const selMuni   = document.getElementById('sl-ctrl-municipio');
+  const estado    = selEstado.value;
+  slPoblarSelectMunicipios(selMuni, estado);
+  slSetLocBadge('loc-ok', estado);
+}
+
+function slAutoDetectarUbicacionGPS() {
+  slToast('Obteniendo ubicación del navegador...', 'info', 'navigation');
+  slPedirGeolocalizacion()
+    .then(coords => {
+      if (!coords) {
+        slToast('No se pudo obtener GPS. Por favor selecciona Estado y Municipio manualmente.', 'error', 'map-pin');
+        return;
+      }
+      slLat = coords.lat;
+      slLon = coords.lon;
+      slToast('Resolviendo Estado y Municipio...', 'info', 'map-pin');
+      fetch('/api/siembra_link/ubicacion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(coords)
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            const selEstado = document.getElementById('sl-ctrl-estado');
+            const selMuni   = document.getElementById('sl-ctrl-municipio');
+            selEstado.value = data.estado;
+            slPoblarSelectMunicipios(selMuni, data.estado, () => {
+              if (data.municipio) {
+                selMuni.value = data.municipio;
+              }
+            });
+            slSetLocBadge('loc-ok', `${data.estado}${data.municipio ? ', ' + data.municipio : ''}`);
+            slToast(`Ubicación GPS: ${data.estado}${data.municipio ? ', ' + data.municipio : ''}`, 'success', 'check-circle');
+          } else {
+            slToast('Ubicación fuera de cobertura o sin internet. Selecciona tu Estado manualmente.', 'error', 'map-pin');
+          }
+        })
+        .catch(() => slToast('Error resolviendo geolocalización. Selecciona tu Estado manualmente.', 'error', 'map-pin'));
+    });
+}
+
+function slResolverUbicacion(coords) {
+  if (!coords) { return Promise.resolve(null); }
+  return fetch('/api/siembra_link/ubicacion', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(coords)
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        slSetLocBadge('loc-ok', `${data.estado}${data.municipio ? ', ' + data.municipio : ''}`);
+      }
+      return data;
+    })
+    .catch(() => null);
+}
+
+/* ── FORMATEO DE TIEMPO Y CUENTA REGRESIVA ───────────────*/
+function slFormatearTiempo(segundos) {
+  if (segundos <= 0) return "00:00";
+  if (segundos >= 3600) {
+    const h = Math.floor(segundos / 3600);
+    const m = Math.floor((segundos % 3600) / 60);
+    const s = segundos % 60;
+    return `${h}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
+  }
+  const m = Math.floor(segundos / 60);
+  const s = segundos % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function slOnDuracionChange() {
+  const durMin = parseInt(document.getElementById('sl-ctrl-duracion').value) || 5;
+  slDuracionSegundos = durMin * 60;
+  const badge = document.getElementById('sl-duracion-badge');
+  if (badge) {
+    badge.textContent = durMin >= 60 ? `${(durMin/60).toFixed(durMin%60===0?0:1)} h` : `${durMin} min`;
+  }
+  const cReg = document.getElementById('sl-cuenta-regresiva');
+  if (cReg && !slInicioTimestamp) {
+    cReg.innerHTML = `<i data-lucide="timer" style="width:0.85rem;height:0.85rem;"></i> Restante: ${slFormatearTiempo(slDuracionSegundos)}`;
+    if (window.lucide) lucide.createIcons({ el: cReg });
+  }
+}
+
+function slActualizarCuentaRegresiva() {
+  if (!slInicioTimestamp) return;
+  const ahora = Date.now();
+  const transcurrido = Math.floor((ahora - slInicioTimestamp) / 1000);
+  const restante = Math.max(0, slDuracionSegundos - transcurrido);
+  const pct = Math.min(100, Math.floor((transcurrido / slDuracionSegundos) * 100));
+
+  const barra = document.getElementById('sl-barra-prog');
+  const txtPct = document.getElementById('sl-pct-etapa');
+  const txtTrans = document.getElementById('sl-tiempo-transcurrido');
+  const txtRest = document.getElementById('sl-cuenta-regresiva');
+
+  if (barra) barra.style.width = pct + '%';
+  if (txtPct) txtPct.textContent = pct + '%';
+
+  if (txtTrans) {
+    txtTrans.innerHTML = `<i data-lucide="play-circle" style="width:0.85rem;height:0.85rem;"></i> Transcurrido: ${slFormatearTiempo(transcurrido)}`;
+  }
+
+  if (txtRest) {
+    if (restante > 0) {
+      txtRest.innerHTML = `<i data-lucide="timer" style="width:0.85rem;height:0.85rem;"></i> Restante: ${slFormatearTiempo(restante)}`;
+    } else {
+      txtRest.innerHTML = `<i data-lucide="check-circle-2" style="width:0.85rem;height:0.85rem;color:var(--sl-ok);"></i> ¡Tiempo Cumplido!`;
+    }
+  }
+
+  if (window.lucide) {
+    if (txtTrans) lucide.createIcons({ el: txtTrans });
+    if (txtRest) lucide.createIcons({ el: txtRest });
+  }
+
+  if (restante === 0 && !slEtapaFinalizadaAvisada) {
+    slEtapaFinalizadaAvisada = true;
+    if (barra) barra.style.background = 'var(--sl-ok)';
+
+    const cultivo = document.getElementById('cultivo-select').value;
+    const etapaSelect = document.getElementById('etapa-select');
+    const etapaTexto = etapaSelect.options[etapaSelect.selectedIndex].text;
+    const estado = document.getElementById('sl-ctrl-estado').value;
+    const municipio = document.getElementById('sl-ctrl-municipio').value || '';
+    const durMin = Math.round(slDuracionSegundos / 60);
+
+    slToast(`🎉 ¡Etapa de monitoreo completada! Tiempo cumplido (${durMin} min) para ${cultivo}.`, 'success', 'check-circle');
+
+    // Poblar y mostrar modal de finalización
+    document.getElementById('sl-modal-cultivo').textContent = cultivo;
+    document.getElementById('sl-modal-etapa').textContent = etapaTexto;
+    document.getElementById('sl-modal-ubicacion').textContent = `${estado}${municipio ? ', ' + municipio : ''}`;
+    document.getElementById('sl-modal-tiempo').textContent = `${durMin} minutos`;
+    document.getElementById('sl-modal-lecturas').textContent = `${slLecturasAcumuladasTotal} lecturas procesadas`;
+    document.getElementById('sl-btn-csv').style.display = 'flex';
+
+    const modal = document.getElementById('sl-modal-fin-etapa');
+    if (modal) {
+      modal.style.display = 'flex';
+      if (window.lucide) lucide.createIcons({ el: modal });
+    }
+  }
+}
+
+function slCerrarModalFinEtapa() {
+  const modal = document.getElementById('sl-modal-fin-etapa');
+  if (modal) modal.style.display = 'none';
+}
+
 /* ── INICIAR MONITOREO ──────────────────────────────*/
 function slIniciar() {
-  const cultivo = document.getElementById('cultivo-select').value;
-  const etapa   = document.getElementById('etapa-select').value;
+  const cultivo   = document.getElementById('cultivo-select').value;
+  const etapa     = document.getElementById('etapa-select').value;
+  const estado    = document.getElementById('sl-ctrl-estado').value;
+  const municipio = document.getElementById('sl-ctrl-municipio').value || null;
+  const intervalo = parseInt(document.getElementById('sl-ctrl-intervalo').value) || 300;
+  const durMin    = parseInt(document.getElementById('sl-ctrl-duracion').value) || 5;
 
   if (!cultivo) {
     slToast('Selecciona un cultivo antes de iniciar.', 'error', 'x-circle');
+    return;
+  }
+
+  if (!estado) {
+    slToast('Ingresa o detecta el Estado y Municipio antes de iniciar el monitoreo.', 'error', 'map-pin');
     return;
   }
 
@@ -764,18 +1352,40 @@ function slIniciar() {
   fetch('/api/iniciar_monitoreo', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cultivo, etapa, puerto: slPuerto })
+    body: JSON.stringify({
+      cultivo,
+      etapa,
+      puerto: slPuerto,
+      estado,
+      municipio,
+      duracion_minutos: durMin,
+      intervalo_guardado_segundos: intervalo,
+      lat: slLat,
+      lon: slLon
+    })
   })
   .then(r => r.json())
   .then(data => {
     if (data.status === 'ok') {
       slSetBadge('online', `<span class="dot"></span>${data.puerto || 'Activo'}`);
+      slSetLocBadge('loc-ok', `${estado}${municipio ? ', ' + municipio : ''}`);
       btn.style.display    = 'none';
       document.getElementById('sl-btn-detener').style.display = 'flex';
       document.getElementById('sl-btn-csv').style.display     = 'none';
-      document.getElementById('sl-pct-etapa').textContent     = '0%';
+      
+      // Iniciar Cuenta Regresiva
+      slDuracionSegundos = durMin * 60;
+      slInicioTimestamp = Date.now();
+      slEtapaFinalizadaAvisada = false;
+      slLecturasAcumuladasTotal = 0;
+      document.getElementById('sl-barra-prog').style.background = 'linear-gradient(90deg, var(--medium-green), var(--accent-green))';
+      if (slTimerCuentaRegresiva) clearInterval(slTimerCuentaRegresiva);
+      slTimerCuentaRegresiva = setInterval(slActualizarCuentaRegresiva, 1000);
+      slActualizarCuentaRegresiva();
+
+      slToggleModo('tiempo_real');
       slIntervalo = setInterval(slActualizar, 1500);
-      slToast(`Monitoreando ${cultivo} · ${data.puerto}`, 'success', 'check-circle');
+      slToast(`Monitoreando ${cultivo} en ${estado} (Duración: ${durMin} min)`, 'success', 'check-circle');
     } else {
       slResetBtn();
       slToast(data.msg, 'error', 'x-circle');
@@ -798,6 +1408,10 @@ function slDetener() {
     .then(() => {
       clearInterval(slIntervalo);
       slIntervalo = null;
+      if (slTimerCuentaRegresiva) {
+        clearInterval(slTimerCuentaRegresiva);
+        slTimerCuentaRegresiva = null;
+      }
       slSetBadge('', '<span class="dot"></span>Detenido');
       slResetBtn();
       document.getElementById('sl-btn-detener').style.display = 'none';
@@ -806,59 +1420,64 @@ function slDetener() {
     });
 }
 
-/* ── ACTUALIZAR DATOS ───────────────────────────────*/
+/* ── PINTAR LECTURA (compartido entre modo tiempo real y guardado) ──*/
+function slRenderLectura(l, historial, refs) {
+  if (!l) return;
+  historial = historial || [];
+  slLecturasAcumuladasTotal = historial.length;
+
+  // Lecturas textuales
+  document.getElementById('sl-val-temp').textContent  = `${l.temperatura} °C`;
+  document.getElementById('sl-val-hum').textContent   = `${l.humedad_ambiente}%`;
+  document.getElementById('sl-val-suelo').textContent = `${l.humedad_suelo_pct}%`;
+  document.getElementById('sl-val-lluvia').textContent = l.precipitacion_raw ?? '--';
+
+  // Valores en gauges
+  document.getElementById('sl-vv-temp').textContent  = `${l.temperatura}°`;
+  document.getElementById('sl-vv-hum').textContent   = `${l.humedad_ambiente}%`;
+  document.getElementById('sl-vv-suelo').textContent = `${l.humedad_suelo_pct}%`;
+
+  // Status colors
+  slStatus('sl-st-temp',  l.status_temp || 'OK');
+  slStatus('sl-st-hum',   l.status_hum || 'OK');
+  slStatus('sl-st-suelo', l.status_suelo || 'OK');
+
+  // Alerta global
+  const banner = document.getElementById('sl-alert');
+  const isOk   = !l.nivel_alerta || l.nivel_alerta.includes('ÓPTIMAS');
+  banner.className = `sl-alert-banner ${isOk ? 'ok' : 'warn'}`;
+  banner.style.display = 'flex';
+  document.getElementById('sl-alert-text').textContent = l.nivel_alerta || 'Lectura guardada';
+
+  // Gauges visuales
+  if (refs) {
+    slGauge('sl-fill-temp',  'sl-box-temp',  'sl-avg-temp',  l.temperatura,       refs.temp,      SL_ESCALA_TEMP);
+    slGauge('sl-fill-hum',   'sl-box-hum',   'sl-avg-hum',   l.humedad_ambiente,  refs.hum_amb,   SL_ESCALA_PCT);
+    slGauge('sl-fill-suelo', 'sl-box-suelo', 'sl-avg-suelo', l.humedad_suelo_pct, refs.hum_suelo, SL_ESCALA_PCT);
+  }
+
+  // Gráficas
+  if (historial.length > 0) {
+    const labels = historial.map(d => d.timestamp || d.hora || d.fecha);
+    chartT.data.labels = chartH.data.labels = labels;
+    chartT.data.datasets[0].data = historial.map(d => d.temperatura);
+    chartH.data.datasets[0].data = historial.map(d => d.humedad_suelo_pct);
+    chartT.update('none');
+    chartH.update('none');
+  }
+}
+
+/* ── ACTUALIZAR DATOS (modo Tiempo Real) ────────────*/
 function slActualizar() {
+  if (slModoActual !== 'tiempo_real') return;
   fetch('/api/obtener_datos')
     .then(r => r.json())
     .then(data => {
       if (!data.activo || !data.actual) return;
-      const l    = data.actual;
-      const refs = data.referencias;
-
-      // Lecturas textuales
-      document.getElementById('sl-val-temp').textContent  = `${l.temperatura} °C`;
-      document.getElementById('sl-val-hum').textContent   = `${l.humedad_ambiente}%`;
-      document.getElementById('sl-val-suelo').textContent = `${l.humedad_suelo_pct}%`;
-      document.getElementById('sl-val-lluvia').textContent = l.precipitacion_raw;
-
-      // Valores en gauges
-      document.getElementById('sl-vv-temp').textContent  = `${l.temperatura}°`;
-      document.getElementById('sl-vv-hum').textContent   = `${l.humedad_ambiente}%`;
-      document.getElementById('sl-vv-suelo').textContent = `${l.humedad_suelo_pct}%`;
-
-      // Status colors
-      slStatus('sl-st-temp',  l.status_temp);
-      slStatus('sl-st-hum',   l.status_hum);
-      slStatus('sl-st-suelo', l.status_suelo);
-
-      // Alerta global
-      const banner = document.getElementById('sl-alert');
-      const isOk   = l.nivel_alerta.includes('ÓPTIMAS');
-      banner.className = `sl-alert-banner ${isOk ? 'ok' : 'warn'}`;
-      banner.style.display = 'flex';
-      document.getElementById('sl-alert-text').textContent = l.nivel_alerta;
-
-      // Gauges visuales
-      if (refs) {
-        slGauge('sl-fill-temp',  'sl-box-temp',  'sl-avg-temp',  l.temperatura,       refs.temp,      SL_ESCALA_TEMP);
-        slGauge('sl-fill-hum',   'sl-box-hum',   'sl-avg-hum',   l.humedad_ambiente,  refs.hum_amb,   SL_ESCALA_PCT);
-        slGauge('sl-fill-suelo', 'sl-box-suelo', 'sl-avg-suelo', l.humedad_suelo_pct, refs.hum_suelo, SL_ESCALA_PCT);
+      if (data.ubicacion && data.ubicacion.estado) {
+        slSetLocBadge('loc-ok', `${data.ubicacion.estado}${data.ubicacion.municipio ? ', ' + data.ubicacion.municipio : ''}`);
       }
-
-      // Barra progreso (basada en historial acumulado)
-      const p = Math.min(99, data.historial.length);
-      document.getElementById('sl-barra-prog').style.width = p + '%';
-      document.getElementById('sl-pct-etapa').textContent  = p + '%';
-
-      // Gráficas
-      if (data.historial.length > 0) {
-        const labels = data.historial.map(d => d.timestamp);
-        chartT.data.labels = chartH.data.labels = labels;
-        chartT.data.datasets[0].data = data.historial.map(d => d.temperatura);
-        chartH.data.datasets[0].data = data.historial.map(d => d.humedad_suelo_pct);
-        chartT.update('none');
-        chartH.update('none');
-      }
+      slRenderLectura(data.actual, data.historial, data.referencias);
     });
 }
 
@@ -887,6 +1506,316 @@ function slSetBadge(cls, html) {
   const b = document.getElementById('sl-status-badge');
   b.className = 'sl-badge ' + cls;
   b.innerHTML = html;
+}
+
+/* ═══════════════════ MODO TIEMPO REAL / GUARDADO ═══════════════════ */
+function slToggleModo(modo) {
+  slModoActual = modo;
+  document.querySelectorAll('#sl-mode-switch button').forEach(b => {
+    b.classList.toggle('active', b.dataset.modo === modo);
+  });
+  document.getElementById('sl-modo-guardado-panel').style.display = (modo === 'guardado') ? 'block' : 'none';
+}
+
+/* ═══════════════════ CATÁLOGO GEOGRÁFICO NACIONAL ═══════════════════ */
+function slPoblarSelectEstados(selectEl) {
+  if (!selectEl) return;
+  fetch('/api/geo/estados')
+    .then(r => r.json())
+    .then(estados => {
+      const actual = selectEl.value;
+      selectEl.innerHTML = '<option value="">— Seleccionar —</option>' +
+        estados.map(e => `<option value="${e}">${e}</option>`).join('');
+      if (actual) selectEl.value = actual;
+    })
+    .catch(() => slToast('No se pudo cargar el catálogo de estados.', 'error', 'x-circle'));
+}
+
+function slPoblarSelectMunicipios(selectEl, estado, placeholder) {
+  if (!selectEl) return;
+  if (!estado) {
+    selectEl.innerHTML = `<option value="">${placeholder || '— Todos —'}</option>`;
+    selectEl.disabled = true;
+    return;
+  }
+  fetch(`/api/geo/municipios/${encodeURIComponent(estado)}`)
+    .then(r => r.json())
+    .then(municipios => {
+      selectEl.innerHTML = `<option value="">${placeholder || '— Todos —'}</option>` +
+        municipios.map(m => `<option value="${m}">${m}</option>`).join('');
+      selectEl.disabled = false;
+    })
+    .catch(() => slToast('No se pudo cargar el catálogo de municipios.', 'error', 'x-circle'));
+}
+
+function slOnEstadoChange() {
+  const estado = document.getElementById('sl-sel-estado').value;
+  slPoblarSelectMunicipios(document.getElementById('sl-sel-municipio'), estado);
+}
+
+/* ═══════════════════ CONSULTAR UBICACIÓN GUARDADA ═══════════════════ */
+function slConsultarUbicacion() {
+  const estado    = document.getElementById('sl-sel-estado').value;
+  const municipio = document.getElementById('sl-sel-municipio').value;
+
+  if (!estado) {
+    slToast('Selecciona al menos un estado.', 'error', 'x-circle');
+    return;
+  }
+
+  slActualizarDesdeGuardado(estado, municipio);
+  slCargarTablaLecturas(estado, municipio);
+}
+
+function slActualizarDesdeGuardado(estado, municipio) {
+  const params = new URLSearchParams({ estado, limit: 50 });
+  if (municipio) params.set('municipio', municipio);
+
+  fetch(`/api/siembra_link/lecturas?${params}`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'no_configurado') {
+        slToast('MongoDB no está configurado todavía en el servidor.', 'error', 'x-circle');
+        return;
+      }
+      const lecturas = data.lecturas || [];
+      if (!lecturas.length) {
+        slToast('No hay lecturas guardadas para esta ubicación.', 'info', 'info');
+        return;
+      }
+      // La API devuelve más recientes primero -> orden cronológico para las gráficas
+      const historial = [...lecturas].reverse();
+      slRenderLectura(lecturas[0], historial, null);
+      slSetLocBadge('loc-ok', `${estado}${municipio ? ', ' + municipio : ''} (guardado)`);
+    })
+    .catch(() => slToast('Error consultando lecturas guardadas.', 'error', 'x-circle'));
+}
+
+/* ═══════════════════ TABLA CRUD DE LECTURAS ═══════════════════ */
+let slTablaLecturasCache = {}; // id -> lectura, para editar sin re-serializar JSON en atributos HTML
+
+function slEsc(valor) {
+  return String(valor ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function slCargarTablaLecturas(estado, municipio) {
+  const params = new URLSearchParams({ estado, limit: 100 });
+  if (municipio) params.set('municipio', municipio);
+
+  const tbody = document.getElementById('sl-tabla-body');
+  fetch(`/api/siembra_link/lecturas?${params}`)
+    .then(r => r.json())
+    .then(data => {
+      const lecturas = data.lecturas || [];
+      slTablaLecturasCache = {};
+      if (!lecturas.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="sl-table-empty">Sin registros guardados para esta ubicación.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = lecturas.map(l => {
+        slTablaLecturasCache[l.id] = l;
+        return `
+        <tr>
+          <td>${slEsc(l.fecha)} ${slEsc(l.hora)}</td>
+          <td>${slEsc(l.estado)}</td>
+          <td>${slEsc(l.municipio)}</td>
+          <td>${slEsc(l.cultivo)}</td>
+          <td>${slEsc(l.temperatura)}</td>
+          <td>${slEsc(l.humedad_ambiente)}</td>
+          <td>${slEsc(l.humedad_suelo_pct)}</td>
+          <td class="sl-table-actions">
+            <button title="Editar" onclick="slAbrirFormLecturaPorId('${l.id}')"><i data-lucide="pencil"></i></button>
+            <button title="Eliminar" class="danger" onclick="slEliminarLectura('${l.id}', '${slEsc(estado)}', '${slEsc(municipio || '')}')"><i data-lucide="trash-2"></i></button>
+          </td>
+        </tr>
+      `;
+      }).join('');
+      lucide.createIcons({ el: tbody });
+    })
+    .catch(() => { tbody.innerHTML = '<tr><td colspan="8" class="sl-table-empty">Error cargando registros.</td></tr>'; });
+}
+
+function slAbrirFormLecturaPorId(id) {
+  slAbrirFormLectura(slTablaLecturasCache[id]);
+}
+
+/* ═══════════════════ FORMULARIO CRUD ═══════════════════ */
+function slAbrirFormLectura(lectura) {
+  slLecturaEnEdicion = lectura || null;
+  const form = document.getElementById('sl-crud-form');
+  form.classList.add('open');
+
+  document.getElementById('sl-crud-id').value     = lectura ? lectura.id : '';
+  document.getElementById('sl-crud-fecha').value  = lectura ? lectura.fecha : '';
+  document.getElementById('sl-crud-hora').value   = lectura ? lectura.hora : '';
+  document.getElementById('sl-crud-cultivo').value = lectura ? (lectura.cultivo || '') : '';
+  document.getElementById('sl-crud-temp').value   = lectura ? lectura.temperatura : '';
+  document.getElementById('sl-crud-hum').value    = lectura ? lectura.humedad_ambiente : '';
+  document.getElementById('sl-crud-suelo').value  = lectura ? lectura.humedad_suelo_pct : '';
+
+  const estadoSel = document.getElementById('sl-crud-estado');
+  estadoSel.value = lectura ? (lectura.estado || '') : (document.getElementById('sl-sel-estado').value || '');
+  slPoblarSelectMunicipios(document.getElementById('sl-crud-municipio'), estadoSel.value, '— Ninguno —');
+  if (lectura && lectura.municipio) {
+    setTimeout(() => { document.getElementById('sl-crud-municipio').value = lectura.municipio; }, 300);
+  }
+
+  form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function slCerrarFormLectura() {
+  slLecturaEnEdicion = null;
+  document.getElementById('sl-crud-form').classList.remove('open');
+  document.getElementById('sl-crud-form').reset();
+}
+
+function slGuardarLectura(evt) {
+  evt.preventDefault();
+
+  const payload = {
+    fecha: document.getElementById('sl-crud-fecha').value,
+    hora: document.getElementById('sl-crud-hora').value,
+    cultivo: document.getElementById('sl-crud-cultivo').value,
+    estado: document.getElementById('sl-crud-estado').value,
+    municipio: document.getElementById('sl-crud-municipio').value || null,
+    temperatura: parseFloat(document.getElementById('sl-crud-temp').value) || null,
+    humedad_ambiente: parseFloat(document.getElementById('sl-crud-hum').value) || null,
+    humedad_suelo_pct: parseFloat(document.getElementById('sl-crud-suelo').value) || null,
+  };
+
+  if (!payload.estado || !payload.fecha) {
+    slToast('Estado y fecha son obligatorios.', 'error', 'x-circle');
+    return false;
+  }
+
+  const id = document.getElementById('sl-crud-id').value;
+  const url = id ? `/api/siembra_link/lecturas/${id}` : '/api/siembra_link/lecturas';
+  const method = id ? 'PUT' : 'POST';
+
+  fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        slToast('Registro guardado.', 'success', 'check-circle');
+        slCerrarFormLectura();
+        slCargarTablaLecturas(payload.estado, payload.municipio || '');
+      } else if (data.status === 'no_configurado') {
+        slToast('MongoDB no está configurado todavía en el servidor.', 'error', 'x-circle');
+      } else {
+        slToast('No se pudo guardar el registro.', 'error', 'x-circle');
+      }
+    })
+    .catch(() => slToast('Error de conexión con el servidor.', 'error', 'x-circle'));
+
+  return false;
+}
+
+function slEliminarLectura(id, estado, municipio) {
+  if (!confirm('¿Eliminar este registro guardado? Esta acción no se puede deshacer.')) return;
+
+  fetch(`/api/siembra_link/lecturas/${id}`, { method: 'DELETE' })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        slToast('Registro eliminado.', 'success', 'check-circle');
+        slCargarTablaLecturas(estado, municipio);
+      } else {
+        slToast('No se pudo eliminar el registro.', 'error', 'x-circle');
+      }
+    })
+    .catch(() => slToast('Error de conexión con el servidor.', 'error', 'x-circle'));
+}
+
+/* ═══════════════════ COBERTURA NACIONAL ═══════════════════ */
+function slCargarCobertura() {
+  fetch('/api/siembra_link/cobertura')
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'no_configurado') {
+        document.getElementById('sl-coverage-list').innerHTML =
+          '<div class="sl-coverage-loading">MongoDB no está configurado todavía en el servidor.</div>';
+        return;
+      }
+      slCoberturaCache = data.estados || [];
+      slRenderCobertura(slCoberturaCache);
+    })
+    .catch(() => {
+      document.getElementById('sl-coverage-list').innerHTML =
+        '<div class="sl-coverage-loading">Error cargando la cobertura nacional.</div>';
+    });
+}
+
+function slRenderCobertura(estados) {
+  slCoberturaVista = estados;
+  const cont = document.getElementById('sl-coverage-list');
+  if (!estados.length) {
+    cont.innerHTML = '<div class="sl-coverage-loading">Sin resultados.</div>';
+    return;
+  }
+
+  cont.innerHTML = estados.map((e, i) => `
+    <div>
+      <div class="sl-cov-estado ${e.tiene_datos ? 'tiene-datos' : ''}" onclick="slToggleEstadoCobertura(${i})">
+        <span class="sl-cov-dot"></span>
+        <span>${e.nombre}</span>
+        <span class="sl-cov-conteo">${e.tiene_datos ? e.conteo + ' lectura(s)' : 'Sin datos'}</span>
+        <i data-lucide="chevron-right" class="sl-cov-chevron" style="width:1rem;height:1rem;"></i>
+      </div>
+      <div class="sl-cov-municipios" id="sl-cov-municipios-${i}"></div>
+    </div>
+  `).join('');
+  lucide.createIcons({ el: cont });
+}
+
+function slToggleEstadoCobertura(i) {
+  const filaEstado = document.querySelectorAll('.sl-cov-estado')[i];
+  const cont = document.getElementById(`sl-cov-municipios-${i}`);
+  const abierto = cont.classList.contains('open');
+
+  if (abierto) {
+    cont.classList.remove('open');
+    filaEstado.classList.remove('expanded');
+    return;
+  }
+
+  // Render perezoso: solo se construyen los <div> de municipios la primera vez que se expande
+  if (!cont.dataset.renderizado) {
+    const estado = slCoberturaVista[i];
+    cont.innerHTML = estado.municipios.map(m => `
+      <div class="sl-cov-municipio ${m.tiene_datos ? 'tiene-datos' : ''}">
+        <span class="sl-cov-dot"></span>${m.nombre}${m.tiene_datos ? ' · ' + m.conteo : ''}
+      </div>
+    `).join('');
+    cont.dataset.renderizado = '1';
+  }
+
+  cont.classList.add('open');
+  filaEstado.classList.add('expanded');
+}
+
+function slFiltrarCobertura(q) {
+  if (!slCoberturaCache) return;
+  q = (q || '').trim().toLowerCase();
+  if (!q) { slRenderCobertura(slCoberturaCache); return; }
+
+  const filtrado = slCoberturaCache
+    .map(e => {
+      const estadoMatch = e.nombre.toLowerCase().includes(q);
+      const municipiosMatch = e.municipios.filter(m => m.nombre.toLowerCase().includes(q));
+      if (estadoMatch || municipiosMatch.length) {
+        return estadoMatch ? e : { ...e, municipios: municipiosMatch };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  slRenderCobertura(filtrado);
 }
 </script>
 {% endblock %}

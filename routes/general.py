@@ -1,7 +1,6 @@
 import sys
 import os
 from datetime import date, timedelta, datetime
-from functools import lru_cache
 from typing import Tuple, Optional
 import unicodedata
 import re
@@ -18,9 +17,10 @@ if project_root not in sys.path:
     sys.path.append(project_root)
 
 # ======================== Dependencias del proyecto ==========================
-from logic.prediccion import prediccion
+from logic.prediccion import prediccion_desde_mongo, prediccion_local, local as local_prediccion, obtener_precipitacion_local
 from logic.cultivos import obtener_cultivos
 from logic.catalogos import estados, municipios, coordenadas, coordenadas_municipios
+from logic import geo_mexico, db
 
 general_bp = Blueprint('general', __name__)
 
@@ -170,9 +170,18 @@ except Exception as e:
     print(f"Advertencia: No se cargó CondicionesIdeales.csv en {csv_path}: {e}")
     CONDICIONES_DF = pd.DataFrame()
 
-@lru_cache(maxsize=128)
-def _pred_cache(ruta: str, lugar: str, mes_solicitado: int):
-    return prediccion(ruta=ruta, lugar=lugar, mes_solicitado=mes_solicitado)
+def obtener_clima_siembra_link(estado_input: str, municipio_input: str, mes_solicitado: int):
+    """
+    Fuente de tmin/tmax/humedad para el motor de recomendación: lecturas
+    reales capturadas por Siembra Link y guardadas en MongoDB (en vez de
+    los CSV históricos que se usaban antes). La precipitación se sigue
+    obteniendo de Open-Meteo (obtener_clima_ultimos_30_dias), ya que el
+    sensor de lluvia de Siembra Link solo entrega un valor crudo del ADC,
+    no milímetros de precipitación.
+    """
+    estado_canon = geo_mexico.normalizar_estado(estado_input)
+    municipio_canon = geo_mexico.normalizar_municipio(estado_canon, municipio_input) if municipio_input else None
+    return prediccion_desde_mongo(estado_canon, municipio_canon, mes_solicitado)
 
 # ================================== Rutas ====================================
 
@@ -182,6 +191,7 @@ def landing():
 
 @general_bp.route('/siembra-mas')
 def siembra_mas():
+    muestras = db.listar_todas_las_muestras(limit=150)
     context = {
         "title": "Siembra Más",
         "mes_sel": mes_actual_nombre(),
@@ -195,7 +205,8 @@ def siembra_mas():
         "coordenadas_municipios": coordenadas_municipios,
         "temp_max": None, "temp_min": None, "temp_media": None,
         "precipitacion": None, "humedad": None, "nombre_mes": None,
-        "estado_sel": None, "municipio_sel": None
+        "estado_sel": None, "municipio_sel": None,
+        "muestras_siembra_link": muestras
     }
     return render_template('index.html', **context)
 
@@ -226,19 +237,62 @@ def generar_analisis():
 
     temp_min = temp_max = precipitacion = humedad = None
     lat, lon = None, None
+    msg_sin_datos = None
 
-    # 1. Obtener Clima y Coordenadas
+    # 1. Obtener Clima (Siembra Link / MongoDB / Local JSON) y Coordenadas
+    fuente_clima = "Modelo ML Histórico"
+    n_lecturas_siembra_link = 0
+
     if lugar:
         try:
-            df_pred = _pred_cache(ruta, lugar, mes_solicitado)
-            if not df_pred.empty:
-                temp_min, temp_max = int(df_pred["Pred_TempMin"].iloc[0]), int(df_pred["Pred_tempMax"].iloc[0])
-                lat, lon = buscar_coords(ruta, lugar)
-                
-                precipitacion, humedad = obtener_clima_ultimos_30_dias(lat, lon)
-                
+            lat, lon = buscar_coords(ruta, lugar)
+            pred = obtener_clima_siembra_link(estado_input, municipio_input, mes_solicitado)
+
+            if pred.get("disponible"):
+                temp_min, temp_max, humedad = pred["temp_min"], pred["temp_max"], pred["humedad"]
+                precipitacion, _ = obtener_clima_ultimos_30_dias(lat, lon)
+                fuente_clima = "Sensores Siembra Link (Cloud)"
+                n_lecturas_siembra_link = pred.get("n_lecturas", 1)
+            else:
+                # Comprobar si hay lecturas de hardware en la base local (testing offline)
+                resumen_local = db.resumen_clima_local(
+                    estado=estado_input,
+                    municipio=municipio_input if ruta == "Municipios" else None,
+                    mes=mes_solicitado
+                )
+                if resumen_local.get("disponible"):
+                    temp_min = resumen_local.get("temp_min")
+                    temp_max = resumen_local.get("temp_max")
+                    humedad = resumen_local.get("humedad_prom")
+                    precipitacion = resumen_local.get("precipitacion") or obtener_precipitacion_local(lugar, mes_solicitado, ruta)
+                    fuente_clima = "Sensores Siembra Link (Hardware Local)"
+                    n_lecturas_siembra_link = resumen_local.get("n_lecturas", 0)
+                else:
+                    # Fallback al motor de predicción Machine Learning local (Random Forest)
+                    res_local = prediccion_local(estado_input, municipio_input, mes_solicitado, ruta)
+                    if res_local and res_local.get("disponible"):
+                        temp_min = res_local.get("temp_min")
+                        temp_max = res_local.get("temp_max")
+                        humedad = res_local.get("humedad")
+                        precipitacion = res_local.get("precipitacion")
+                        fuente_clima = res_local.get("fuente", "Modelo ML Random Forest")
+                    else:
+                        msg_sin_datos = (
+                            "Aún no hay lecturas de Siembra Link para esta ubicación. "
+                            "Conecta un dispositivo en esta zona o elige otra."
+                        )
         except Exception as e:
             print(f"Error obteniendo predicciones: {e}")
+            try:
+                res_local = prediccion_local(estado_input, municipio_input, mes_solicitado, ruta)
+                if res_local and res_local.get("disponible"):
+                    temp_min = res_local.get("temp_min")
+                    temp_max = res_local.get("temp_max")
+                    humedad = res_local.get("humedad")
+                    precipitacion = res_local.get("precipitacion")
+                    fuente_clima = res_local.get("fuente", "Modelo ML Random Forest")
+            except Exception as e_loc:
+                print(f"Error en fallback local: {e_loc}")
 
     recomendaciones = []
     
@@ -247,8 +301,12 @@ def generar_analisis():
         try:
             if ruta == "Estados":
                 ruta_csv_cultivos = os.path.join(project_root, "data", "Ideal", "CultivoEstado.csv")
+                if not os.path.exists(ruta_csv_cultivos):
+                    ruta_csv_cultivos = os.path.join(project_root, "data", "ideal", "CultivoEstado.csv")
             else:
                 ruta_csv_cultivos = os.path.join(project_root, "data", "Ideal", "CultivoMunicipio.csv")
+                if not os.path.exists(ruta_csv_cultivos):
+                    ruta_csv_cultivos = os.path.join(project_root, "data", "ideal", "CultivoMunicipio.csv")
             
             lista_cultivos_zona = obtener_cultivos(ruta_csv_cultivos).get(lugar, [])
             lista_cultivos_zona_norm = [normalizar_texto(c) for c in lista_cultivos_zona]
@@ -302,24 +360,256 @@ def generar_analisis():
         "ruta_sel": ruta, 
         "estado_sel": estado_input, 
         "municipio_sel": municipio_input,
+        "lugar_analizado": lugar,
+        "fuente_clima": fuente_clima,
+        "n_lecturas_siembra_link": n_lecturas_siembra_link,
         "mes_sel": mes_texto, 
         "anio_sel": anio, 
         "recomendaciones": recomendaciones,
         "temp_max": temp_max, 
         "temp_min": temp_min, 
-        "temp_media": int((temp_min + temp_max) / 2) if temp_min is not None else None,
-        "precipitacion": precipitacion, 
-        "humedad": humedad, 
+        "temp_media": round((temp_min + temp_max) / 2, 1) if temp_min is not None and temp_max is not None else None,
+        "precipitacion": precipitacion,
+        "humedad": humedad,
+        "msg_sin_datos": msg_sin_datos,
         "nombre_mes": mes_texto if lugar else None,
         "latitud_mapa": lat if lat else 19.1738,
         "longitud_mapa": lon if lon else -96.1342,
         "estados": estados, 
         "municipios": municipios,
         "meses": MESES, 
-        "anios": ANIOS
+        "anios": ANIOS,
+        "muestras_siembra_link": db.listar_todas_las_muestras(limit=150)
     }
     
     return render_template('index.html', **context)
+
+
+# --- NUEVAS RUTAS API PARA SIEMBRA LINK EN SIEMBRA+ ---
+
+@general_bp.route('/api/muestras_siembra_link', methods=['GET'])
+def api_muestras_siembra_link():
+    """Devuelve el historial completo de muestras de Siembra Link (local + Mongo)."""
+    filtro = {}
+    estado = request.args.get("estado")
+    if estado:
+        filtro["estado"] = estado
+    cultivo = request.args.get("cultivo")
+    if cultivo:
+        filtro["cultivo"] = cultivo
+
+    muestras = db.listar_todas_las_muestras(filtro=filtro, limit=200)
+    return jsonify({
+        "status": "ok",
+        "total": len(muestras),
+        "muestras": muestras
+    })
+
+
+@general_bp.route('/api/recomendar_por_muestra', methods=['POST', 'GET'])
+def api_recomendar_por_muestra():
+    """
+    Genera y devuelve la recomendación de cultivos basada ÚNICA Y EXCLUSIVAMENTE
+    en los datos y condiciones medidos por un registro específico de Siembra Link.
+    """
+    if request.method == 'POST':
+        data = request.json or request.form or {}
+    else:
+        data = request.args or {}
+
+    id_muestra = data.get("id") or data.get("id_muestra")
+    muestra = None
+    if id_muestra:
+        muestra = db.obtener_cualquier_lectura(str(id_muestra))
+
+    if not muestra:
+        if data.get("temperatura") is not None:
+            muestra = dict(data)
+        else:
+            return jsonify({"status": "error", "msg": "No se encontró el registro de Siembra Link solicitado."}), 404
+
+    try:
+        # Extraer muestras de la sesión
+        muestras_lista = muestra.get("muestras", [])
+        total_muestras = len(muestras_lista) if muestras_lista else 1
+
+        if muestra.get("temp_prom") is not None:
+            temp_min = float(muestra.get("temp_min"))
+            temp_max = float(muestra.get("temp_max"))
+            temp_media = float(muestra.get("temp_prom"))
+        elif muestras_lista:
+            temps = [float(m["temperatura"]) for m in muestras_lista if m.get("temperatura") is not None]
+            temp_min = round(min(temps), 1) if temps else 20.0
+            temp_max = round(max(temps), 1) if temps else 30.0
+            temp_media = round(sum(temps) / len(temps), 1) if temps else 25.0
+        else:
+            temp = float(muestra.get("temperatura", 25.0))
+            temp_min = round(temp - 2.5, 1)
+            temp_max = round(temp + 2.5, 1)
+            temp_media = round(temp, 1)
+
+        hum = float(muestra.get("humedad_prom") or muestra.get("humedad_ambiente", 65.0))
+        hum_suelo = float(muestra.get("humedad_suelo_prom") or muestra.get("humedad_suelo_pct", 50.0))
+        
+        estado = muestra.get("estado") or "Veracruz"
+        municipio = muestra.get("municipio")
+        
+        mes = muestra.get("mes")
+        if not mes and "fecha" in muestra:
+            try:
+                mes = datetime.strptime(str(muestra["fecha"]), "%Y-%m-%d").month
+            except Exception:
+                mes = datetime.now().month
+        if not mes:
+            mes = datetime.now().month
+
+        # Determinar zona y coordenadas
+        if municipio and municipio not in ["General", "Testing", "Todos", "", None]:
+            lugar = municipio
+            ruta = "Municipios"
+        else:
+            lugar = estado
+            ruta = "Estados"
+
+        lat, lon = buscar_coords(ruta, lugar)
+        precipitacion = obtener_precipitacion_local(ruta=ruta, lugar=lugar, mes_solicitado=mes)
+
+        # Entrada para el modelo de ML basada en todas las muestras del registro
+        preds = {
+            "tmin": temp_min,
+            "tmax": temp_max,
+            "tmed": temp_media,
+            "precip": precipitacion,
+            "hum": hum
+        }
+
+        # Catálogo regional
+        if ruta == "Estados":
+            ruta_csv_cultivos = os.path.join(project_root, "data", "Ideal", "CultivoEstado.csv")
+            if not os.path.exists(ruta_csv_cultivos):
+                ruta_csv_cultivos = os.path.join(project_root, "data", "ideal", "CultivoEstado.csv")
+        else:
+            ruta_csv_cultivos = os.path.join(project_root, "data", "Ideal", "CultivoMunicipio.csv")
+            if not os.path.exists(ruta_csv_cultivos):
+                ruta_csv_cultivos = os.path.join(project_root, "data", "ideal", "CultivoMunicipio.csv")
+
+        lista_cultivos_zona = obtener_cultivos(ruta_csv_cultivos).get(lugar, [])
+        lista_cultivos_zona_norm = [normalizar_texto(c) for c in lista_cultivos_zona]
+
+        recomendaciones = []
+        cultivos_unicos = CONDICIONES_DF["Cultivo"].unique()
+
+        for cultivo in cultivos_unicos:
+            cond = CONDICIONES_DF[CONDICIONES_DF["Cultivo"] == cultivo]
+            if not cond.empty:
+                lluvia_opt = float(str(cond["Lluvias_optima"].iloc[0]).replace(',', '.'))
+                humedad_opt = float(str(cond["Humedad"].iloc[0]).replace(',', '.'))
+                optimos = {
+                    "tmin": float(str(cond["Temp_min_optima"].iloc[0]).replace(',', '.')),
+                    "tmax": float(str(cond["Temp_max_optima"].iloc[0]).replace(',', '.')),
+                    "pmin": lluvia_opt * 0.8,
+                    "pmax": lluvia_opt * 1.2,
+                    "hmin": humedad_opt * 0.9,
+                    "hmax": humedad_opt * 1.1,
+                    "p_opt": lluvia_opt,
+                    "h_opt": humedad_opt,
+                }
+
+                prob = calcular_probabilidad_avanzada(preds, optimos)
+
+                if prob >= 70:
+                    texto = "Alta probabilidad de éxito bajo el perfil climático de este registro."
+                    clase_viabilidad = "bg-green"
+                elif prob >= 40:
+                    texto = "La siembra es viable con precauciones para este registro de monitoreo."
+                    clase_viabilidad = "bg-yellow"
+                else:
+                    texto = "No recomendado bajo estas condiciones de sensor."
+                    clase_viabilidad = "bg-red"
+
+                es_de_zona = normalizar_texto(cultivo) in lista_cultivos_zona_norm
+
+                recomendaciones.append({
+                    "cultivo": cultivo,
+                    "prob": prob,
+                    "texto": texto,
+                    "clase_viabilidad": clase_viabilidad,
+                    "img_slug": slug_cultivo(cultivo),
+                    "es_zona": es_de_zona
+                })
+
+        recomendaciones.sort(key=lambda x: x["prob"], reverse=True)
+
+        hora_inicio = muestra.get("hora_inicio") or muestra.get("hora") or muestra.get("timestamp")
+        duracion_min = muestra.get("duracion_programada_minutos", 5)
+
+        return jsonify({
+            "status": "ok",
+            "muestra": muestra,
+            "id_muestra": muestra.get("id"),
+            "sesion_id": muestra.get("sesion_id") or muestra.get("id"),
+            "lugar": lugar,
+            "ruta": ruta,
+            "estado": estado,
+            "municipio": municipio,
+            "fecha": muestra.get("fecha") or muestra.get("fecha_inicio"),
+            "hora": hora_inicio,
+            "hora_inicio": hora_inicio,
+            "duracion_programada_minutos": duracion_min,
+            "total_muestras": total_muestras,
+            "cultivo_monitoreado": muestra.get("cultivo"),
+            "etapa_monitoreada": muestra.get("etapa"),
+            "temp_sensor": temp_media,
+            "temp_min": temp_min,
+            "temp_max": temp_max,
+            "temp_media": temp_media,
+            "humedad": hum,
+            "humedad_suelo": hum_suelo,
+            "precipitacion": precipitacion,
+            "lat": lat if lat else 19.1738,
+            "lon": lon if lon else -96.1342,
+            "recomendaciones": recomendaciones
+        })
+    except Exception as e:
+        print(f"[SiembraMas] Error generando recomendación por muestra: {e}")
+        return jsonify({"status": "error", "msg": str(e)}), 500
+
+
+# --- NUEVA RUTA API PARA PREDICCIÓN Y RECOMENDACIÓN LOCAL (OFFLINE) ---
+
+@general_bp.route('/api/prediccion_local', methods=['GET', 'POST'])
+@general_bp.route('/api/local', methods=['GET', 'POST'])
+def api_prediccion_local():
+    """
+    Endpoint de Machine Learning y Recomendación Agrícola 100% local para testing.
+    """
+    if request.method == 'POST':
+        data = request.json or request.form or {}
+    else:
+        data = request.args or {}
+
+    estado = data.get("estado", "Veracruz")
+    municipio = data.get("municipio")
+    mes_raw = data.get("mes")
+    try:
+        mes = int(mes_raw) if mes_raw is not None and str(mes_raw).strip() != "" else None
+    except (ValueError, TypeError):
+        mes = None
+    ruta = data.get("ruta", "Estados")
+
+    resultado = prediccion_local(
+        estado=estado,
+        municipio=municipio,
+        mes_solicitado=mes,
+        ruta=ruta
+    )
+    return jsonify(resultado)
+
+
+def local(*args, **kwargs):
+    """Función de predicción local para testing."""
+    return local_prediccion(*args, **kwargs)
+
 
 @general_bp.route('/precios')
 def precios():

@@ -22,3 +22,9 @@ services:
         value: us-east-1
       - key: AWS_S3_BUCKET
         value: siembrasnap-prod-2026
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: siembramas
+      - key: NOMINATIM_USER_AGENT
+        value: "SiembraMas/1.0 (contacto@siembramas.app)"

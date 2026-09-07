@@ -29,15 +29,15 @@ def _cargar_sesion():
     if _session is not None:
         return _session
     if not os.path.exists(RUTA_ONNX):
-        print(f"❌ No se encontró el modelo ONNX en: {RUTA_ONNX}")
+        print(f"[AVISO] No se encontró el modelo ONNX en: {RUTA_ONNX}")
         return None
     try:
         import onnxruntime as ort
         _session = ort.InferenceSession(RUTA_ONNX, providers=['CPUExecutionProvider'])
-        print("✅ Modelo ONNX cargado correctamente.")
+        print("[OK] Modelo ONNX cargado correctamente.")
         return _session
     except Exception as e:
-        print(f"❌ Error cargando ONNX: {e}")
+        print(f"[ERROR] Error cargando ONNX: {e}")
         return None
 
 
@@ -70,5 +70,5 @@ def procesar_prediccion(img_pil):
         return {"diagnostico": class_name, "descripcion": descripcion, "id": class_id, "status": "success"}
 
     except Exception as e:
-        print(f"❌ Error en predicción: {e}")
+        print(f"[ERROR] Error en predicción: {e}")
         return {"diagnostico": "Error al analizar", "descripcion": "Error técnico al procesar la imagen.", "id": -1, "error": str(e), "status": "error"}

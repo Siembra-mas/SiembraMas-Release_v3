@@ -3,11 +3,23 @@ import pandas as pd
 import requests
 import datetime
 import asyncio
-import edge_tts
 import unicodedata
 import uuid
-from groq import Groq
-from gtts import gTTS
+
+try:
+    import edge_tts
+except ImportError:
+    edge_tts = None
+
+try:
+    from groq import Groq
+except ImportError:
+    Groq = None
+
+try:
+    from gtts import gTTS
+except ImportError:
+    gTTS = None
 
 
 # --- IMPORTACIÓN DE CATÁLOGOS ---
@@ -31,12 +43,12 @@ csv_path = os.path.join(project_root, "data", "condiciones_ideales", "Condicione
 try:
     if os.path.exists(csv_path):
         df_cultivos = pd.read_csv(csv_path)
-        print(f"✅ Base de datos de cultivos cargada desde: {csv_path}")
+        print(f"[OK] Base de datos de cultivos cargada desde: {csv_path}")
     else:
-        print(f"⚠️ Alerta: No encontré el CSV en {csv_path}")
+        print(f"[AVISO] No encontré el CSV en {csv_path}")
         df_cultivos = pd.DataFrame() # DataFrame vacío para no romper el código
 except Exception as e:
-    print(f"❌ Error leyendo CSV: {e}")
+    print(f"[ERROR] Error leyendo CSV: {e}")
     df_cultivos = pd.DataFrame()
 
 # --- UTILIDADES DE TEXTO ---

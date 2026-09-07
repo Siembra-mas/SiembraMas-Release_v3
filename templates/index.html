@@ -67,101 +67,381 @@
 </script>
 
 
+<style>
+.sm-mode-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.sm-mode-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 50px;
+  border: 1.5px solid var(--medium-green);
+  background: #fff;
+  color: var(--dark-green);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.sm-mode-tab:hover {
+  background: var(--cream);
+}
+.sm-mode-tab.active {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(46,125,50,0.2);
+}
+.sm-tab-badge {
+  background: rgba(255,255,255,0.25);
+  color: inherit;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+}
+.sm-mode-tab:not(.active) .sm-tab-badge {
+  background: #e8f5e9;
+  color: var(--accent-green);
+}
+
+.sm-sl-panel {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  border: 1.5px solid #e0ead6;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+.sm-sl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 1.2rem;
+}
+.sm-sl-search {
+  padding: 8px 14px;
+  border: 1.5px solid #d0deca;
+  border-radius: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  outline: none;
+  min-width: 260px;
+}
+.sm-sl-search:focus {
+  border-color: var(--accent-green);
+}
+.sm-table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #e5ede0;
+}
+.sm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.95rem;
+}
+.sm-table th {
+  background: #f7faf5;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--medium-green);
+  padding: 10px 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+.sm-table td {
+  padding: 10px 14px;
+  border-top: 1px solid #edf2e8;
+  color: var(--dark-green);
+  white-space: nowrap;
+}
+.sm-table tr.sm-row-interactive {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sm-table tr.sm-row-interactive:hover {
+  background: #f1f8ed;
+}
+.sm-table tr.sm-row-selected {
+  background: #e8f5e9 !important;
+  font-weight: 700;
+}
+.sm-btn-analizar-muestra {
+  background: var(--accent-green);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.15s, background 0.15s;
+}
+.sm-btn-analizar-muestra:hover {
+  background: #256628;
+  transform: scale(1.03);
+}
+</style>
+
 <section id="recomendaciones" class="section-padding bg-cream">
     <div class="container">
         <div class="center-text">
             <h2 class="section-title">Panel de Recomendación <span class="text-accent">Inteligente</span></h2>
             <p class="section-subtitle">
-            Configura tu ubicación para analizar temperatura y clima con datos históricos, modelo de ML y API meteorológica que recomiendan cultivos.
+            Genera recomendaciones agrícolas a partir de tu ubicación geográfica o directamente desde las muestras y sensores de <strong>Siembra Link</strong>.
             </p>
         </div>
-        
-        <div class="dashboard-grid">
-            
-            <div class="control-panel">
-                <form action="{{ url_for('general.generar_analisis') }}" method="POST" id="analysisForm">
-                    <div class="form-row"> 
-                        <div class="form-group">
-                            <label>Estado</label>
-                            <select class="form-select" name="estado" id="estadoSelect" required>
-                                <option value="" disabled {% if not estado_sel %}selected{% endif %}>Seleccionar...</option>
-                                {% for edo in estados %}
-                                    <option value="{{ edo }}" {% if estado_sel == edo %}selected{% endif %}>{{ edo }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Municipio</label>
-                            <select class="form-select" name="municipio" id="municipioSelect">
-                                <option value="General">General</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="action-buttons-grid">
-                        <button type="button" class="btn btn-full" onclick="ubicarUsuario()">Ubicarme <i data-lucide="navigation"></i></button>
-                        <div class="btn btn-outline btn-full" style="color: var(--dark-green); border-color: var(--medium-green); text-align:center; cursor:default;">
-                            {% if nombre_mes %}Predicción: {{ nombre_mes }}{% else %}Mes Actual{% endif %}
-                        </div>
-                    </div>
-                    
-                    <hr style="border: 0; border-top: 1px solid #eee; margin: 1.5rem 0;">
+        <!-- SWITCH DE MODO: ZONA GEOGRÁFICA vs SIEMBRA LINK -->
+        <div class="sm-mode-tabs">
+            <button type="button" class="sm-mode-tab active" id="sm-tab-zona" onclick="smCambiarModo('zona')">
+                <i data-lucide="map-pin"></i> Búsqueda por Zona Geográfica
+            </button>
+            <button type="button" class="sm-mode-tab" id="sm-tab-muestras" onclick="smCambiarModo('muestras')">
+                <i data-lucide="radio"></i> Siembra Link (Historial de Muestras)
+                <span class="sm-tab-badge" id="sm-conteo-muestras">{{ muestras_siembra_link|length if muestras_siembra_link else 0 }}</span>
+            </button>
+        </div>
 
-                    <div class="premium-check" style="display:flex; justify-content:space-between; align-items:center;">
-                        <label style="margin:0; font-size:0.9rem;">Usar datos Siembra Link <span class="badge" style="font-size: 0.7rem; margin-left:5px;">PREMIUM</span></label>
-                        <input type="checkbox" style="width:20px; height:20px; accent-color: var(--accent-green);">
-                    </div>
-                    
-                    <button type="submit" class="btn" style="width: 100%; margin-top: 1.5rem;">GENERAR ANÁLISIS</button>
-                </form>
-            </div>
-
-            <div class="map-container">
-                <div class="map-placeholder" id="mapaInteractivo" style="position: relative; overflow: hidden;">
-                    {% if latitud_mapa and longitud_mapa %}
-                        <iframe 
-                            width="100%" 
-                            height="100%" 
-                            frameborder="0" 
-                            style="border:0" 
-                            src="https://maps.google.com/maps?q={{ latitud_mapa }},{{ longitud_mapa }}&z=10&output=embed">
-                        </iframe>
-                    {% else %}
-                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#666;">
-                            <div style="font-size:3rem; margin-bottom:15px; color: var(--medium-green); line-height:1;"><i data-lucide="map-pin"></i></div>
-                            <p>Selecciona una ubicación para ver el mapa</p>
+        <!-- PANEL 1: BÚSQUEDA POR ZONA GEOGRÁFICA -->
+        <div id="sm-panel-zona">
+            <div class="dashboard-grid">
+                
+                <div class="control-panel">
+                    <form action="{{ url_for('general.generar_analisis') }}" method="POST" id="analysisForm">
+                        <div class="form-row"> 
+                            <div class="form-group">
+                                <label>Estado</label>
+                                <select class="form-select" name="estado" id="estadoSelect" required>
+                                    <option value="" disabled {% if not estado_sel %}selected{% endif %}>Seleccionar...</option>
+                                    {% for edo in estados %}
+                                        <option value="{{ edo }}" {% if estado_sel == edo %}selected{% endif %}>{{ edo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Municipio</label>
+                                <select class="form-select" name="municipio" id="municipioSelect">
+                                    <option value="General">General</option>
+                                </select>
+                            </div>
                         </div>
-                    {% endif %}
+
+                        <div class="action-buttons-grid">
+                            <button type="button" class="btn btn-full" onclick="ubicarUsuario()">Ubicarme <i data-lucide="navigation"></i></button>
+                            <div class="btn btn-outline btn-full" style="color: var(--dark-green); border-color: var(--medium-green); text-align:center; cursor:default;">
+                                {% if nombre_mes %}Predicción: {{ nombre_mes }}{% else %}Mes Actual{% endif %}
+                            </div>
+                        </div>
+                        
+                        <hr style="border: 0; border-top: 1px solid #eee; margin: 1.5rem 0;">
+
+                        <div class="premium-check" style="display:flex; justify-content:space-between; align-items:center;">
+                            <label for="usarSiembraLink" style="margin:0; font-size:0.9rem; cursor:pointer;">Usar datos Siembra Link <span class="badge" style="font-size: 0.7rem; margin-left:5px; background:var(--accent-green); color:#fff;">IoT ACTIVO</span></label>
+                            <input type="checkbox" name="usar_siembra_link" id="usarSiembraLink" checked style="width:20px; height:20px; accent-color: var(--accent-green); cursor:pointer;">
+                        </div>
+                        
+                        <button type="submit" class="btn" style="width: 100%; margin-top: 1.5rem;">GENERAR ANÁLISIS</button>
+                    </form>
+                </div>
+
+                <div class="map-container">
+                    <div class="map-placeholder" id="mapaInteractivo" style="position: relative; overflow: hidden;">
+                        {% if latitud_mapa and longitud_mapa %}
+                            <iframe 
+                                id="iframeMapa"
+                                width="100%" 
+                                height="100%" 
+                                frameborder="0" 
+                                style="border:0" 
+                                src="https://maps.google.com/maps?q={{ latitud_mapa }},{{ longitud_mapa }}&z=10&output=embed">
+                            </iframe>
+                        {% else %}
+                            <div id="mapaPlaceholderContent" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#666;">
+                                <div style="font-size:3rem; margin-bottom:15px; color: var(--medium-green); line-height:1;"><i data-lucide="map-pin"></i></div>
+                                <p>Selecciona una ubicación para ver el mapa</p>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="weather-section-container" style="margin-top: 3rem;">
+        <!-- PANEL 2: APARTADO SIEMBRA LINK (HISTORIAL DE REGISTROS) -->
+        <div id="sm-panel-muestras" class="sm-sl-panel" style="display:none;">
+            <div class="sm-sl-header">
+                <div>
+                    <h3 style="font-family:'Montserrat',sans-serif; color:var(--dark-green); margin:0 0 4px 0; font-size:1.15rem; display:flex; align-items:center; gap:8px;">
+                        <i data-lucide="radio" style="color:var(--accent-green);"></i> Historial de Registros de Monitoreo (Siembra Link)
+                    </h3>
+                    <p style="margin:0; font-size:0.85rem; color:#666;">
+                        Cada registro agrupa todas las muestras capturadas en esa sesión desde su hora de inicio. Elige un registro para alimentar el modelo de ML con todos sus datos.
+                    </p>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <input type="text" id="sm-search-muestras" class="sm-sl-search" placeholder="Buscar por estado, cultivo, fecha..." oninput="smFiltrarMuestras(this.value)">
+                    <a href="{{ url_for('siembra_link.index') }}" class="btn btn-sm" style="text-decoration:none; padding:8px 14px; font-size:0.78rem;">
+                        <i data-lucide="plus-circle"></i> Nuevo Monitoreo
+                    </a>
+                </div>
+            </div>
+
+            {% if muestras_siembra_link and muestras_siembra_link|length > 0 %}
+                <div class="sm-table-wrap">
+                    <table class="sm-table" id="sm-tabla-muestras">
+                        <thead>
+                            <tr>
+                                <th>Registro / Hora Inicio</th>
+                                <th>Ubicación</th>
+                                <th>Cultivo & Etapa</th>
+                                <th>Muestras Acumuladas</th>
+                                <th>Temperatura Prom.</th>
+                                <th>Hum. Ambiente</th>
+                                <th>Hum. Suelo</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sm-tbody-muestras">
+                            {% for m in muestras_siembra_link %}
+                                <tr class="sm-row-interactive" id="sm-row-{{ m.id or m.sesion_id }}" onclick="smSeleccionarMuestra('{{ m.id or m.sesion_id }}')">
+                                    <td>
+                                        <div style="display:flex; align-items:center; gap:6px;">
+                                            <strong style="color:var(--dark-green);">{{ m.fecha_inicio or m.fecha or 'Reciente' }}</strong>
+                                            <span class="badge" style="background:#e0f2fe; color:#0369a1; font-size:0.68rem; padding:1px 6px;">
+                                                {{ m.duracion_programada_minutos or 5 }} min
+                                            </span>
+                                        </div>
+                                        <div style="font-size:0.75rem; color:#666;">
+                                            <i data-lucide="clock" style="width:11px;height:11px;vertical-align:-1px;"></i> Inicio: {{ m.hora_inicio or m.hora or m.timestamp or '--' }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong style="color:#333;">{{ m.estado or 'Local' }}</strong>
+                                        {% if m.municipio and m.municipio != 'General' and m.municipio != 'Testing' %}
+                                            <div style="color:#777; font-size:0.78rem;">{{ m.municipio }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge" style="background:#e8f5e9; color:#2e7d32; font-size:0.75rem; font-weight:700;">{{ m.cultivo or 'Tomate' }}</span>
+                                        <div style="font-size:0.72rem; color:#666;">Etapa {{ m.etapa or '1' }}</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge" style="background:#fef3c7; color:#b45309; font-size:0.75rem; font-weight:700;">
+                                            <i data-lucide="layers" style="width:11px;height:11px;vertical-align:-1px;"></i> {{ m.total_muestras or (m.muestras|length if m.muestras else 1) }} muestras
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <strong>{{ m.temp_prom or m.temperatura or '--' }} °C</strong>
+                                        {% if m.temp_min is not none and m.temp_max is not none and m.temp_min != m.temp_max %}
+                                            <div style="font-size:0.7rem; color:#888;">Min: {{ m.temp_min }}° | Max: {{ m.temp_max }}°</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ m.humedad_prom or m.humedad_ambiente or '--' }} %</td>
+                                    <td>{{ m.humedad_suelo_prom or m.humedad_suelo_pct or '--' }} %</td>
+                                    <td>
+                                        <button type="button" class="sm-btn-analizar-muestra" onclick="event.stopPropagation(); smSeleccionarMuestra('{{ m.id or m.sesion_id }}')">
+                                            <i data-lucide="sparkles" style="width:13px;height:13px;"></i> Evaluar con ML
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div style="text-align:center; padding:2.5rem 1rem; color:#777;">
+                    <i data-lucide="inbox" style="width:40px; height:40px; color:#aaa; margin-bottom:0.8rem;"></i>
+                    <p style="margin:0 0 1rem 0; font-size:0.95rem;">Aún no se han registrado sesiones de monitoreo desde Siembra Link.</p>
+                    <a href="{{ url_for('siembra_link.index') }}" class="btn btn-sm" style="text-decoration:none;">
+                        <i data-lucide="play"></i> Iniciar Sesión de Monitoreo
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- BANNER DE INTEGRACIÓN SIEMBRA LINK / MUESTRA SELECCIONADA -->
+        <div id="sm-banner-container">
+            {% if n_lecturas_siembra_link and n_lecturas_siembra_link > 0 %}
+                <div id="sm-banner-info" style="background: #e8f5e9; border: 1.5px solid #2e7d32; border-radius: 14px; padding: 1.1rem 1.4rem; margin-top: 2.2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 15px rgba(46,125,50,0.08);">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 2rem;">📡</span>
+                        <div>
+                            <strong id="sm-banner-title" style="color: #2e7d32; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; text-transform: uppercase; letter-spacing:0.04em;">
+                                Lecturas Reales Siembra Link Integradas
+                            </strong>
+                            <p id="sm-banner-desc" style="margin: 0; font-size: 0.88rem; color: #2d3748;">
+                                Se procesaron <strong>{{ n_lecturas_siembra_link }}</strong> mediciones de temperatura y humedad ambiental tomadas por hardware en <strong>{{ lugar_analizado }}</strong>.
+                            </p>
+                        </div>
+                    </div>
+                    <span id="sm-banner-badge" class="badge" style="background: #2e7d32; color: #fff; font-size: 0.78rem; padding: 6px 14px; border-radius: 50px; font-weight:700;">
+                        {{ fuente_clima }}
+                    </span>
+                </div>
+            {% elif lugar_analizado %}
+                <div id="sm-banner-info" style="background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 14px; padding: 0.9rem 1.3rem; margin-top: 2.2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 1.6rem;">🤖</span>
+                        <div>
+                            <strong id="sm-banner-title" style="color: #33691e; font-family: 'Montserrat', sans-serif; font-size: 0.92rem;">
+                                Predicción de Machine Learning Local
+                            </strong>
+                            <p id="sm-banner-desc" style="margin: 0; font-size: 0.83rem; color: #4a5568;">
+                                Estimación basada en modelo Random Forest entrenado sobre datos históricos de {{ lugar_analizado }}.
+                            </p>
+                        </div>
+                    </div>
+                    <span id="sm-banner-badge" class="badge" style="background: #558b2f; color: #fff; font-size: 0.75rem; padding: 5px 12px; border-radius: 50px;">
+                        {{ fuente_clima }}
+                    </span>
+                </div>
+            {% else %}
+                <div id="sm-banner-info" style="display:none;"></div>
+            {% endif %}
+        </div>
+
+        <div class="weather-section-container" style="margin-top: 2rem;">
             <div class="weather-grid-custom">
                 <div class="w-card-light w-span-3">
                     <i data-lucide="cloud-rain"></i>
-                    <div class="w-value">{% if precipitacion is not none %}{{ precipitacion }} mm{% else %}--{% endif %}</div>
+                    <div class="w-value" id="sm-val-precip">{% if precipitacion is not none %}{{ precipitacion }} mm{% else %}--{% endif %}</div>
                     <div class="w-label">Precipitación</div>
                 </div>
                 <div class="w-card-light w-span-3">
                     <i data-lucide="droplets"></i>
-                    <div class="w-value">{% if humedad is not none %}{{ humedad }} %{% else %}--{% endif %}</div>
+                    <div class="w-value" id="sm-val-hum">{% if humedad is not none %}{{ humedad }} %{% else %}--{% endif %}</div>
                     <div class="w-label">Humedad relativa</div>
                 </div>
 
                 <div class="w-card-light w-span-2">
                     <i data-lucide="thermometer"></i>
-                    <div class="w-value">{% if temp_max is not none %}{{ temp_max }} °C{% else %}--{% endif %}</div>
+                    <div class="w-value" id="sm-val-tmax">{% if temp_max is not none %}{{ temp_max }} °C{% else %}--{% endif %}</div>
                     <div class="w-label">Temperatura máxima</div>
                 </div>
                 <div class="w-card-light w-span-2">
                     <i data-lucide="sun"></i>
-                    <div class="w-value">{% if temp_media is not none %}{{ temp_media }} °C{% else %}--{% endif %}</div>
+                    <div class="w-value" id="sm-val-tmed">{% if temp_media is not none %}{{ temp_media }} °C{% else %}--{% endif %}</div>
                     <div class="w-label">Temperatura media</div>
                 </div>
                 <div class="w-card-light w-span-2">
                     <i data-lucide="thermometer-snowflake"></i>
-                    <div class="w-value">{% if temp_min is not none %}{{ temp_min }} °C{% else %}--{% endif %}</div>
+                    <div class="w-value" id="sm-val-tmin">{% if temp_min is not none %}{{ temp_min }} °C{% else %}--{% endif %}</div>
                     <div class="w-label">Temperatura mínima</div>
                 </div>
             </div>
@@ -206,7 +486,7 @@
             {% else %}
                 <div style="text-align: center; padding: 2rem; color: #666;">
                     {% if estado_sel %}
-                        <p>No se encontraron cultivos viables o faltan datos para generar la predicción.</p>
+                        <p>{{ msg_sin_datos or "No se encontraron cultivos viables o faltan datos para generar la predicción." }}</p>
                     {% else %}
                         <p>Selecciona un Estado y Municipio arriba y haz clic en "Generar Análisis" para ver los resultados.</p>
                     {% endif %}
@@ -218,49 +498,65 @@
 </section>
 
 <script>
-    // --- LÓGICA DE ESTADOS Y MUNICIPIOS CON FETCH ---
-    let todosLosMunicipios = [];
+    // --- LÓGICA DE ESTADOS Y MUNICIPIOS DINÁMICOS ---
     const estadoSelect = document.getElementById('estadoSelect');
     const municipioSelect = document.getElementById('municipioSelect');
     const municipioPreseleccionado = "{{ municipio_sel if municipio_sel else 'General' }}";
 
-    function cargarMunicipios() {
-        // Hacemos petición asíncrona a Flask para obtener los datos
-        fetch("{{ url_for('general.api_municipios') }}")
-            .then(response => response.json())
-            .then(data => {
-                todosLosMunicipios = data;
-                // Si el usuario ya había seleccionado Veracruz, refrescamos la lista ahora que tenemos datos
-                if (estadoSelect.value === 'Veracruz') {
-                    actualizarMunicipios();
-                }
-            })
-            .catch(error => console.error('Error cargando municipios:', error));
-    }
-
-    function actualizarMunicipios() {
+    function actualizarMunicipios(callback) {
         const estadoActual = estadoSelect.value;
         municipioSelect.innerHTML = '';
 
-        // Opción predeterminada siempre presente
         const opcionGeneral = document.createElement('option');
         opcionGeneral.value = "General";
-        opcionGeneral.textContent = "General";
+        opcionGeneral.textContent = "General (Todo el Estado)";
         municipioSelect.appendChild(opcionGeneral);
 
-        // Solo poblar si es Veracruz Y ya se descargaron los datos
-        if (estadoActual === 'Veracruz' && todosLosMunicipios.length > 0) {
-            todosLosMunicipios.forEach(muni => {
-                const opcion = document.createElement('option');
-                opcion.value = muni;
-                opcion.textContent = muni;
-                municipioSelect.appendChild(opcion);
-            });
-        }
+        if (!estadoActual) return;
 
-        // Restaurar selección previa (útil tras enviar formulario)
+        // Consultar los municipios del estado seleccionado desde la API geográfica
+        fetch(`/api/geo/municipios/${encodeURIComponent(estadoActual)}`)
+            .then(r => {
+                if (!r.ok) throw new Error('Fallback');
+                return r.json();
+            })
+            .then(data => {
+                const munis = data.municipios || data;
+                if (Array.isArray(munis) && munis.length > 0) {
+                    munis.forEach(muni => {
+                        const opt = document.createElement('option');
+                        opt.value = muni;
+                        opt.textContent = muni;
+                        municipioSelect.appendChild(opt);
+                    });
+                }
+                restaurarMunicipio();
+                if (callback) callback();
+            })
+            .catch(() => {
+                // Fallback para Veracruz si falla el endpoint geográfico
+                if (estadoActual === 'Veracruz') {
+                    fetch("{{ url_for('general.api_municipios') }}")
+                        .then(r => r.json())
+                        .then(munis => {
+                            if (Array.isArray(munis)) {
+                                munis.forEach(muni => {
+                                    const opt = document.createElement('option');
+                                    opt.value = muni;
+                                    opt.textContent = muni;
+                                    municipioSelect.appendChild(opt);
+                                });
+                            }
+                            restaurarMunicipio();
+                            if (callback) callback();
+                        });
+                }
+            });
+    }
+
+    function restaurarMunicipio() {
         for (let i = 0; i < municipioSelect.options.length; i++) {
-            if (municipioSelect.options[i].value === municipioPreseleccionado) {
+            if (municipioSelect.options[i].value.toLowerCase() === municipioPreseleccionado.toLowerCase()) {
                 municipioSelect.selectedIndex = i;
                 break;
             }
@@ -298,24 +594,253 @@
         }
     }
 
+    // --- GEOLOCALIZACIÓN DEL NAVEGADOR ---
+    function ubicarUsuario() {
+        if (!('geolocation' in navigator)) {
+            alert('Tu navegador no cuenta con soporte para geolocalización.');
+            return;
+        }
+
+        const btn = document.querySelector('.action-buttons-grid button');
+        const origHtml = btn.innerHTML;
+        btn.innerHTML = 'Detectando... <i data-lucide="compass"></i>';
+        btn.disabled = true;
+        if (window.lucide) lucide.createIcons();
+
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const coords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+                fetch('/api/siembra_link/ubicacion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(coords)
+                })
+                .then(r => r.json())
+                .then(data => {
+                    btn.innerHTML = origHtml;
+                    btn.disabled = false;
+                    if (window.lucide) lucide.createIcons();
+
+                    if (data.status === 'ok' && data.estado) {
+                        estadoSelect.value = data.estado;
+                        actualizarMunicipios(() => {
+                            if (data.municipio) {
+                                for (let i = 0; i < municipioSelect.options.length; i++) {
+                                    if (municipioSelect.options[i].value.toLowerCase() === data.municipio.toLowerCase()) {
+                                        municipioSelect.selectedIndex = i;
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                        alert(`Ubicación detectada: ${data.estado}${data.municipio ? ', ' + data.municipio : ''}`);
+                    } else {
+                        alert('No se pudo identificar el Estado en el mapa. Por favor selecciona tu Estado manualmente.');
+                    }
+                })
+                .catch(() => {
+                    btn.innerHTML = origHtml;
+                    btn.disabled = false;
+                    if (window.lucide) lucide.createIcons();
+                    alert('Error comunicando con el servicio de geolocalización. Selecciona manualmente tu ubicación.');
+                });
+            },
+            () => {
+                btn.innerHTML = origHtml;
+                btn.disabled = false;
+                if (window.lucide) lucide.createIcons();
+                alert('No se pudo obtener acceso a la ubicación del navegador. Selecciona manualmente tu Estado.');
+            },
+            { timeout: 8000, maximumAge: 300000 }
+        );
+    }
+
+    // --- LÓGICA DE MODOS (ZONA vs SIEMBRA LINK) ---
+    function smCambiarModo(modo) {
+        const tabZona = document.getElementById('sm-tab-zona');
+        const tabMuestras = document.getElementById('sm-tab-muestras');
+        const panelZona = document.getElementById('sm-panel-zona');
+        const panelMuestras = document.getElementById('sm-panel-muestras');
+
+        if (modo === 'muestras') {
+            tabMuestras.classList.add('active');
+            tabZona.classList.remove('active');
+            panelMuestras.style.display = 'block';
+            panelZona.style.display = 'none';
+        } else {
+            tabZona.classList.add('active');
+            tabMuestras.classList.remove('active');
+            panelZona.style.display = 'block';
+            panelMuestras.style.display = 'none';
+        }
+    }
+
+    function smFiltrarMuestras(query) {
+        query = (query || '').toLowerCase().trim();
+        const filas = document.querySelectorAll('#sm-tbody-muestras tr');
+        filas.forEach(fila => {
+            const texto = fila.textContent.toLowerCase();
+            fila.style.display = texto.includes(query) ? '' : 'none';
+        });
+    }
+
+    function smSeleccionarMuestra(idMuestra) {
+        // Resaltar fila seleccionada
+        document.querySelectorAll('#sm-tbody-muestras tr').forEach(r => r.classList.remove('sm-row-selected'));
+        const fila = document.getElementById(`sm-row-${idMuestra}`);
+        if (fila) fila.classList.add('sm-row-selected');
+
+        // Notificar en banner
+        const bannerContainer = document.getElementById('sm-banner-container');
+        bannerContainer.innerHTML = `
+            <div id="sm-banner-info" style="background: #e8f5e9; border: 1.5px solid #2e7d32; border-radius: 14px; padding: 1.1rem 1.4rem; margin-top: 2.2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 15px rgba(46,125,50,0.08);">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <span style="font-size: 2rem;">📡</span>
+                    <div>
+                        <strong style="color: #2e7d32; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; text-transform: uppercase;">
+                            Procesando recomendación para la muestra de Siembra Link...
+                        </strong>
+                        <p style="margin: 0; font-size: 0.88rem; color: #2d3748;">
+                            Calculando viabilidad agronómica basada exclusivamente en las lecturas de esta muestra de hardware.
+                        </p>
+                    </div>
+                </div>
+                <span class="badge" style="background: #2e7d32; color: #fff; font-size: 0.78rem; padding: 6px 14px; border-radius: 50px;">
+                    EVALUANDO
+                </span>
+            </div>
+        `;
+
+        fetch('/api/recomendar_por_muestra', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: idMuestra })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                smRenderRecomendacionesMuestra(data);
+            } else {
+                alert(data.msg || 'Error al procesar la muestra.');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Error comunicando con el servidor al evaluar la muestra.');
+        });
+    }
+
+    function smRenderRecomendacionesMuestra(data) {
+        // 1. Actualizar tarjetas meteorológicas con los datos de esta muestra
+        const elPrecip = document.getElementById('sm-val-precip');
+        const elHum = document.getElementById('sm-val-hum');
+        const elTmax = document.getElementById('sm-val-tmax');
+        const elTmed = document.getElementById('sm-val-tmed');
+        const elTmin = document.getElementById('sm-val-tmin');
+
+        if (elPrecip) elPrecip.textContent = `${data.precipitacion} mm`;
+        if (elHum) elHum.textContent = `${data.humedad} %`;
+        if (elTmax) elTmax.textContent = `${data.temp_max} °C`;
+        if (elTmed) elTmed.textContent = `${data.temp_media} °C`;
+        if (elTmin) elTmin.textContent = `${data.temp_min} °C`;
+
+        // 2. Actualizar Banner
+        const ubicacionTexto = `${data.estado}${data.municipio && data.municipio !== 'General' && data.municipio !== 'Testing' ? ', ' + data.municipio : ''}`;
+        const fechaTexto = data.fecha || 'Reciente';
+        const horaTexto = data.hora_inicio || data.hora || '--:--';
+        const durTexto = data.duracion_programada_minutos ? `${data.duracion_programada_minutos} min` : '5 min';
+        const totalM = data.total_muestras || 1;
+
+        const bannerContainer = document.getElementById('sm-banner-container');
+        bannerContainer.innerHTML = `
+            <div id="sm-banner-info" style="background: #e8f5e9; border: 1.5px solid #2e7d32; border-radius: 14px; padding: 1.1rem 1.4rem; margin-top: 2.2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 15px rgba(46,125,50,0.08);">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <span style="font-size: 2rem;">📡</span>
+                    <div>
+                        <strong style="color: #2e7d32; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; text-transform: uppercase;">
+                            Recomendación Generada desde Registro de Monitoreo Siembra Link
+                        </strong>
+                        <p style="margin: 0; font-size: 0.88rem; color: #2d3748;">
+                            Sesión iniciada el <strong>${fechaTexto}</strong> a las <strong>${horaTexto}</strong> (${durTexto}) en <strong>${ubicacionTexto}</strong>. Se procesaron <strong>${totalM} muestras</strong> en el modelo de ML — Temp Prom: <strong>${data.temp_sensor}°C</strong> (${data.temp_min}° a ${data.temp_max}°) | Hum. Amb: <strong>${data.humedad}%</strong> | Suelo: <strong>${data.humedad_suelo}%</strong>
+                            ${data.cultivo_monitoreado ? `| Cultivo: <em>${data.cultivo_monitoreado}</em> (Etapa ${data.etapa_monitoreada || '1'})` : ''}.
+                        </p>
+                    </div>
+                </div>
+                <span class="badge" style="background: #2e7d32; color: #fff; font-size: 0.78rem; padding: 6px 14px; border-radius: 50px; font-weight:700;">
+                    REGISTRO SIEMBRA LINK (${totalM} MUESTRAS)
+                </span>
+            </div>
+        `;
+
+        // 3. Actualizar Mapa si existen coordenadas
+        const mapaContainer = document.getElementById('mapaInteractivo');
+        if (mapaContainer && data.lat && data.lon) {
+            mapaContainer.innerHTML = `
+                <iframe 
+                    id="iframeMapa"
+                    width="100%" 
+                    height="100%" 
+                    frameborder="0" 
+                    style="border:0" 
+                    src="https://maps.google.com/maps?q=${data.lat},${data.lon}&z=10&output=embed">
+                </iframe>
+            `;
+        }
+
+        // 4. Renderizar tarjetas de cultivos recomendados para esta muestra
+        const resultadosContainer = document.getElementById('resultados-content');
+        if (data.recomendaciones && data.recomendaciones.length > 0) {
+            let html = '<div class="carousel-grid">';
+            data.recomendaciones.forEach(rec => {
+                html += `
+                    <div class="crop-card" data-zona="${rec.es_zona ? 'true' : 'false'}">
+                        <div class="crop-img">
+                            <img src="/static/img/cultivos/${rec.img_slug}.png" 
+                                 onerror="this.src='https://via.placeholder.com/300x200?text=${encodeURIComponent(rec.cultivo)}'" 
+                                 alt="${rec.cultivo}" 
+                                 style="width:100%; height:100%; object-fit:cover; display:block; background:#eee;"> 
+                        </div>
+                        <div class="crop-body">
+                            <div class="crop-header-row">
+                                <h4>${rec.cultivo}</h4>
+                                <span class="viability ${rec.clase_viabilidad}">${rec.prob}% VIABILIDAD</span>
+                            </div>
+                            <p class="crop-desc">${rec.texto}</p>
+                            ${!rec.es_zona ? '<small style="color: #999; font-size: 0.75rem;">No histórico en esta zona</small>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            resultadosContainer.innerHTML = html;
+            filtrarCultivos('zona');
+        } else {
+            resultadosContainer.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #666;">
+                    <p>No se encontraron cultivos recomendables para las condiciones de esta muestra.</p>
+                </div>
+            `;
+        }
+
+        if (window.lucide) lucide.createIcons();
+
+        // 5. Desplazamiento suave hacia los resultados
+        const headerCultivos = document.querySelector('.crops-header');
+        if (headerCultivos) headerCultivos.scrollIntoView({ behavior: 'smooth' });
+    }
+
     // --- INICIALIZACIÓN ---
-    estadoSelect.addEventListener('change', actualizarMunicipios);
+    estadoSelect.addEventListener('change', () => actualizarMunicipios());
     
     document.addEventListener("DOMContentLoaded", function() {
-        // 1. Configurar estado visual inicial
-        actualizarMunicipios();
-        // 2. Descargar datos de municipios en segundo plano
-        cargarMunicipios();
-        
-        // 3. Inicializar filtros si hay resultados
+        if (estadoSelect.value) {
+            actualizarMunicipios();
+        }
         if (document.querySelectorAll('.crop-card').length > 0) {
             filtrarCultivos('zona');
         }
+        if (window.lucide) lucide.createIcons();
     });
-
-    function ubicarUsuario() {
-        alert("Funcionalidad de geolocalización pendiente de configurar con HTTPS.");
-    }
 </script>
 
 {% endblock %}
