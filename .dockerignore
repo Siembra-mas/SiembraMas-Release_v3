@@ -1,0 +1,48 @@
+# 1. Secretos y Credenciales (Bloqueo absoluto)
+.env
+*.pem
+*.key
+
+# 2. Control de Versiones (El historial se queda afuera)
+.git/
+.gitignore
+
+# 3. Metadatos de Docker (El contenedor no necesita saber cómo fue creado)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# 4. Entornos Virtuales y Caché (Docker instalará los suyos propios)
+.venv/
+venv/
+env/
+.pip_cache
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyd
+*.so
+
+# 5. Archivos Temporales y Locales de tu Ecosistema
+vision/
+.streamlit/
+.tf_logs/
+static/audio/
+static/temp/
+uploads/
+.claude/
+Siembra-mas.github.io-main/
+*.pdf
+generate_report.py
+
+# 6. Bases de Datos Locales y Logs
+*.sqlite
+*.sqlite3
+*.db
+*.log
+
+# 7. Basura del Sistema Operativo
+*.DS_Store
+*~
+.vscode/
+.idea/

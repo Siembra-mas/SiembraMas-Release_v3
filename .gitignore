@@ -42,3 +42,11 @@ uploads/
 Siembra-mas.github.io-main/
 *.pdf
 generate_report.py
+
+# Logs
+*.log
+
+# Bases de datos locales
+*.sqlite
+*.sqlite3
+*.db

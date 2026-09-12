@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    # Eliminamos 'ports' para cerrar el acceso externo. 
+    # Usamos 'expose' solo para que Cloudflared lo vea en la red interna.
+    expose:
+      - "10000"
+    env_file:
+      - .env
+    environment:
+      - PORT=10000
+    restart: always
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TOKEN}
+    env_file:
+      - .env
+    restart: always
+    depends_on:
+      - web
